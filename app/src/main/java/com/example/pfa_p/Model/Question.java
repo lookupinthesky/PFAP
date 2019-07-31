@@ -7,6 +7,7 @@ public class Question {
     private String subModuleName;
     private String domainName;
     private int serialNumber;
+    private int viewType;
 
     public Question(String questionName) {
         this.questionName = questionName;

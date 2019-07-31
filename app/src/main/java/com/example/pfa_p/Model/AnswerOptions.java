@@ -18,6 +18,7 @@ public class AnswerOptions {
 
     private int optionTypes;
     private int numberOfOptions;
+    private int viewType;
 
     public int getNumberOfOptions() {
         return numberOfOptions;
@@ -27,7 +28,15 @@ public class AnswerOptions {
         this.numberOfOptions = numberOfOptions;
     }
 
-    public AnswerOptions(String answerType, int numberOfOptions, String... options){}
+    public int getViewType() {
+
+        return answerType;
+
+
+    }
+
+    public AnswerOptions(String answerType, int numberOfOptions, String... options) {
+    }
 
     private ArrayList<String> options;
     private int answerType;

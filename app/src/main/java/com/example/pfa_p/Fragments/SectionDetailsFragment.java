@@ -14,7 +14,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pfa_p.Adapter.SurveyAdapter;
 import com.example.pfa_p.Model.AnswerOptions;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
@@ -31,6 +33,7 @@ public class SectionDetailsFragment extends Fragment {
     private int moduleNumber;
     int sectionNumber;
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -39,6 +42,24 @@ public class SectionDetailsFragment extends Fragment {
 
     Context context;
 
+    public static SectionDetailsFragment newInstance(int sectionNumber) {
+
+        Bundle bundle = new Bundle();
+
+        bundle.putInt("section_number", sectionNumber);
+
+        SectionDetailsFragment sectionDetailsFragment = new SectionDetailsFragment();
+
+        sectionDetailsFragment.setArguments(bundle);
+
+        return sectionDetailsFragment;
+
+    }
+
+    private void readBundle(Bundle bundle) {
+
+        int sectionNumber = bundle.getInt("section_number");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,38 +70,70 @@ public class SectionDetailsFragment extends Fragment {
 
     }
 
-    private void createLayout(View view) {
 
-        GridLayout parent = view.findViewById(R.id.parent_grid_section_details);
-        modules = SurveyDataSingleton.getInstance(context).getSurveyData();
-        Module module = modules.get(moduleNumber);
-        SubModule subModule = module.getSections().get(sectionNumber);
-        ArrayList<Question> questions = subModule.getQuestions();
+    private boolean ifEmptyFields() {
 
 
-        for (int i = 0; i < subModule.getNumberOfQuestions(); i++) {
-
-            Question question = questions.get(i);
-
-            TextView questionBox = new TextView(context);
-            parent.addView(questionBox);
-
-            LinearLayout answerBox = new LinearLayout(context);
-            parent.addView(answerBox);
+        return false;
+    }
 
 
-            createAnswerOptionsLayout(question, answerBox);
+    public void createLayout(int moduleNumber, int sectionNumber) {
 
 
-            setDesignParams();
+        if (ifEmptyFields()) {
+
+            showDialog();
+        } else {
+
+
+            modules = SurveyDataSingleton.getInstance(context).getSurveyData();
+            Module module = modules.get(moduleNumber);
+            SubModule subModule = module.getSections().get(sectionNumber);
+            ArrayList<Question> questions = subModule.getQuestions();
+            SurveyAdapter adapter = new SurveyAdapter(context, questions, moduleNumber, sectionNumber);
+            parent.setAdapter(adapter);
 
         }
+    }
+
+    private void showDialog(){
 
 
     }
 
 
-    private void createAnswerOptionsLayout(Question question, LinearLayout answerBox) {
+    public interface OnNextClickListener{
+
+        void onNextClick(int moduleNumber, int sectionNumber);
+    }
+
+    OnNextClickListener mListener;
+
+    private void onNextClick(){
+
+        if(ifEmptyFields()){
+
+        }
+        else{
+
+
+            mListener.onNextClick(moduleNumber, sectionNumber);
+
+
+
+
+        }
+
+    }
+
+    public void setOnNextClickListener(OnNextClickListener mListener){
+        this.mListener = mListener;
+    }
+
+
+
+    /*private void createAnswerOptionsLayout(Question question, LinearLayout answerBox) {
         int answerType = question.getOptions().getAnswerType();
         switch (answerType) {
             case AnswerOptions.OPTION_YESNO: {
@@ -124,12 +177,24 @@ public class SectionDetailsFragment extends Fragment {
 
 
     }
+*/
 
+
+   /* private int getModuleNumber(){}
+
+    private int getSectionNumber(){}*/
+
+
+    RecyclerView parent;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        createLayout(view);
+
+
+        parent = view.findViewById(R.id.parent_list_section_details);
+        createLayout(0, 0);
+
 
     }
 
