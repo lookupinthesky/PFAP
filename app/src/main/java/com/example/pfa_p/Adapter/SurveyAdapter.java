@@ -15,7 +15,7 @@ import com.example.pfa_p.R;
 
 import java.util.List;
 
-public class SurveyAdapter extends RecyclerView.Adapter<> {
+public class SurveyAdapter extends RecyclerView.Adapter<SurveyAdapter.SurveyViewHolder> {
 
 
     List<Question> questions;
@@ -23,7 +23,9 @@ public class SurveyAdapter extends RecyclerView.Adapter<> {
     int sectionIndex;
 
     public SurveyAdapter(Context context, List<Question> objects, int moduleIndex, int sectionIndex) {
-        super(context, 0, objects);
+
+        //TODO: call to super????????????
+        super();
         this.questions = objects;
         this.moduleIndex = moduleIndex;
         this.sectionIndex = sectionIndex;
@@ -31,20 +33,26 @@ public class SurveyAdapter extends RecyclerView.Adapter<> {
 
     }
 
-
-    public static abstract class SurveyViewHolder{
-
-
-    }
-
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+    public SurveyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        switch(viewType){
+            case R.layout.list_item_edittext:  {}
+            case R.layout.list_item_2_options: {}
+            case R.layout.list_item_3_options: {}
+            case R.layout.list_item_4_options: {}
+            case R.layout.list_item_5_options: {}
+            case R.layout.list_item_6_options: {}
+            case R.layout.list_item_7_options: {}
+            case R.layout.list_item_8_options: {}
+            case R.layout.list_header: {}
+
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SurveyViewHolder holder, int position) {
 
     }
 
@@ -52,6 +60,74 @@ public class SurveyAdapter extends RecyclerView.Adapter<> {
     public int getItemCount() {
         return 0;
     }
+
+
+    public static abstract class SurveyViewHolder extends RecyclerView.ViewHolder {
+
+
+        public SurveyViewHolder(@NonNull View parent, int type) {
+            super(parent);
+
+        }
+
+        abstract void bind(Question question) ;
+
+
+    }
+
+    public class ListViewHolder extends SurveyViewHolder{
+
+        public ListViewHolder(@NonNull View parent, int type) {
+            super(parent, type);
+        }
+
+        @Override
+        void bind(Question question) {
+
+        }
+
+    }
+
+    public class HeaderViewHolder extends SurveyViewHolder{
+
+        public HeaderViewHolder(@NonNull View parent, int type) {
+            super(parent, type);
+        }
+
+        @Override
+        void bind(Question question) {
+
+        }
+    }
+
+
+    public int getItemViewType(int position){
+
+        // for questions
+        switch(questions.get(position).getOptions().getNumberOfOptions()){
+
+            case 0:
+                return R.layout.list_item_edittext;
+            case 2:
+                return R.layout.list_item_2_options;
+            case 3:
+                return R.layout.list_item_3_options;
+            case 4:
+                return R.layout.list_item_4_options;
+            case 5:
+                return R.layout.list_item_5_options;
+            case 6:
+                return R.layout.list_item_6_options;
+            case 7:
+                return R.layout.list_item_7_options;
+            case 8:
+                return R.layout.list_item_8_options;
+            default:
+                return R.layout.list_item_edittext;
+        }
+
+    }
+
 
 
 /*    @Override

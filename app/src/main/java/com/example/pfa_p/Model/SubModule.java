@@ -4,6 +4,7 @@ import android.content.res.Resources;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SubModule {
 
@@ -12,7 +13,7 @@ public class SubModule {
     private int numberOfDomains;
     private  String[] domains;
     private  int numberOfQuestions;
-    private   ArrayList<Question> questions;
+    private List<Question> questions;
 
     public String getName() {
         return name;
@@ -54,7 +55,7 @@ public class SubModule {
         this.numberOfQuestions = numberOfQuestions;
     }
 
-    public ArrayList<Question> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 

@@ -4,6 +4,7 @@ import android.content.res.Resources;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class AnswerOptions {
@@ -38,7 +39,7 @@ public class AnswerOptions {
     public AnswerOptions(String answerType, int numberOfOptions, String... options) {
     }
 
-    private ArrayList<String> options;
+    private List<String> options;
     private int answerType;
 
     public int getAnswerType() {

@@ -29,15 +29,15 @@ public class JSONHelper {
     }
 
 
-    private ArrayList<Module> modules;
-    private ArrayList<Question> questions;
+    private List<Module> modules;
+    private List<Question> questions;
 
 
-    public ArrayList<Module> getModules() {
+    public List<Module> getModules() {
         return modules;
     }
 
-    public ArrayList<Question> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 
@@ -106,7 +106,6 @@ public class JSONHelper {
                     Log.d("tag", "Duplicate Question");
                     throw new IllegalArgumentException();
                 }
-
 
             }
 

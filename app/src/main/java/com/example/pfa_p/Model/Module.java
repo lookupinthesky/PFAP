@@ -1,12 +1,13 @@
 package com.example.pfa_p.Model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Module {
 
     private String name;
     private int numberOfSections;
-    private ArrayList<SubModule> sections;
+    private List<SubModule> sections;
 
     public Module(String moduleName) {
         this.name = moduleName;
@@ -28,7 +29,7 @@ public class Module {
         this.numberOfSections = numberOfSections;
     }
 
-    public ArrayList<SubModule> getSections() {
+    public List<SubModule> getSections() {
         return sections;
     }
 
