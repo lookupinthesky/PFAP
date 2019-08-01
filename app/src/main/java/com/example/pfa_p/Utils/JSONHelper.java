@@ -17,7 +17,7 @@ import java.util.List;
 
 public class JSONHelper {
 
-    public JSONHelper(String jsonString){
+    public JSONHelper(String jsonString) {
 
         try {
             parseData(jsonString);
@@ -27,7 +27,6 @@ public class JSONHelper {
         }
 
     }
-
 
 
     private ArrayList<Module> modules;
@@ -61,13 +60,19 @@ public class JSONHelper {
 
         for (int i = 0; i < data.length(); i++) {
             eachObject = data.getJSONObject(i);
-            if (moduleName.equals("") || !moduleName.equals(eachObject.getString("module_name"))) {
+         // String  moduleNameNew = eachObject.getString("module_name");
+            if ((moduleName.equals("") && i == 0) || !moduleName.equals(eachObject.getString("module_name"))) {
 
-                if (!moduleName.equals(eachObject.getString("module_name"))) {
+                if (!subModuleName.equals("")) {
                     module.setSections(subModules);
                     module.setNumberOfSections(eachObject.getInt("number_of_sections"));
                     modules.add(module);
-                }
+                    subModules = new ArrayList<>();
+                } /*else if (subModuleName.equals(""))||){
+
+                    Log.d("tag", "dne");
+                }*/
+
 
                 moduleName = eachObject.getString("module_name");
                 module = new Module(moduleName);
@@ -75,27 +80,43 @@ public class JSONHelper {
 
             }
 
+            //TODO: empty database or null values cases to be added
+
             if (moduleName.equals(eachObject.getString("module_name"))) {
                 if (subModuleName.equals("") || !subModuleName.equals(eachObject.getString("section_name"))) {
-                    if (!subModuleName.equals(eachObject.getString("section_name"))) {
+                    if (!question.getQuestionName().equals("")) {
                         subModule.setQuestions(questionsSectionWise);
                         subModules.add(subModule);
                         questionsSectionWise = new ArrayList<>();
-                    }
+                    } /*else if (!subModuleName.equals(eachObject.getString("section_name"))) {
+                        Log.d(TAG, "Empty or Duplicate Question");
+                    }*/
+                    /*else{
+                        throw new IllegalArgumentException("Data Incomplete");
+                    }*/
                     subModuleName = eachObject.getString(("section_name"));
                     subModule = new SubModule(subModuleName, eachObject.getBoolean("section_has_domains"),
                             eachObject.getInt("number_of_domains"));
                 }
+                if (!question.getQuestionName().equals(parseQuestion(eachObject).getQuestionName())) {
+                    questions.add(question);
+                    questionsSectionWise.add(question);
+                }
+                else{
+                    Log.d("tag", "Duplicate Question");
+                    throw new IllegalArgumentException();
+                }
+
+
             }
 
-            question = parseQuestion(eachObject);
-            questions.add(question);
-            questionsSectionWise.add(question);
         }
     }
 
 
     private Question parseQuestion(JSONObject object) throws JSONException {
+
+        //TODO:add null case
 
         Question question = new Question(object.getString("question_name"));
 
