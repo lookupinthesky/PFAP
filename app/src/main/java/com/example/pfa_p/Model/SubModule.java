@@ -20,6 +20,8 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     private int numberOfQuestions;
 
+    private long sectionIdInDb;
+
     private List<Question> questions;
 
     public String getName() {
@@ -56,6 +58,10 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     }
 
+    public long getId(){
+        return sectionIdInDb ;
+    }
+
     public int getNumberOfQuestions() {
         return numberOfQuestions;
     }
@@ -74,8 +80,6 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     public SubModule() {
     }
-
-    ;
 
     public SubModule(String name, boolean hasDomains, int numberOfDomains) {
 

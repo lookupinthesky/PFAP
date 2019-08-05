@@ -1,14 +1,37 @@
 package com.example.pfa_p.Model;
 
+import android.content.ContentValues;
+
+import com.example.pfa_p.Database.SurveyContract;
+
 public class Question extends RightPane{
 
     private String questionName;
     private AnswerOptions options;
+    private SubModule subModule;
+    private Domain domain;
     private String subModuleName;
     private String domainName;
     private int serialNumber;
-
+    private String answer;
+    private String questionIdInDb ;
     private int viewType;
+
+    public SubModule getSubModule() {
+        return subModule;
+    }
+
+    public void setSubModule(SubModule subModule) {
+        this.subModule = subModule;
+    }
+
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+    }
 
     public Question(String questionName) {
         this.questionName = questionName;
@@ -54,5 +77,42 @@ public class Question extends RightPane{
         this.serialNumber = serialNumber;
     }
 
+    public void setAnswer(String response){
+        this.answer = response;
+    }
+
+    public String getAnswer(){
+        return answer;
+    }
+
+    public ContentValues getQuestionContentValues(){
+
+        ContentValues questionValues = new ContentValues();
+
+        questionValues.put(SurveyContract.SurveyEntry.QUESTIONS_COLUMN_NAME, questionName);
+        questionValues.put(SurveyContract.SurveyEntry.QUESTIONS_COLUMN_SURVEY_ID, surveyID);
+        questionValues.put(SurveyContract.SurveyEntry.QUESTIONS_COLUMN_SECTION_ID, getSubModule().getId());
+        questionValues.put(SurveyContract.SurveyEntry.QUESTIONS_COLUMN_DOMAIN_ID, getDomain().getId());
+        questionValues.put(SurveyContract.SurveyEntry.QUESTIONS_COLUMN_TYPE, getOptions().getAnswerType());
+        questionValues.put(SurveyContract.SurveyEntry.QUESTIONS_COLUMN_FLAG, "dirty");
+
+        return questionValues;
+    }
+
+    public ContentValues getAnswerContentValues(boolean isAssessment) {
+        ContentValues answerValues = new ContentValues();
+        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID, questionIdInDb);
+        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_USER_ID, getUserId());
+        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_RESPONSE, getAnswer());
+        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_SURVEY_ID, getSurveyId());
+        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_FLAG, "dirty");
+        if(isAssessment){
+            answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER, getVisitNumber());
+        }
+
+        return answerValues ;
+
+
+    }
 
 }

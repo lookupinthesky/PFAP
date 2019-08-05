@@ -85,6 +85,7 @@ public class JSONHelper {
                     if (!question.getQuestionName().equals("")) {
                         subModule.setQuestions(questionsSectionWise);
                         subModule.setDomains(domainsArray);
+                        //TODO: 1. add submodule to questions 2. add domain to questions
                         subModules.add(subModule);
                         questionsSectionWise = new ArrayList<>();
                         domainsArray = new ArrayList<>();

@@ -29,9 +29,14 @@ public class Domain extends LeftPane {
     }
 
     public int getDespondancy() {
+        return 0;
+    }
 
+    public long getId() {
+        return domainIdInDb;
     }
 
     String name;
     List<Question> questions;
+    long domainIdInDb;
 }
