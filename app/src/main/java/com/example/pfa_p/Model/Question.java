@@ -1,12 +1,13 @@
 package com.example.pfa_p.Model;
 
-public class Question {
+public class Question extends RightPane{
 
     private String questionName;
     private AnswerOptions options;
     private String subModuleName;
     private String domainName;
     private int serialNumber;
+
     private int viewType;
 
     public Question(String questionName) {
@@ -53,12 +54,5 @@ public class Question {
         this.serialNumber = serialNumber;
     }
 
-   /* public Question(int stringResourceId, AnswerOptions options, SubModule section) {
 
-        Resources res = getResources();
-        questionName = res.getString(stringResourceId);
-        options = options;
-        section = section;
-
-    }*/
 }

@@ -36,7 +36,15 @@ public class AnswerOptions {
 
     }
 
-    public AnswerOptions(String answerType, int numberOfOptions, String... options) {
+    public AnswerOptions(String answerType, int numberOfOptions, String... options1) {
+
+        this.options = new ArrayList<>();
+      //  this.answerType = answerType;
+        options = Arrays.asList(options1);
+    }
+
+    public List<String> getOptions() {
+        return options;
     }
 
     private List<String> options;

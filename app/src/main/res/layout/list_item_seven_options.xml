@@ -1,0 +1,99 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/question_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="NAME" />
+
+        <com.example.pfa_p.Utils.RadioGridGroup
+            android:id="@+id/options_radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-4dp"
+
+            android:layout_marginLeft="-4dp"
+            android:columnCount="4"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/option_one"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:text="0" />
+
+            <RadioButton
+                android:id="@+id/option_two"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:text="1" />
+
+            <RadioButton
+                android:id="@+id/option_three"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:text="2" />
+
+            <RadioButton
+                android:id="@+id/option_four"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:text="5" />
+
+            <RadioButton
+                android:id="@+id/option_five"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:text="5" />
+
+            <RadioButton
+                android:id="@+id/option_six"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:text="7" />
+
+            <RadioButton
+                android:id="@+id/option_seven"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:text="7" />
+        </com.example.pfa_p.Utils.RadioGridGroup>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
+

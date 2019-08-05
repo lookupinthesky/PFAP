@@ -5,19 +5,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pfa_p.Adapter.SurveyAdapter;
-import com.example.pfa_p.Model.AnswerOptions;
+import com.example.pfa_p.Adapter.QuestionsAdapter;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
 import com.example.pfa_p.Model.SubModule;
@@ -25,6 +20,7 @@ import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SectionDetailsFragment extends Fragment {
 
@@ -90,8 +86,10 @@ public class SectionDetailsFragment extends Fragment {
             modules = SurveyDataSingleton.getInstance(context).getSurveyData();
             Module module = modules.get(moduleNumber);
             SubModule subModule = module.getSections().get(sectionNumber);
-            ArrayList<Question> questions = subModule.getQuestions();
-            SurveyAdapter adapter = new SurveyAdapter(context, questions, moduleNumber, sectionNumber);
+            List<Question> questions = subModule.getQuestions();
+            QuestionsAdapter adapter = new QuestionsAdapter(context, questions, moduleNumber, sectionNumber);
+            RecyclerView.LayoutManager mLayoutmanager = new LinearLayoutManager(context);
+
             parent.setAdapter(adapter);
 
         }

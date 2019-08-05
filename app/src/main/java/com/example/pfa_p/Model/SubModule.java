@@ -2,17 +2,24 @@ package com.example.pfa_p.Model;
 
 import android.content.res.Resources;
 
+import com.example.pfa_p.Utils.RatingSystem;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubModule {
+public class SubModule extends LeftPane implements RatingSystem {
 
     private String name;
-    private  boolean hasDomains;
+
+    private boolean hasDomains;
+
     private int numberOfDomains;
-    private  String[] domains;
-    private  int numberOfQuestions;
+
+    private List<Domain> domains;
+
+    private int numberOfQuestions;
+
     private List<Question> questions;
 
     public String getName() {
@@ -39,12 +46,14 @@ public class SubModule {
         this.numberOfDomains = numberOfDomains;
     }
 
-    public String[] getDomains() {
+    public List<Domain> getDomains() {
         return domains;
     }
 
-    public void setDomains(String[] domains) {
+    public void setDomains(List<Domain> domains) {
+
         this.domains = domains;
+
     }
 
     public int getNumberOfQuestions() {
@@ -63,19 +72,80 @@ public class SubModule {
         this.questions = questions;
     }
 
-    public SubModule(){};
+    public SubModule() {
+    }
 
-    public SubModule(String name, boolean hasDomains, int numberOfDomains){
+    ;
+
+    public SubModule(String name, boolean hasDomains, int numberOfDomains) {
 
         this.name = name;
-        createDomainsArray(hasDomains, numberOfDomains);
+        //createDomainsArray(hasDomains, numberOfDomains);
 
     }
 
+    @Override
+    public float getMeanScore() {
+        {
 
+            //     List<Question> questionsListSectionWise = submodule.getQuestions();
+
+            int rating = 0;
+
+            for (int i = 0; i < getQuestions().size(); i++) {
+
+                Question question = getQuestions().get(i);
+
+                rating += question.getDomain().getRating(question.getAnswerIndex());
+            }
+
+            return (float) rating / (getNumberOfDomains());
+
+        }
+    }
+
+    public String getResults(float meanSectionScore) {
+
+        switch (getName()) {
+
+            case "Questionnaire A": {
+               getResultForSectionWiseLimits(5,10,15,meanSectionScore);
+            }
+            case "Questionnaire B": {
+                getResultForSectionWiseLimits(5,10,13, meanSectionScore);
+            }
+            case "Questionnaire C": {
+                getResultForSectionWiseLimits(0,3,6, meanSectionScore);
+            }
+            case "Questionnaire D": {
+
+                if(meanSectionScore>1){
+                    return RatingSystem.RESULT_NEED_REFERRAL;
+                }
+            }
+            case "Questionnaire E":{
+                
+            }
+        }
+
+
+    }
+
+    public String getResultForSectionWiseLimits(int firstLimit, int secondLimit, int thirdLimit, float meanSectionScore){
+        if (meanSectionScore > 0 && meanSectionScore <= firstLimit) {
+            return RatingSystem.RESULT_NO_INTERVENTION_REQUIRED;
+        } else if (meanSectionScore > firstLimit && meanSectionScore <= secondLimit) {
+            return RatingSystem.RESULT_INTERVENTION_REQUIRED;
+        } else if (meanSectionScore > secondLimit && meanSectionScore <= thirdLimit) {
+            return RatingSystem.RESULT_INTERVETION_REQUIRED_WITH_FOLLOW_UP;
+        } else {
+            return RatingSystem.RESULT_NEED_REFERRAL;
+        }
+
+    }
 
     // this is redundant
-    private void createDomainsArray(boolean has_domains, int number_of_domains){
+   /* private void createDomainsArray(boolean has_domains, int number_of_domains){
 
         if(has_domains){
             hasDomains = has_domains;
@@ -90,7 +160,7 @@ public class SubModule {
         if(num<numberOfDomains){
             domains[num] = name;
         }
-    }
+    }*/
 
   /*  public void setDomainNames(int stringArrayResource){
         Resources res = getResources();
@@ -98,10 +168,6 @@ public class SubModule {
     }*/
 
     //getters and setters
-
-
-
-
 
 
 }
