@@ -16,9 +16,19 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     private int numberOfDomains;
 
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     private List<Domain> domains;
 
     private int numberOfQuestions;
+
+    private int index;
 
     private long sectionIdInDb;
 
@@ -58,8 +68,8 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     }
 
-    public long getId(){
-        return sectionIdInDb ;
+    public long getId() {
+        return sectionIdInDb;
     }
 
     public int getNumberOfQuestions() {
@@ -90,53 +100,46 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     @Override
     public float getMeanScore() {
-        {
 
-            //     List<Question> questionsListSectionWise = submodule.getQuestions();
 
-            int rating = 0;
+        //     List<Question> questionsListSectionWise = submodule.getQuestions();
+
+        int rating = 0;
+        if (getModule().getIndex() > 0) {
+
 
             for (int i = 0; i < getQuestions().size(); i++) {
 
                 Question question = getQuestions().get(i);
 
-                rating += question.getDomain().getRating(question.getAnswerIndex());
+                rating += question.getDomain().getRatingForResponse(question.getAnswerIndex());
             }
-
+        }
             return (float) rating / (getNumberOfDomains());
 
-        }
-    }
 
-    public String getResults(float meanSectionScore) {
-
-        switch (getName()) {
-
-            case "Questionnaire A": {
-               getResultForSectionWiseLimits(5,10,15,meanSectionScore);
-            }
-            case "Questionnaire B": {
-                getResultForSectionWiseLimits(5,10,13, meanSectionScore);
-            }
-            case "Questionnaire C": {
-                getResultForSectionWiseLimits(0,3,6, meanSectionScore);
-            }
-            case "Questionnaire D": {
-
-                if(meanSectionScore>1){
-                    return RatingSystem.RESULT_NEED_REFERRAL;
-                }
-            }
-            case "Questionnaire E":{
-                
-            }
         }
 
 
+    private Module module;
+
+    public void setModule(Module module) {
+
+        this.module = module;
     }
 
-    public String getResultForSectionWiseLimits(int firstLimit, int secondLimit, int thirdLimit, float meanSectionScore){
+    public Module getModule() {
+        return module;
+    }
+
+
+
+
+    public String getResultForSectionWiseLimits(int firstLimit, int secondLimit, int thirdLimit, float meanSectionScore) {
+
+
         if (meanSectionScore > 0 && meanSectionScore <= firstLimit) {
+
             return RatingSystem.RESULT_NO_INTERVENTION_REQUIRED;
         } else if (meanSectionScore > firstLimit && meanSectionScore <= secondLimit) {
             return RatingSystem.RESULT_INTERVENTION_REQUIRED;

@@ -10,13 +10,14 @@ import com.example.pfa_p.Utils.JSONHelper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class SurveyDataSingleton {
 
     private static volatile SurveyDataSingleton sInstance;
-    private ArrayList<Module> modules;
-    private ArrayList<Question> questions;
+    private List<Module> modules;
+    private List<Question> questions;
     private Context mContext;
 
     //private constructor.
@@ -31,11 +32,11 @@ public class SurveyDataSingleton {
         this.mContext = mContext;
     }
 
-    public ArrayList<Module> getModules() {
+    public List<Module> getModules() {
         return modules;
     }
 
-    public ArrayList<Question> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 
@@ -58,6 +59,18 @@ public class SurveyDataSingleton {
         modules = helper.getModules();
         questions = helper.getQuestions();
     }
+
+   /* public String getUserId(){
+
+        return "Dummy_Id";
+    }
+
+    public int getSurveyId(){
+
+        return 0;
+    }
+
+    public */
 
 
 
@@ -254,7 +267,7 @@ public class SurveyDataSingleton {
         this.modules = modulesNew;
     }*/
 
-    public ArrayList<Module> getSurveyData() {
+    public List<Module> getSurveyData() {
         return this.modules;
     }
 

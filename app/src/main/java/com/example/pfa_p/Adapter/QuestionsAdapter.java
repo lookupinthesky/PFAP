@@ -76,6 +76,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+                    question.setAnswer(charSequence.toString(), moduleIndex == 1);
+
                 }
 
                 @Override
@@ -86,7 +88,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         }
     }
 
-    class TwoOptionsViewHolder extends SurveyViewHolder {
+    class TwoOptionsViewHolder extends SurveyViewHolder implements RadioGridGroup.OnCheckedChangeListener {
 
         @BindView(R.id.option_one)
         RadioButton optionOne;
@@ -99,19 +101,31 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             super(parent);
         }
 
+        Question question;
+
         @Override
         void bind(Question question) {
+            this.question = question;
             questionText.setText(question.getQuestionName());
             optionOne.setText(question.getOptions().getOptions().get(0));
             optionTwo.setText(question.getOptions().getOptions().get(1));
-            options.setOnCheckedChangeListener(new RadioGridGroup.OnCheckedChangeListener() {
+            options.setOnCheckedChangeListener(this);
+            /*options.setOnCheckedChangeListener(new RadioGridGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGridGroup group, int checkedId) {
                     RadioButton button = group.findViewById(checkedId);
                     int index = group.indexOfChild(button);
                     question.setAnswer(index);
                 }
-            });
+            });*/
+        }
+
+        @Override
+        public void onCheckedChanged(RadioGridGroup group, int checkedId) {
+            RadioButton button = group.findViewById(checkedId);
+            int index = group.indexOfChild(button);
+           // boolean isAssessment = question.getSubModule().getModule();
+            question.setAnswer(button.getText().toString(), moduleIndex==1);
         }
     }
 
@@ -268,7 +282,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     @Override
     public void onBindViewHolder(@NonNull SurveyViewHolder holder, int position) {
 
-        holder.bind();
+        holder.bind((Question) rightPaneList.get(position));
     }
 
     @Override

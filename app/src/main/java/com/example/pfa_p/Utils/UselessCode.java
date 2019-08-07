@@ -152,5 +152,32 @@ public class UselessCode {
     }
 
 }*/
+
+
+
+/*
+        if (meanSectionScore > 0 && meanSectionScore <= firstLimit) {
+            returnString =  RatingSystem.RESULT_NO_INTERVENTION_REQUIRED;
+            if("questionnaire E"){
+                returnString = RatingSystem.RESULT_NORMAL;
+            }
+        } else if (meanSectionScore > firstLimit && meanSectionScore <= secondLimit) {
+            returnString =  RatingSystem.RESULT_INTERVENTION_REQUIRED;
+            if("questionnaire E"){
+                returnString = RatingSystem.RESULT_PERSONALITY_SLIGHTLY_ANTISOCIAL;
+            }
+        } else if (meanSectionScore > secondLimit && meanSectionScore <= thirdLimit) {
+            returnString =  RatingSystem.RESULT_INTERVETION_REQUIRED_WITH_FOLLOW_UP;
+            if("questionnaire E"){
+                returnString = RatingSystem.RESULT_PERSONALITY_PROMINENT_ANTISOCIAL;
+            }
+        } else {
+            returnString =  RatingSystem.RESULT_NEED_REFERRAL;
+        }*/
+
+
+
+
+
     }
 }

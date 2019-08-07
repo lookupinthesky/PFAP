@@ -13,6 +13,7 @@ import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SurveyActivity extends AppCompatActivity implements SectionsListFragment.OnListItemClickListener, SectionDetailsFragment.OnNextClickListener {
 
@@ -20,7 +21,7 @@ public class SurveyActivity extends AppCompatActivity implements SectionsListFra
     SectionDetailsFragment sectionDetailsFragment;
     SectionsListFragment sectionsListFragment;
     SurveyDataSingleton surveyData;
-    ArrayList<Module> modules;
+    List<Module> modules;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +42,6 @@ public class SurveyActivity extends AppCompatActivity implements SectionsListFra
     public void onListItemClick(int moduleNumber, int sectionNumber) {
 
         if(sectionNumber<modules.get(moduleNumber).getNumberOfSections()){
-
 
         sectionDetailsFragment.createLayout(moduleNumber, sectionNumber);}
 

@@ -57,7 +57,7 @@ public class JSONHelper {
         String domainName = "null";
 
         Domain domain = new Domain("");
-        List<Question>questionsDomainWise = new ArrayList<>();
+        List<Question> questionsDomainWise = new ArrayList<>();
         List<Domain> domainsArray = new ArrayList<>();
 
         JSONArray data = new JSONArray(jsonString);
@@ -85,6 +85,7 @@ public class JSONHelper {
                     if (!question.getQuestionName().equals("")) {
                         subModule.setQuestions(questionsSectionWise);
                         subModule.setDomains(domainsArray);
+                        subModule.setModule(module);
                         //TODO: 1. add submodule to questions 2. add domain to questions
                         subModules.add(subModule);
                         questionsSectionWise = new ArrayList<>();
@@ -94,19 +95,20 @@ public class JSONHelper {
                     subModule = new SubModule(subModuleName, eachObject.getBoolean("section_has_domains"),
                             eachObject.getInt("number_of_domains"));
                 }
-                if(subModuleName.equals(eachObject.getString("section_name"))){
+                if (subModuleName.equals(eachObject.getString("section_name"))) {
 
-                    if(eachObject.getBoolean("section_has_domains")){
+                    if (eachObject.getBoolean("section_has_domains")) {
 
-                    if((!domainName.equals(eachObject.getString("domain_name")))  && !domainName.equals("null")){
-                        domain.setQuestions(questionsDomainWise);
-                        domainsArray.add(domain);
+                        if ((!domainName.equals(eachObject.getString("domain_name"))) && !domainName.equals("null")) {
+                            domain.setQuestions(questionsDomainWise);
+                            domain.setSubModule(subModule);
+                            domainsArray.add(domain);
+                        }
+                        domainName = eachObject.getString("domain_name");
+                        domain = new Domain(domainName);
                     }
-                    domainName = eachObject.getString("domain_name");
-                    domain = new Domain(domainName);
                 }
-                }
-                if (!question.getQuestionName().equals(parseQuestion(eachObject).getQuestionName())) {
+                if (!question.getQuestionName().equals(parseQuestion(eachObject, subModule, domain).getQuestionName())) {
                     questions.add(question);
                     questionsSectionWise.add(question);
                     questionsDomainWise.add(question);
@@ -115,16 +117,14 @@ public class JSONHelper {
                     throw new IllegalArgumentException();
                 }
 
-                }
-
             }
 
         }
 
+    }
 
 
-
-    private Question parseQuestion(JSONObject object) throws JSONException {
+    private Question parseQuestion(JSONObject object, SubModule subModule, Domain domain) throws JSONException {
 
         //TODO:add null case
 
@@ -142,9 +142,14 @@ public class JSONHelper {
                 object.getString("option8")
         );
         question.setOptions(options);
-        question.setSubModuleName(object.getString("section_name"));
+        question.setSubModule(subModule);
         question.setSerialNumber(object.getInt("serial_number"));
-        question.setDomainName(object.getString("domain_name"));
+        if(!domain.getName().equals("null")){
+            question.setDomain(domain);
+        } //TODO: need a better solution than "null" string for no domain.
+
+
+       // question.setDomainName(object.getString("domain_name"));
 
         return question;
     }
