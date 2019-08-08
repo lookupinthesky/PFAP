@@ -8,14 +8,14 @@
     tools:context=".Activities.MainActivity"
     android:orientation="horizontal">
 
-       <fragment
-           android:id="@+id/fragment_sections_list"
+       <FrameLayout
+           android:id="@+id/fragment_sections_list_parent"
            android:layout_width="0dp"
            android:layout_height="match_parent"
            android:layout_weight="4" />
 
-       <fragment
-           android:id="@+id/fragment_section_details"
+       <FrameLayout
+           android:id="@+id/fragment_section_details_parent"
            android:layout_width="0dp"
            android:layout_height="match_parent"
            android:layout_weight="9" />

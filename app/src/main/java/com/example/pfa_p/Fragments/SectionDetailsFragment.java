@@ -25,7 +25,7 @@ import java.util.List;
 public class SectionDetailsFragment extends Fragment {
 
 
-    ArrayList<Module> modules;
+    List<Module> modules;
     private int moduleNumber;
     int sectionNumber;
 
@@ -39,21 +39,14 @@ public class SectionDetailsFragment extends Fragment {
     Context context;
 
     public static SectionDetailsFragment newInstance(int sectionNumber) {
-
         Bundle bundle = new Bundle();
-
         bundle.putInt("section_number", sectionNumber);
-
         SectionDetailsFragment sectionDetailsFragment = new SectionDetailsFragment();
-
         sectionDetailsFragment.setArguments(bundle);
-
         return sectionDetailsFragment;
-
     }
 
     private void readBundle(Bundle bundle) {
-
         int sectionNumber = bundle.getInt("section_number");
     }
 
@@ -62,27 +55,18 @@ public class SectionDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.master_section_details, container, false);
-
-
     }
 
 
     private boolean ifEmptyFields() {
-
-
         return false;
     }
 
 
     public void createLayout(int moduleNumber, int sectionNumber) {
-
-
         if (ifEmptyFields()) {
-
             showDialog();
         } else {
-
-
             modules = SurveyDataSingleton.getInstance(context).getSurveyData();
             Module module = modules.get(moduleNumber);
             SubModule subModule = module.getSections().get(sectionNumber);

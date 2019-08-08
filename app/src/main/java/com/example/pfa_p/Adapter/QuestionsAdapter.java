@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.SurveyViewHolder> {
 
@@ -62,10 +63,11 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         EditableItemViewHolder(@NonNull View parent) {
             super(parent);
+            ButterKnife.bind(this,parent);
         }
 
         @Override
-        void bind(Question question) {
+        void bind(final Question question) {
             questionText.setText(question.getQuestionName());
             editText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -99,6 +101,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         TwoOptionsViewHolder(@NonNull View parent) {
             super(parent);
+            ButterKnife.bind(this,parent);
         }
 
         Question question;
@@ -135,6 +138,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         ThreeOptionsViewHolder(@NonNull View parent) {
             super(parent);
+            ButterKnife.bind(this,parent);
         }
 
         @Override
@@ -150,6 +154,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         FourOptionsViewHolder(@NonNull View parent) {
             super(parent);
+            ButterKnife.bind(this,parent);
         }
 
         @Override
@@ -166,6 +171,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         FiveOptionsViewHolder(@NonNull View parent) {
             super(parent);
+            ButterKnife.bind(this,parent);
         }
 
         @Override
@@ -183,6 +189,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         SixOptionsViewHolder(@NonNull View parent) {
             super(parent);
+            ButterKnife.bind(this,parent);
         }
 
         @Override
@@ -199,6 +206,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         SevenOptionsViewHolder(@NonNull View parent) {
             super(parent);
+            ButterKnife.bind(this,parent);
         }
 
         @Override
@@ -215,6 +223,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         EightOptionsViewHolder(@NonNull View parent) {
             super(parent);
+            ButterKnife.bind(this,parent);
         }
 
         @Override

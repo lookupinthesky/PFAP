@@ -1,11 +1,17 @@
 package com.example.pfa_p;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 
+import com.example.pfa_p.Database.SurveyContract;
+import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
+import com.example.pfa_p.Fragments.UserEntryFragment;
 import com.example.pfa_p.Model.AnswerOptions;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
 import com.example.pfa_p.Model.SubModule;
+import com.example.pfa_p.Model.User;
 import com.example.pfa_p.Utils.JSONHelper;
 
 import java.io.InputStream;
@@ -17,8 +23,16 @@ public class SurveyDataSingleton {
 
     private static volatile SurveyDataSingleton sInstance;
     private List<Module> modules;
+
+    public List<User> getUsers() {
+        return users;
+    }
+
     private List<Question> questions;
+    List<User> users;
     private Context mContext;
+    String[] projection_users = new String[]{SurveyEntry.USERS_ID, SurveyEntry.USERS_COLUMN_INMATE_ID, SurveyEntry.USERS_COLUMN_NAME, SurveyEntry.USERS_COLUMN_FLAG};
+
 
     //private constructor.
     private SurveyDataSingleton(Context context) {
@@ -26,6 +40,7 @@ public class SurveyDataSingleton {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         } else
             createSurveyData(context);
+        getUsersDataFromDb(context);
     }
 
     public void setContext(Context mContext) {
@@ -59,6 +74,42 @@ public class SurveyDataSingleton {
         modules = helper.getModules();
         questions = helper.getQuestions();
     }
+
+    private void getUsersDataFromDb(Context context) {
+
+
+        Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
+
+        users = new ArrayList<>();
+        User user = new User();
+        try {
+            if (cursor.moveToFirst()) {
+
+                do {
+                    user.setPrisonerId(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_INMATE_ID)));
+                    user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
+                    user.set_id(cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID)));
+                    user.setSynced(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_FLAG)));
+                    users.add(user);
+                }
+                while (cursor.moveToNext());
+
+            } else {
+
+                user.setPrisonerId("");
+                user.setName("");
+                user.set_id(0);
+                user.setSynced("dirty");
+                users.add(user);
+            }
+        } finally {
+            cursor.close();
+        }
+
+
+    }
+
+
 
    /* public String getUserId(){
 

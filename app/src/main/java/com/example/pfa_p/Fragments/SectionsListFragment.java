@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Activities.MainActivity;
 import com.example.pfa_p.Activities.SurveyActivity;
@@ -22,6 +23,7 @@ import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 import com.example.pfa_p.SurveyDataSingleton;
@@ -29,26 +31,43 @@ import com.example.pfa_p.SurveyDataSingleton;
 public class SectionsListFragment extends Fragment {
 
     Context context;
-    ArrayList<Module> modules;
+  List<Module> modules;
     private int moduleNumber;
     private OnListItemClickListener mListener;
-    private GridLayout parent;
+    private RecyclerView parent;
 
     public static final String LOG_TAG = SurveyActivity.class.getName();
 
 
-    public SectionsListFragment(int moduleNumber) {
+   /* public SectionsListFragment(int moduleNumber) {
         this.moduleNumber = moduleNumber;
-    }
+    }*/
 
     public void setOnListItemClickListener(OnListItemClickListener mListener){
         this.mListener = mListener;
     }
-    public void createLayout(int moduleNumber){
+    public void createLayout(int moduleNumber){}
 
+    public static SectionsListFragment newInstance(int moduleNumber) {
 
+        Bundle bundle = new Bundle();
+
+        bundle.putInt("module_number", moduleNumber);
+
+        SectionsListFragment sectionsListFragment = new SectionsListFragment();
+
+        sectionsListFragment.setArguments(bundle);
+
+        return sectionsListFragment;
 
     }
+    private void readBundle(Bundle bundle) {
+
+        int module_number = bundle.getInt("module_number");
+    }
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

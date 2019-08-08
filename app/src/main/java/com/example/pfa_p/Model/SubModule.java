@@ -1,7 +1,9 @@
 package com.example.pfa_p.Model;
 
+import android.content.Context;
 import android.content.res.Resources;
 
+import com.example.pfa_p.SurveyDataSingleton;
 import com.example.pfa_p.Utils.RatingSystem;
 
 import java.lang.reflect.Array;
@@ -91,6 +93,11 @@ public class SubModule extends LeftPane implements RatingSystem {
     public SubModule() {
     }
 
+    public SubModule(String name){
+
+        this.name = name;
+    }
+
     public SubModule(String name, boolean hasDomains, int numberOfDomains) {
 
         this.name = name;
@@ -120,7 +127,6 @@ public class SubModule extends LeftPane implements RatingSystem {
 
         }
 
-
     private Module module;
 
     public void setModule(Module module) {
@@ -148,6 +154,25 @@ public class SubModule extends LeftPane implements RatingSystem {
         } else {
             return RatingSystem.RESULT_NEED_REFERRAL;
         }
+
+    }
+
+
+
+    public static SubModule getSubModule(Context context, String questionName){
+
+     List<Question> questions =   SurveyDataSingleton.getInstance(context).getQuestions();
+
+     SubModule subModule;
+
+     for(int i = 0; i<questions.size(); i++){
+
+         if(questions.get(i).getQuestionName().equals(questionName)){
+             return questions.get(i).getSubModule();
+         }
+     }
+
+     throw new IllegalArgumentException("Question value from Db doesn't match with Survey Value");
 
     }
 

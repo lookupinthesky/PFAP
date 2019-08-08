@@ -9,17 +9,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.SplashActivity"></activity>
-        <activity android:name=".Activities.SurveyActivity" />
-        <activity
-            android:name=".Activities.MainActivity"
-            android:screenOrientation="landscape">
+        <activity android:name=".Activities.BeforeSurveyActivity"
+
+            android:screenOrientation="landscape"></activity>
+        <activity android:name=".Activities.SplashActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activities.SurveyActivity"
+            android:screenOrientation="landscape"/>
+        <activity
+            android:name=".Activities.MainActivity"
+            android:screenOrientation="landscape"
+           />
+        
+        <provider
+            android:authorities="com.example.pfa_p.app"
+            android:name=".Database.SurveyProvider"/>
+
+
     </application>
 
 </manifest>

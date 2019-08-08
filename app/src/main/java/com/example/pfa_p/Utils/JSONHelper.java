@@ -14,7 +14,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class JSONHelper {
 
@@ -144,14 +146,141 @@ public class JSONHelper {
         question.setOptions(options);
         question.setSubModule(subModule);
         question.setSerialNumber(object.getInt("serial_number"));
-        if(!domain.getName().equals("null")){
+        if (!domain.getName().equals("null")) {
             question.setDomain(domain);
         } //TODO: need a better solution than "null" string for no domain.
 
 
-       // question.setDomainName(object.getString("domain_name"));
+        // question.setDomainName(object.getString("domain_name"));
 
         return question;
+    }
+
+    private List<Domain> domainSectionWise = new ArrayList<>();
+    private List<SubModule> sectionsModuleWise = new ArrayList<>();
+
+    private void createSurveyData(String jsonString) throws JSONException {
+
+        Question question = new Question("");
+        Module module = new Module("");
+        SubModule subModule = new SubModule();
+        JSONObject eachObject;
+        modules = new ArrayList<>();
+        ArrayList<SubModule> subModules = new ArrayList<>();
+        questions = new ArrayList<>();
+        ArrayList<Question> questionsSectionWise = new ArrayList<>();
+        String moduleName = "";
+        String subModuleName = "";
+        String domainName = "null";
+
+        Domain domain = new Domain("");
+        List<Question> questionsDomainWise = new ArrayList<>();
+        List<Domain> domainsArray = new ArrayList<>();
+
+        JSONArray data = new JSONArray(jsonString);
+        Module moduleTemp;
+
+
+        Set<Module> moduleSet = new HashSet<>();
+        Set<SubModule> subModuleSet = new HashSet<>();
+        Set<Question> questionSet = new HashSet<>();
+
+        for (int i = 0; i < data.length(); i++) {
+            eachObject = data.getJSONObject(i);
+            moduleName = eachObject.getString("module_name");
+            Module module1 = new Module(moduleName);
+            moduleSet.add(module1);
+        }
+
+        modules = new ArrayList<>(moduleSet);
+
+        for (int i = 0; i < data.length(); i++) {
+            eachObject = data.getJSONObject(i);
+            subModuleName = eachObject.getString("section_name");
+            SubModule subModule1 = new SubModule(subModuleName);
+            moduleName = eachObject.getString("module_name");
+            for(Module module5:modules){
+                if(module5.getName().equals(moduleName)){
+            }
+               subModule.setModule(module5);}
+            subModuleSet.add(subModule1);
+        }
+
+        subModules = new ArrayList<>(subModuleSet);
+
+
+
+        for (int i = 0; i < data.length(); i++) {
+
+            eachObject = data.getJSONObject(i);
+            domainName = eachObject.getString("domain_name");
+            Domain domain1 = new Domain(domainName);
+            //  domain1.setSubModule(subModule1);
+            domainsArray.add(domain1);
+        }
+        for (int i = 0; i < data.length(); i++) {
+
+            eachObject = data.getJSONObject(i);
+            Question question1 = new Question(eachObject.getString("question_name"));
+            domainName = eachObject.getString("domain_name");
+            for(Domain domain2: domainsArray){
+                if(domain2.getName().equals(domainName)){
+                    question1.setDomain(domain2);
+                }
+            }
+            subModuleName = eachObject.getString("section_name");
+            for(SubModule subModule2: subModules){
+                if (subModule2.getName().equals(subModuleName)){
+                    question1.setSubModule(subModule2);
+                }
+            }
+            moduleName = eachObject.getString("module_name");
+            for(Module module2: modules){
+                if(module2.getName().equals(moduleName)){
+                    question1.getSubModule().setModule(module2);
+                }
+            }
+            questions.add(question1);
+        }
+
+
+        for(Domain domain3: domainsArray) {
+            for (Question question2 : questions) {
+
+                if (question2.getDomain().getName().equals(domain3.getName())){
+                    questionsDomainWise.add(question2);
+                }
+            }
+            domain3.setQuestions(questionsDomainWise);
+            domain3.setSubModule(questionsDomainWise.get(0).getSubModule());
+        }
+        for(SubModule submodule3: subModules) {
+            for (Question question2 : questions) {
+                if (question2.getSubModule().getName().equals(submodule3.getName())){
+                    questionsSectionWise.add(question2);
+                }
+            }
+            submodule3.setQuestions(questionsSectionWise);
+
+            for(Domain domain4 : domainsArray){
+                if(domain4.getSubModule().getName().equals(submodule3.getName())){
+                    domainSectionWise.add(domain4);
+                }
+            }
+            submodule3.setDomains(domainSectionWise);
+        }
+
+        for(Module module3: modules){
+
+            for(SubModule subModule6: subModules){
+                if(subModule6.getModule().getName().equals(module3.getName())){
+                    sectionsModuleWise.add(subModule6);
+                }
+            }
+            module3.setSections(sectionsModuleWise);
+        }
+
+
     }
 
 

@@ -42,7 +42,7 @@ public class Module {
         return sections;
     }
 
-    public void setSections(ArrayList<SubModule> sections) {
+    public void setSections(List<SubModule> sections) {
         this.sections = sections;
     }
 }

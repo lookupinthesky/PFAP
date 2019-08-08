@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PFA-P</string>
+    <string name="title_activity_before_survey">BeforeSurveyActivity</string>
 </resources>
