@@ -86,7 +86,7 @@ public class SubModule extends LeftPane implements RatingSystem {
         return questions;
     }
 
-    public void setQuestions(ArrayList<Question> questions) {
+    public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
 
@@ -202,4 +202,16 @@ public class SubModule extends LeftPane implements RatingSystem {
     //getters and setters
 
 
+    @Override
+    public int hashCode() {
+        return 11;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof SubModule){
+            return ((SubModule) obj).name.equals(this.name);
+        }
+        return false;
+    }
 }

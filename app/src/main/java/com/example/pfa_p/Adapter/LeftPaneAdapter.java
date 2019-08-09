@@ -6,32 +6,63 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.LeftPane;
 import com.example.pfa_p.Model.Module;
+import com.example.pfa_p.Model.RightPane;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPaneViewHolder> {
 
 
-    public class LeftPaneViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class LeftPaneViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        @Nullable
+        @BindView(R.id.left_pane_item)
+        TextView tv;
+
+        @Nullable
+        @BindView(R.id.header_name)
+        TextView headerName;
 
         public LeftPaneViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
+            ButterKnife.bind(this, itemView);
         }
 
+        void bind(LeftPane item) {
+
+            if (tv != null && item instanceof Domain) {
+                tv.setText(((Domain) item).getName());
+                tv.setOnClickListener(this);
+
+            } else if (headerName != null && item instanceof SubModule) {
+                headerName.setText(((SubModule) item).getName());
+                headerName.setOnClickListener(this);
+            }
+
+
+        }
         @Override
         public void onClick(View view) {
 
         }
+
     }
+
+
+
+
 
     List<Module> modules;
     List<LeftPane> leftPaneList;
@@ -39,17 +70,17 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
 
     public LeftPaneAdapter(List<Module> modules) {
 
-        this.modules = modules;
+        //this.modules = modules;
+        createLeftPaneList(modules, 0);
     }
 
-    public void setLeftPaneClickListener(LeftPaneClickListener mListener){
+    public void setLeftPaneClickListener(LeftPaneClickListener mListener) {
         this.mListener = mListener;
     }
 
     private void createLeftPaneList(List<Module> data, int position) {
 
         leftPaneList = new ArrayList<>();
-
         List<SubModule> sections = data.get(position).getSections();
         List<Domain> domains;
 
@@ -80,28 +111,21 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
     @Override
     public void onBindViewHolder(@NonNull LeftPaneViewHolder holder, int position) {
 
+        holder.bind(leftPaneList.get(position));
 
-        LeftPane item = leftPaneList.get(position);
+
+        /*LeftPane item = leftPaneList.get(position);
         TextView tv = (TextView) holder.itemView;
         if (item instanceof SubModule) {
-
             tv.setText(((SubModule) item).getName());
-
-
-
         } else if (item instanceof Domain) {
-
             tv.setText(((Domain) item).getName());
         }
-
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
             }
-        });
-
-
+        });*/
     }
 
     @Override
@@ -117,10 +141,11 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
 
     }
 
-    public interface LeftPaneClickListener{
+public interface LeftPaneClickListener {
 
-        void onHeaderClick();
-        void onItemClick();
+    void onHeaderClick();
 
-    }
+    void onItemClick();
+
+}
 }

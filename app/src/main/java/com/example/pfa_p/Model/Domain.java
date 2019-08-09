@@ -113,4 +113,17 @@ public class Domain extends LeftPane {
         }
 
     }
+
+    @Override
+    public int hashCode() {
+        return 12;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Domain){
+            return ((Domain) obj).name.equals(this.name);
+        }
+        return false;
+    }
 }
