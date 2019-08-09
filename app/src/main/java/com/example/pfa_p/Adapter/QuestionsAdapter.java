@@ -254,7 +254,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(viewType, parent, false);
-
         SurveyViewHolder holder = null;
 
         switch (viewType) {

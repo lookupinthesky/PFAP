@@ -72,44 +72,41 @@ public class SectionDetailsFragment extends Fragment {
             SubModule subModule = module.getSections().get(sectionNumber);
             List<Question> questions = subModule.getQuestions();
             QuestionsAdapter adapter = new QuestionsAdapter(context, questions, moduleNumber, sectionNumber);
-            RecyclerView.LayoutManager mLayoutmanager = new LinearLayoutManager(context);
-
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+            parent.setLayoutManager(layoutManager);
             parent.setAdapter(adapter);
 
         }
     }
 
-    private void showDialog(){
+    private void showDialog() {
 
 
     }
 
 
-    public interface OnNextClickListener{
+    public interface OnNextClickListener {
 
         void onNextClick(int moduleNumber, int sectionNumber);
     }
 
     OnNextClickListener mListener;
 
-    private void onNextClick(){
+    private void onNextClick() {
 
-        if(ifEmptyFields()){
+        if (ifEmptyFields()) {
 
-        }
-        else{
+        } else {
 
 
             mListener.onNextClick(moduleNumber, sectionNumber);
-
-
 
 
         }
 
     }
 
-    public void setOnNextClickListener(OnNextClickListener mListener){
+    public void setOnNextClickListener(OnNextClickListener mListener) {
         this.mListener = mListener;
     }
 

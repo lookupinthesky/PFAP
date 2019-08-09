@@ -45,4 +45,17 @@ public class Module {
     public void setSections(List<SubModule> sections) {
         this.sections = sections;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Module){
+            return ((Module) obj).name.equals(this.name);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 10;
+    }
 }
