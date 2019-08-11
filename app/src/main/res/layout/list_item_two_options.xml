@@ -20,7 +20,7 @@
             android:layout_marginBottom="8dp"
             android:text="NAME" />
 
-        <RadioGroup
+        <com.example.pfa_p.Utils.RadioGridGroup
             android:id = "@+id/options_radioGroup"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -29,23 +29,23 @@
             android:orientation="horizontal"
             android:layout_marginStart="-4dp">
 
-            <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
 
-                android:id="@+id/option_1"
+                android:id="@+id/option_one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
                 android:layout_marginRight="24dp"
                 android:text="0" />
 
-            <RadioButton
-                android:id="@+id/option_2"
+                <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/option_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1" />
 
 
-        </RadioGroup>
+        </com.example.pfa_p.Utils.RadioGridGroup>
 
     </LinearLayout>
 

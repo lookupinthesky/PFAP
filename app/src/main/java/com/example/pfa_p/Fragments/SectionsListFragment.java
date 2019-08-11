@@ -2,25 +2,20 @@ package com.example.pfa_p.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridLayout;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pfa_p.Activities.MainActivity;
 import com.example.pfa_p.Activities.SurveyActivity;
 import com.example.pfa_p.Adapter.LeftPaneAdapter;
+import com.example.pfa_p.Model.Domain;
+import com.example.pfa_p.Model.LeftPane;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
@@ -29,29 +24,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import com.example.pfa_p.SurveyDataSingleton;
+import com.tonicartos.superslim.LayoutManager;
 
-public class SectionsListFragment extends Fragment {
+public class SectionsListFragment extends Fragment implements LeftPaneAdapter.LeftPaneClickListener {
 
-    Context context;
-    List<Module> modules;
-    private int moduleNumber;
+
+    /**
+     * SectionsListFragment is characterised by two properties : STATE and DATA -
+     * DATA is only defined by the module, no other core survey data is required. Regardless of its controller, it will produce
+     * the given layout and functionality according to the module provided to it.
+     * state defines the current position of user that is the current submodule and current domain within the provided module
+     * of whose questions the user is filling out the form of
+     * <p>
+     * SectionsListFragment = f(STATE, DATA) where STATE: mCurrentSectionIndex, mCurrentDomainIndex & DATA instance of Module
+     */
+
+
+    private Context context;
     private OnListItemClickListener mListener;
     private RecyclerView parent;
+    private int mCurrentSectionIndex;
+    private int mCurrentDomainIndex;
+    private List<LeftPane> leftPaneList;
+    private RecyclerView.Adapter<LeftPaneAdapter.LeftPaneViewHolder> adapter;
+    private Module module;
 
     public static final String LOG_TAG = SurveyActivity.class.getName();
-
-
-   /* public SectionsListFragment(int moduleNumber) {
-        this.moduleNumber = moduleNumber;
-    }*/
-
-    public void setOnListItemClickListener(OnListItemClickListener mListener) {
-        this.mListener = mListener;
-    }
-
-    public void createLayout(int moduleNumber) {
-    }
 
     public static SectionsListFragment newInstance(int moduleNumber) {
         Bundle bundle = new Bundle();
@@ -60,16 +58,10 @@ public class SectionsListFragment extends Fragment {
         sectionsListFragment.setArguments(bundle);
         return sectionsListFragment;
     }
-   /* private void readBundle(Bundle bundle) {
-
-        this.moduleNumber = bundle.getInt("module_number");
-    }*/
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.master_sections_list, container, false);
     }
 
@@ -79,57 +71,100 @@ public class SectionsListFragment extends Fragment {
         this.context = context;
     }
 
-    private void setDesignParams(TextView textView) {
-
+    public void setData(Module module) {
+        this.module = module;
     }
 
-    public void clickNextItem(int moduleNumber, int sectionNumber) {
-        if (moduleNumber == this.moduleNumber) {
-            if (modules.get(moduleNumber).getNumberOfSections() < sectionNumber) {
-                TextView tv = (TextView) parent.getChildAt(sectionNumber + 1);
-                tv.performClick();
-            } else {
-                mListener.onListItemClick(moduleNumber, sectionNumber);
-            }
-        } else {
-            Log.d(LOG_TAG, "Module Number Mismatch");
+    private void setDataToAdapter() {
+        if (adapter instanceof LeftPaneAdapter) {
+            ((LeftPaneAdapter) adapter).setData(leftPaneList);
         }
+    }
+
+    public void onStateChanged(boolean isModuleChanged) {
+        if (isModuleChanged) {
+            moveToNext();
+        } else {
+            createLeftPaneListData();
+            setDataToAdapter();
+        }
+    }
+
+    public void setCurrentState(/*int moduleIndex,*/ int subModuleIndex, int domainIndex) {
+        this.mCurrentDomainIndex = domainIndex;
+        this.mCurrentSectionIndex = subModuleIndex;
+    }
+
+    public void setOnListItemClickListener(OnListItemClickListener mListener) {
+        this.mListener = mListener;
+    }
+
+    private void setClicked(LeftPane item) {
+        int i = leftPaneList.indexOf(item);
+        LeftPaneAdapter.LeftPaneViewHolder holder;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                parent.findViewHolderForAdapterPosition(i).itemView.performClick();
+            }
+        }, 100);
+    }
+
+    private void createLeftPaneListData() {
+        leftPaneList = new ArrayList<>();
+        List<SubModule> sections = module.getSections();
+        List<Domain> domains;
+        for (SubModule subModule : sections) {
+            leftPaneList.add(subModule);
+            if (subModule.hasDomains()) {
+                domains = subModule.getDomains();
+                leftPaneList.addAll(domains);
+            }
+        }
+    }
+
+    private void moveToNext() {
+        LeftPane item;
+        if (mCurrentDomainIndex != -1) {
+            mCurrentDomainIndex++;
+            item = getLeftPaneItemForPosition(mCurrentDomainIndex);
+        } else {
+            mCurrentSectionIndex++;
+            item = getLeftPaneItemForPosition(mCurrentSectionIndex);
+        }
+        setClicked(item)/*next clickable item in List*/;
+        loadSectionDetails(item);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        moduleNumber = getArguments().getInt("module_number");
+
+        //TODO: setValue to module Name to TextView
 
         parent = view.findViewById(R.id.parent_sections_list);
-        modules = SurveyDataSingleton.getInstance(context).getSurveyData();
-        //Module module = modules.get(moduleNumber);
-        RecyclerView.Adapter<LeftPaneAdapter.LeftPaneViewHolder> adapter = new LeftPaneAdapter(modules);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
-        parent.setLayoutManager(layoutManager);
+        createLeftPaneListData();
+        adapter = new LeftPaneAdapter(leftPaneList, this);
+        parent.setLayoutManager(new LayoutManager(context));
         parent.setAdapter(adapter);
-
-
-
-
-
-        /*for (int i = 0; i < module.getNumberOfSections(); i++) {
-            TextView tv = new TextView(context);
-            tv.setText(module.getSections().get(i).getName());
-            setDesignParams(tv);
-            parent.addView(tv, i);
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int sectionNumber = parent.indexOfChild(view);
-                    mListener.onListItemClick(moduleNumber, sectionNumber);
-                }
-            });
-        }*/
+        loadSectionDetails(mCurrentDomainIndex == -1 ? getLeftPaneItemForPosition(mCurrentSectionIndex) : getLeftPaneItemForPosition(mCurrentDomainIndex));
     }
 
 
+    private LeftPane getLeftPaneItemForPosition(int position) {
+        return leftPaneList.get(position);
+    }
+
+    private void loadSectionDetails(LeftPane item) {
+        mListener.onListItemClick(item);
+    }
+
+    @Override
+    public void onItemClick(LeftPane item) {
+        mListener.onListItemClick(item);
+    }
+
     public interface OnListItemClickListener {
-        void onListItemClick(int moduleNumber, int sectionNumber);
+        void onListItemClick(LeftPane item);
     }
 
 

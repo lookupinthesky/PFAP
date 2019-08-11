@@ -29,7 +29,7 @@
             android:columnCount="4"
             android:orientation="horizontal">
 
-            <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_one"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                 android:layout_marginRight="24dp"
                 android:text="0" />
 
-            <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_two"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:layout_marginRight="24dp"
                 android:text="1" />
 
-            <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_three"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                 android:layout_marginRight="24dp"
                 android:text="2" />
 
-            <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_four"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                 android:layout_marginRight="24dp"
                 android:text="5" />
 
-            <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_five"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                 android:layout_marginRight="24dp"
                 android:text="5" />
 
-            <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_six"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 android:layout_marginRight="24dp"
                 android:text="7" />
 
-            <RadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_seven"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

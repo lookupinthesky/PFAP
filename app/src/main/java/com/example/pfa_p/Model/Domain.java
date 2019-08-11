@@ -126,4 +126,15 @@ public class Domain extends LeftPane {
         }
         return false;
     }
+
+
+    @Override
+    public int getFilledValue() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxValue() {
+        return 0;
+    }
 }

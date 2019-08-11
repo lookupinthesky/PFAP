@@ -44,7 +44,7 @@ public class SubModule extends LeftPane implements RatingSystem {
         this.name = name;
     }
 
-    public boolean isHasDomains() {
+    public boolean hasDomains() {
         return hasDomains;
     }
 
@@ -213,5 +213,15 @@ public class SubModule extends LeftPane implements RatingSystem {
             return ((SubModule) obj).name.equals(this.name);
         }
         return false;
+    }
+
+    @Override
+    public int getFilledValue() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxValue() {
+        return 0;
     }
 }

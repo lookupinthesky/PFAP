@@ -22,6 +22,9 @@ public class AnswerOptions {
     private int viewType;
 
     public int getNumberOfOptions() {
+        if(numberOfOptions>8)
+            return options.size();
+
         return numberOfOptions;
     }
 
@@ -39,6 +42,7 @@ public class AnswerOptions {
     public AnswerOptions(String answerType, int numberOfOptions, String... options1) {
 
         this.options = new ArrayList<>();
+        this.numberOfOptions = numberOfOptions;
       //  this.answerType = answerType;
         options = Arrays.asList(options1);
     }
