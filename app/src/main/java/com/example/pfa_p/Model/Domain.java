@@ -5,6 +5,15 @@ import com.example.pfa_p.Utils.RatingSystem;
 import java.util.List;
 
 public class Domain extends LeftPane {
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    private int index;
 
     public Domain(String name) {
         this.name = name;

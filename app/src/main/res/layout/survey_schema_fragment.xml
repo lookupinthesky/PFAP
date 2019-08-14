@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/schema_parent"
     android:layout_width="match_parent"
@@ -147,7 +148,7 @@
 
     </LinearLayout>
 
-    <Button
+    <!--<Button
         android:id="@+id/start_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -156,6 +157,21 @@
         android:background="#FF6E40"
         android:padding="12dp"
         android:text="START SURVEY"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF" />-->
+    <com.daimajia.numberprogressbar.NumberProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="20dp"
+        custom:progress_current="1000"
+        custom:progress_max="10000"
+        custom:progress_reached_bar_height="5dp"
+        custom:progress_reached_color="#3498DB"
+        custom:progress_text_color="#3498DB"
+        custom:progress_text_size="10sp"
+        custom:progress_text_visibility="visible"
+        custom:progress_unreached_bar_height="2.5dp"
+        custom:progress_unreached_color="#CCCCCC" />
 
 </FrameLayout>

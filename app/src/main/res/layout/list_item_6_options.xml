@@ -22,7 +22,7 @@
         android:columnCount="3"
         android:orientation="horizontal">
 
-        <RadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radioButton_1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             android:scaleY="0.5"
             android:text="0" />
 
-        <RadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radioButton_2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:scaleY="0.5"
             android:text="1" />
 
-        <RadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radioButton_3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             android:scaleY="0.5"
             android:text="2" />
 
-        <RadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radioButton_4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             android:scaleY="0.5"
             android:text="3" />
 
-        <RadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radioButton_5"
             android:layout_width="0dp"
             android:layout_height="24dp"
@@ -68,7 +68,7 @@
             android:scaleY="0.5"
             android:text="" />
 
-        <RadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radioButton_6"
             android:layout_width="0dp"
             android:layout_height="24dp"

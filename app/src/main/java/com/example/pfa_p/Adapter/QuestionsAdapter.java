@@ -37,18 +37,22 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     private int moduleIndex;
     private int sectionIndex;
 
-    public QuestionsAdapter(Context context, List<Question> objects, int moduleIndex, int sectionIndex) {
-
-        //TODO: call to super????????????
-        super();
-        this.questions = objects;
-        this.moduleIndex = moduleIndex;
-        this.sectionIndex = sectionIndex;
-        createRightPaneList();
+    public QuestionsAdapter() {
 
     }
 
-    public void setData(List<RightPane> data){
+    public QuestionsAdapter(List<RightPane> data) {
+
+        //TODO: call to super????????????
+        super();
+        this.rightPaneList = data;
+       /* this.moduleIndex = moduleIndex;
+        this.sectionIndex = sectionIndex;*/
+        //      createRightPaneList();
+
+    }
+
+    public void setData(List<RightPane> data) {
 
         this.rightPaneList = data;
         notifyDataSetChanged();
@@ -69,7 +73,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     public class EditableItemViewHolder extends SurveyViewHolder {
 
         //     @BindView(R.id.option_editable)
-      public  EditText editText;
+        public EditText editText;
         List<View> views;
         View parent;
         Question question;
@@ -108,7 +112,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         }
     }
 
-  public  class TwoOptionsViewHolder extends SurveyViewHolder implements RadioGridGroup.OnCheckedChangeListener {
+    public class TwoOptionsViewHolder extends SurveyViewHolder implements RadioGridGroup.OnCheckedChangeListener {
 
         /*@Nullable
         @BindView(R.id.option_one)
@@ -118,7 +122,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         RadioButton optionTwo;*/
         /*@Nullable
         @BindView(R.id.options_radioGroup)*/
-     public   RadioGridGroup options;
+        public RadioGridGroup options;
         List<View> views;
         View parent;
         Question question;
@@ -398,7 +402,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
     private List<RightPane> rightPaneList;
 
-    private void createRightPaneList() {
+   /* private void createRightPaneList() {
 
         rightPaneList = new ArrayList<>();
 
@@ -406,16 +410,17 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         rightPaneList.add(header);
         rightPaneList.addAll(questions);
-    }
+    }*/
 
     public int getItemViewType(int position) {
 
 
         if (rightPaneList.get(position) instanceof QuestionHeader) {
             return R.layout.header_view_questions;
-        } else {
+        } else if (rightPaneList.get(position) instanceof Question) {
             // for questions
-            switch (questions.get(position - 1).getOptions().getNumberOfOptions()) {
+            Question question = (Question) rightPaneList.get(position);
+            switch (question.getOptions().getNumberOfOptions()) {
 
                 case 0:
                     return R.layout.list_item_editable;
@@ -437,7 +442,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                     return R.layout.list_item_editable;
             }
         }
-
+        return -1;
     }
 
 

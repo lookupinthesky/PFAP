@@ -34,6 +34,9 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
             SurveyContract.SurveyEntry.USERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_NAME + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_INMATE_ID + " TEXT NOT NULL, " +
+            SurveyContract.SurveyEntry.USERS_COLUMN_TOTAL_VISITS  + " INTEGER NOT NULL, " +
+            SurveyContract.SurveyEntry.USERS_COLUMN_HISTORY_FLAG + " TEXT NOT NULL, " +
+            SurveyContract.SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_FLAG + " INTEGER NOT NULL);";
 
     private static final String SQL_CREATE_TABLE_ASSESSMENT_ANSWERS = "CREATE TABLE " +

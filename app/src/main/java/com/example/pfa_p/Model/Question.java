@@ -10,12 +10,21 @@ public class Question extends RightPane{
     private AnswerOptions options;
     private SubModule subModule;
     private Domain domain;
-   // private String subModuleName;
-  //  private String domainName;
+    private int _idInDb;
+    private int answerIndex;
+    private boolean isAssessment = false ;
     private int serialNumber;
     private String answer;
     private String questionIdInDb ;
     private int viewType;
+
+    public int get_idInDb() {
+        return _idInDb;
+    }
+
+    public void set_idInDb(int _idInDb) {
+        this._idInDb = _idInDb;
+    }
 
     public SubModule getSubModule() {
         return subModule;
@@ -45,22 +54,6 @@ public class Question extends RightPane{
         this.questionName = questionName;
     }
 
-    /*public String getSubModuleName() {
-        return subModuleName;
-    }
-
-    public void setSubModuleName(String subModuleName) {
-        this.subModuleName = subModuleName;
-    }
-
-    public String getDomainName() {
-        return domainName;
-    }
-
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
-    }*/
-
     public AnswerOptions getOptions() {
         return options;
     }
@@ -77,10 +70,6 @@ public class Question extends RightPane{
         this.serialNumber = serialNumber;
     }
 
-    private int answerIndex;
-
-    private boolean isAssessment = false ;
-
     public int getAnswerIndex() {
         return answerIndex;
     }
@@ -93,12 +82,12 @@ public class Question extends RightPane{
         this.answer = response;
         this.isAssessment = isAssessment;
     }
+
     public void setAnswer(int index, String response, boolean isAssessment){
 
         this.answerIndex = index;
         setAnswer(response,isAssessment);
     }
-
 
     public String getAnswer(){
         return answer;
@@ -122,7 +111,6 @@ public class Question extends RightPane{
 
         return "Dummy_User_Id" ;
     }
-
 
     private int getSurveyId(){
 
@@ -151,3 +139,18 @@ public class Question extends RightPane{
     }
 
 }
+ /*public String getSubModuleName() {
+        return subModuleName;
+    }
+
+    public void setSubModuleName(String subModuleName) {
+        this.subModuleName = subModuleName;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }*/

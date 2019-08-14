@@ -9,17 +9,25 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.pfa_p.R;
 
 
-public class UserEntryFragment extends Fragment {
+public class UserEntryDialogFragment extends DialogFragment {
 
     EditText prisonerId;
     EditText volunteerId;
     Button nextButton;
     NextButtonListener mListener;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.DialogStyle);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -31,16 +39,19 @@ public class UserEntryFragment extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validatefields())
-                mListener.onNextButtonClick();
+
+                if(validatefields()) {
+                    dismiss();
+                    mListener.onNextButtonClick();
+                }
             }
         });
         return view;
     }
 
-    public static UserEntryFragment getInstance(NextButtonListener mListener){
+    public static UserEntryDialogFragment getInstance(NextButtonListener mListener){
 
-        UserEntryFragment fragment = new UserEntryFragment();
+        UserEntryDialogFragment fragment = new UserEntryDialogFragment();
         fragment.mListener = mListener;
         return fragment;
 
@@ -50,7 +61,7 @@ public class UserEntryFragment extends Fragment {
     private boolean validatefields(){
 
         return true;
-        //conditions for text fields
+        //TODO: conditions for text fields
 
     }
 

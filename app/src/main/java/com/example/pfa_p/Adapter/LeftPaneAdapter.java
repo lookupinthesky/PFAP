@@ -49,9 +49,10 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
                 tv.setOnClickListener(this);
             } else if(item instanceof SubModule && ((SubModule) item).hasDomains() && headerName != null) {
                     headerName.setText(((SubModule) item).getName());
-            } else if(item instanceof SubModule && !((SubModule) item).hasDomains()){
+            } else if(tv!=null && item instanceof SubModule && !((SubModule) item).hasDomains()){
                 tv.setText(((SubModule) item).getName());
                 tv.setOnClickListener(this);
+                //TODO: verify this case
             }
 
             }
@@ -119,7 +120,16 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
 
     @Override
     public int getItemViewType(int position) {
-        return leftPaneList.get(position) instanceof SubModule ? (R.layout.header_view_left_pane) : R.layout.item_view_left_pane;
+
+        LeftPane item = leftPaneList.get(position);
+
+       if(item instanceof SubModule && ((SubModule) item).hasDomains()){
+           return R.layout.header_view_left_pane ;
+       }else {//if(item instanceof SubModule && !((SubModule) item).hasDomains() || item instanceof Domain){
+           return R.layout.item_view_left_pane;
+       }
+
+       // return leftPaneList.get(position) instanceof SubModule ? (R.layout.header_view_left_pane) : R.layout.item_view_left_pane;
     }
 
     public interface LeftPaneClickListener {

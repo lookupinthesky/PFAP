@@ -34,6 +34,7 @@ public class SectionDetailsFragment extends Fragment {
     List<Module> modules;
     private int moduleNumber;
     int sectionNumber;
+    boolean isDataSet = false;
 
     LeftPane item;
 
@@ -72,18 +73,18 @@ public class SectionDetailsFragment extends Fragment {
 
     QuestionsAdapter adapter;
 
-    public void createLayout(int moduleNumber, int sectionNumber) {
+    public void createLayout() {
         if (ifEmptyFields()) {
             showDialog();
         } else {
-            modules = SurveyDataSingleton.getInstance(context).getSurveyData();
+            /*modules = SurveyDataSingleton.getInstance(context).getSurveyData();
             Module module = modules.get(moduleNumber);
             SubModule subModule = module.getSections().get(sectionNumber);
-            List<Question> questions = subModule.getQuestions();
-            adapter = new QuestionsAdapter(context, questions, moduleNumber, sectionNumber);
+            List<Question> questions = subModule.getQuestions();*/
+      //      adapter = new QuestionsAdapter(rightPaneList);
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
             parent.setLayoutManager(layoutManager);
-            parent.setAdapter(adapter);
+            //   parent.setAdapter(adapter);
 
         }
     }
@@ -91,7 +92,17 @@ public class SectionDetailsFragment extends Fragment {
     public void setData(LeftPane item) {
         this.item = item;
         createRightPaneList();
-        adapter.setData(rightPaneList);
+        if (adapter == null) {
+            adapter = new QuestionsAdapter(rightPaneList);
+            parent.setAdapter(adapter);
+        } else {
+            adapter.setData(rightPaneList);
+        }
+        /*if(!isDataSet){
+            parent.setAdapter(adapter);
+            isDataSet = true;
+        }*/
+
 
     }
 
@@ -99,8 +110,14 @@ public class SectionDetailsFragment extends Fragment {
     public void setDataWithAnswers(LeftPane item) {
         this.item = item;
         createRightPaneList();
-        adapter.setData(rightPaneList);
+        if (adapter == null) {
+            adapter = new QuestionsAdapter(rightPaneList);
+            parent.setAdapter(adapter);
+        } else {
+            adapter.setData(rightPaneList);
+        }
         setAnswers();
+
     }
 
     private void showDialog() {
@@ -130,7 +147,7 @@ public class SectionDetailsFragment extends Fragment {
         this.mListener = mListener;
     }
 
-    List<RightPane> rightPaneList;
+    List<RightPane> rightPaneList = new ArrayList<>();
 
     private void createRightPaneList() {
 
@@ -167,92 +184,6 @@ public class SectionDetailsFragment extends Fragment {
         }
     }
 
-   /* private void something(int position, Question question) {
-
-        RecyclerView.ViewHolder holder = parent.findViewHolderForAdapterPosition(position);
-        if (holder instanceof QuestionsAdapter.EditableItemViewHolder) {
-            ((QuestionsAdapter.EditableItemViewHolder) holder).editText.setText(question.getAnswer());
-        }
-        if (holder instanceof QuestionsAdapter.TwoOptionsViewHolder) {
-            ((QuestionsAdapter.TwoOptionsViewHolder) holder).options.check(question.getAnswerIndex());
-        }
-
-    }
-*/
-
-    //     Question question = questions.get(i);
-
-           /* new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    something(i, );
-                }
-            }, 100);*/
-     /*       parent.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    RecyclerView.ViewHolder holder =  parent.findViewHolderForAdapterPosition(lastPosition).itemView.performClick();
-
-                    parent.getViewTreeObserver().removeOnPreDrawListener(this);
-                    return true;
-                }
-            });
-
-
-*/
-
-    /*private void createAnswerOptionsLayout(Question question, LinearLayout answerBox) {
-        int answerType = question.getOptions().getAnswerType();
-        switch (answerType) {
-            case AnswerOptions.OPTION_YESNO: {
-                createButtons(2, answerBox);
-            }
-            case AnswerOptions.OPTION_MCQ: {
-                createButtons(question.getOptions().getNumberOfOptions(), answerBox);
-            }
-            case AnswerOptions.OPTION_TEXT: {
-                EditText textBox = new EditText(context);
-                answerBox.addView(textBox);
-            }
-        }
-    }
-
-    private void createButtons(int number, View parent){
-
-        GridLayout answerBox = (GridLayout) parent;
-        answerBox.setColumnCount(number+2);
-
-
-        for(int i = 0; i<number; i++){
-
-            Button button = new Button(context);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
-            params.gravity = 77 ;
-
-            //LinearLayout mcQBox = (LinearLayout) parent ;
-        }
-
-
-    }
-
-
-    private void setDataToViews(View questionBox, View answerBox) {
-
-
-    }
-
-    private void setDesignParams() {
-
-
-    }
-*/
-
-
-   /* private int getModuleNumber(){}
-
-    private int getSectionNumber(){}*/
-
 
     RecyclerView parent;
 
@@ -262,6 +193,10 @@ public class SectionDetailsFragment extends Fragment {
 
 
         parent = view.findViewById(R.id.parent_list_section_details);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+        parent.setLayoutManager(layoutManager);
+     //   createLayout();
+
         //     createLayout(0, 0);
 
 

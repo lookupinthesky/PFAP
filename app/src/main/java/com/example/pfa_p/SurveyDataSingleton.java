@@ -1,16 +1,11 @@
 package com.example.pfa_p;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.example.pfa_p.Database.SurveyContract;
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
-import com.example.pfa_p.Fragments.UserEntryFragment;
-import com.example.pfa_p.Model.AnswerOptions;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
-import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.Utils.JSONHelper;
 

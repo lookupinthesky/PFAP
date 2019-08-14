@@ -156,8 +156,6 @@ public class JSONHelper {
         }
     }
 
-
-
     private void setQuestionsToDomains(List<Domain> domains, List<Question> questions) {
         for (Domain domain : domains) {
             for (Question question2 : questions) {
@@ -210,7 +208,6 @@ public class JSONHelper {
             sectionsModuleWise = new ArrayList<>();
         }
     }
-
 
     private void parseData(String jsonString) throws JSONException {
 

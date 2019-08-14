@@ -47,6 +47,9 @@ public class SurveyContract {
         public static final String USERS_ID = "_id";
         public static final String USERS_COLUMN_NAME = "name";
         public static final String USERS_COLUMN_INMATE_ID = "inmate_id";
+        public static final String USERS_COLUMN_HISTORY_FLAG = "history_flag";
+        public static final String USERS_COLUMN_ASSESSMENT_FLAG = "assessment_flag";
+        public static final String USERS_COLUMN_TOTAL_VISITS = "total_visits_completed";
         public static final String USERS_COLUMN_FLAG = "flag";
 
         // table name - 4 and 5
