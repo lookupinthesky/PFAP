@@ -82,7 +82,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     }
 
     public void onStateChanged(boolean isModuleChanged) {
-        if (isModuleChanged) {
+        if (!isModuleChanged) {
             moveToNext();
         } else {
             createLeftPaneListData();

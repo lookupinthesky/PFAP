@@ -9,12 +9,18 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
 
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Database.SurveyTaskLoader;
@@ -29,9 +35,10 @@ import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
-public class SurveyActivity extends FragmentActivity implements SectionsListFragment.OnListItemClickListener,
-        SectionDetailsFragment.OnNextClickListener {
+public class SurveyActivity extends FragmentActivity implements SectionsListFragment.OnListItemClickListener
+        /*SectionDetailsFragment.OnNextClickListener*/ {
 
 
     FrameLayout sectionDetailsParent;
@@ -51,6 +58,20 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey_dual_pane);
+
+        android.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
+        Button button = findViewById(R.id.next_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNextClick();
+            }
+        });
+
+
+        if(getActionBar()!=null)
+        getActionBar().show();
         surveyData = SurveyDataSingleton.getInstance(this);
         modules = surveyData.getModules();
         Intent intent = getIntent();
@@ -119,17 +140,36 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     }
 
 
-    @Override
+   // @Override
     public void onNextClick() {
         calculateNext(modules); //TODO:
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);
         } else {
             sectionsListFragment.setCurrentState(0, 0);
-            sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/null);
+            sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
             sectionsListFragment.onStateChanged(true);
         }
     }
 
+    /*@Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.survey_buttons, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.action_next){
+            calculateNext(modules); //TODO:
+            if (!isModuleChanged) {
+                sectionsListFragment.onStateChanged(false);
+            } else {
+                sectionsListFragment.setCurrentState(0, 0);
+                sectionsListFragment.setData(*//*modules.get(mCurrentModuleIndex).getSections()*//*modules.get(mCurrentModuleIndex));
+                sectionsListFragment.onStateChanged(true);
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }*/
 }

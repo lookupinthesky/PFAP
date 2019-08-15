@@ -36,20 +36,13 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     private List<Question> questions;
     private int moduleIndex;
     private int sectionIndex;
-
-    public QuestionsAdapter() {
-
-    }
+    private List<RightPane> rightPaneList;
 
     public QuestionsAdapter(List<RightPane> data) {
 
         //TODO: call to super????????????
         super();
         this.rightPaneList = data;
-       /* this.moduleIndex = moduleIndex;
-        this.sectionIndex = sectionIndex;*/
-        //      createRightPaneList();
-
     }
 
     public void setData(List<RightPane> data) {
@@ -60,7 +53,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
     static abstract class SurveyViewHolder extends RecyclerView.ViewHolder {
 
-        // @BindView(R.id.question_text)
         TextView questionText;
 
         SurveyViewHolder(@NonNull View parent) {
@@ -72,7 +64,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
     public class EditableItemViewHolder extends SurveyViewHolder {
 
-        //     @BindView(R.id.option_editable)
         public EditText editText;
         List<View> views;
         View parent;
@@ -82,7 +73,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             super(parent);
             this.parent = parent;
             questionText = parent.findViewById(R.id.question_text);
-            //       ButterKnife.bind(this,parent);
         }
 
         @Override
@@ -99,9 +89,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                     question.setAnswer(charSequence.toString(), moduleIndex == 1);
-
                 }
 
                 @Override
@@ -114,53 +102,31 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
     public class TwoOptionsViewHolder extends SurveyViewHolder implements RadioGridGroup.OnCheckedChangeListener {
 
-        /*@Nullable
-        @BindView(R.id.option_one)
-        RadioButton optionOne;
-        @Nullable
-        @BindView(R.id.option_two)
-        RadioButton optionTwo;*/
-        /*@Nullable
-        @BindView(R.id.options_radioGroup)*/
         public RadioGridGroup options;
         List<View> views;
         View parent;
         Question question;
+        int count = 0;
 
         TwoOptionsViewHolder(@NonNull View parent) {
             super(parent);
             this.parent = parent;
             options = parent.findViewById(R.id.options_radioGroup);
             questionText = parent.findViewById(R.id.question_text);
-            //     ButterKnife.bind(this,parent);
+            Log.d(LOG_TAG, "is options null in constructor? " + options.toString() + " count number = " + count++);
         }
-
 
         @Override
         void bind(RightPane item) {
             this.question = (Question) item;
             questionText.setText(question.getQuestionName());
-            /*optionOne.setText(question.getOptions().getOptions().get(0));
-            optionTwo.setText(question.getOptions().getOptions().get(1));*/
-
             Question question = (Question) item;
             views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
-            //       Collections.sort(views, Collections.reverseOrder());
             for (int i = 0; i < views.size(); i++) {
                 ((RadioButton) views.get(i)).setText(question.getOptions().getOptions().get(i));
             }
-            // ((RadioButton)(views.get(views.size()-1))).setText(question.getOptions().getOptions().get(views.size()-1));
-
-
+            Log.d(LOG_TAG, "is options null in bind method ? " + options.toString() + " ; postion = " + rightPaneList.indexOf(item));
             options.setOnCheckedChangeListener(this);
-            /*options.setOnCheckedChangeListener(new RadioGridGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGridGroup group, int checkedId) {
-                    RadioButton button = group.findViewById(checkedId);
-                    int index = group.indexOfChild(button);
-                    question.setAnswer(index);
-                }
-            });*/
         }
 
         @Override
@@ -212,129 +178,82 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     }
 
     class ThreeOptionsViewHolder extends TwoOptionsViewHolder {
-       /* @Nullable
-        @BindView(R.id.option_three)
-        RadioButton optionThree;*/
-
         ThreeOptionsViewHolder(@NonNull View parent) {
             super(parent);
-            //       ButterKnife.bind(this,parent);
 
         }
 
         @Override
         void bind(RightPane item) {
             super.bind(item);
-            /*Question question = (Question)item ;
-            views = bindViewsToId(parent,question.getOptions().getNumberOfOptions());
-            Collections.sort(views, Collections.reverseOrder());
-            ((RadioButton)(views.get(views.size()-1))).setText(question.getOptions().getOptions().get(views.size()-1));
-            super.bind(item);
-            optionThree.setText(question.getOptions().getOptions().get(2));*/
+
         }
     }
 
     class FourOptionsViewHolder extends ThreeOptionsViewHolder {
-        /*@Nullable
-        @BindView(R.id.option_four)
-        RadioButton optionFour;*/
 
         FourOptionsViewHolder(@NonNull View parent) {
             super(parent);
-            //    ButterKnife.bind(this,parent);
         }
 
         @Override
         void bind(RightPane item) {
-            //Question question = (Question)item;
             super.bind(item);
-            //  optionFour.setText(question.getOptions().getOptions().get(3));
         }
     }
 
     class FiveOptionsViewHolder extends FourOptionsViewHolder {
-/*
-
-        @Nullable
-        @BindView(R.id.option_five)
-        RadioButton optionFive;
-*/
 
         FiveOptionsViewHolder(@NonNull View parent) {
             super(parent);
-            //  ButterKnife.bind(this,parent);
         }
 
         @Override
         void bind(RightPane item) {
-            //   Question question = (Question)item;
             super.bind(item);
-            //  optionFive.setText(question.getOptions().getOptions().get(4));
-
         }
     }
 
     class SixOptionsViewHolder extends FiveOptionsViewHolder {
 
-       /* @Nullable
-        @BindView(R.id.option_six)
-        RadioButton optionSix;*/
-
         SixOptionsViewHolder(@NonNull View parent) {
             super(parent);
-            //         ButterKnife.bind(this,parent);
         }
 
         @Override
         void bind(RightPane item) {
-            //          Question question = (Question)item;
             super.bind(item);
-            //         optionSix.setText(question.getOptions().getOptions().get(5));
         }
     }
 
     class SevenOptionsViewHolder extends SixOptionsViewHolder {
 
-     /*   @Nullable
-        @BindView(R.id.option_seven)
-        RadioButton optionSeven;*/
-
         SevenOptionsViewHolder(@NonNull View parent) {
             super(parent);
-            //        ButterKnife.bind(this,parent);
         }
 
         @Override
         void bind(RightPane item) {
-            //       Question question = (Question)item;
             super.bind(item);
-            //          optionSeven.setText(question.getOptions().getOptions().get(6));
         }
     }
 
     public class EightOptionsViewHolder extends SevenOptionsViewHolder {
 
-       /* @Nullable
-        @BindView(R.id.option_eight)
-        RadioButton optionEight;*/
-
         EightOptionsViewHolder(@NonNull View parent) {
             super(parent);
-            //          ButterKnife.bind(this,parent);
         }
 
         @Override
         void bind(RightPane item) {
-//            Question question = (Question)item;
             super.bind(item);
-            //          optionEight.setText(question.getOptions().getOptions().get(7));
         }
     }
 
 
     public class HeaderViewHolder extends QuestionsAdapter.SurveyViewHolder {
 
-        public HeaderViewHolder(@NonNull View parent) {
+        HeaderViewHolder(@NonNull View parent) {
             super(parent);
         }
 
@@ -342,8 +261,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         void bind(RightPane item) {
 
         }
-
-
     }
 
     @NonNull
@@ -400,20 +317,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         return rightPaneList.size();
     }
 
-    private List<RightPane> rightPaneList;
-
-   /* private void createRightPaneList() {
-
-        rightPaneList = new ArrayList<>();
-
-        QuestionHeader header = new QuestionHeader();
-
-        rightPaneList.add(header);
-        rightPaneList.addAll(questions);
-    }*/
-
     public int getItemViewType(int position) {
-
 
         if (rightPaneList.get(position) instanceof QuestionHeader) {
             return R.layout.header_view_questions;
@@ -446,34 +350,4 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     }
 
 
-
-/*    @Override
-    public int getItemViewType(int position) {
-        return getItem(position).getOptions().getNumberOfOptions();
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return super.getViewTypeCount();
-    }
-
-    private View getInflatedLayoutForType(int type) {
-        if (type == TWO_OPTIONS) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.list_item_2_options, null);
-        } else if (type == THREE_OPTIONS) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.list_item_3_options, null);
-        } else if (type == FOUR_OPTIONS) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.list_item_4_options, null);
-        } else if (type == FIVE_OPTIONS) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.list_item_5_options, null);
-        } else if (type == SIX_OPTIONS) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.list_item_6_options, null);
-        } else if (type == SEVEN_OPTIONS) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.list_item_7_options, null);
-        } else if (type == EIGHT_OPTIONS) {
-            return LayoutInflater.from(getContext()).inflate(R.layout.list_item_8_options, null);
-        } else {
-            return LayoutInflater.from(getContext()).inflate(R.layout.list_item_edittext, null);
-        }
-    }*/
 }

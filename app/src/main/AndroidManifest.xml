@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.SurveyActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="landscape"/>
         <activity
             android:name=".Activities.MainActivity"

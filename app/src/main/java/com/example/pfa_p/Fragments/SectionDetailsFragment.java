@@ -63,6 +63,7 @@ public class SectionDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+       // setHasOptionsMenu(true);
         return inflater.inflate(R.layout.master_section_details, container, false);
     }
 
@@ -92,12 +93,13 @@ public class SectionDetailsFragment extends Fragment {
     public void setData(LeftPane item) {
         this.item = item;
         createRightPaneList();
-        if (adapter == null) {
-            adapter = new QuestionsAdapter(rightPaneList);
-            parent.setAdapter(adapter);
+        adapter = new QuestionsAdapter(rightPaneList);
+        parent.setAdapter(adapter);
+       /* if (adapter == null) {
+
         } else {
             adapter.setData(rightPaneList);
-        }
+        }*/
         /*if(!isDataSet){
             parent.setAdapter(adapter);
             isDataSet = true;
@@ -110,12 +112,13 @@ public class SectionDetailsFragment extends Fragment {
     public void setDataWithAnswers(LeftPane item) {
         this.item = item;
         createRightPaneList();
-        if (adapter == null) {
-            adapter = new QuestionsAdapter(rightPaneList);
-            parent.setAdapter(adapter);
+        adapter = new QuestionsAdapter(rightPaneList);
+        parent.setAdapter(adapter);
+       /* if (adapter == null) {
+
         } else {
             adapter.setData(rightPaneList);
-        }
+        }*/
         setAnswers();
 
     }
@@ -194,6 +197,7 @@ public class SectionDetailsFragment extends Fragment {
 
         parent = view.findViewById(R.id.parent_list_section_details);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+    //    layoutManager.setAutoMeasureEnabled(false);
         parent.setLayoutManager(layoutManager);
      //   createLayout();
 
