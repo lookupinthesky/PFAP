@@ -89,9 +89,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    question.setAnswer(charSequence.toString(), moduleIndex == 1);
-                }
 
+
+                    if (charSequence != null) {
+                        question.setAnswer(charSequence.toString(), moduleIndex == 1);
+                    }
+                }
                 @Override
                 public void afterTextChanged(Editable editable) {
 

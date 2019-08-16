@@ -13,7 +13,7 @@ public class Domain extends LeftPane {
         this.index = index;
     }
 
-    private int index;
+    private int index = 0;
 
     public Domain(String name) {
         this.name = name;

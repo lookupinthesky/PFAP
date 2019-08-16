@@ -61,13 +61,23 @@ public class SubModule extends LeftPane implements RatingSystem {
     }
 
     public List<Domain> getDomains() {
-        return domains;
+        return domains == null ? new ArrayList<>() : domains;
     }
 
     public void setDomains(List<Domain> domains) {
 
         this.domains = domains;
 
+    }
+
+    boolean isPresent = true ;
+
+    private void setIsPresent(boolean flag){
+        this.isPresent = flag;
+    }
+
+    public boolean isPresent(){
+        return isPresent;
     }
 
     public long getId() {
@@ -93,7 +103,7 @@ public class SubModule extends LeftPane implements RatingSystem {
     public SubModule() {
     }
 
-    public SubModule(String name){
+    public SubModule(String name) {
 
         this.name = name;
     }
@@ -122,10 +132,10 @@ public class SubModule extends LeftPane implements RatingSystem {
                 rating += question.getDomain().getRatingForResponse(question.getAnswerIndex());
             }
         }
-            return (float) rating / (getNumberOfDomains());
+        return (float) rating / (getNumberOfDomains());
 
 
-        }
+    }
 
     private Module module;
 
@@ -137,8 +147,6 @@ public class SubModule extends LeftPane implements RatingSystem {
     public Module getModule() {
         return module;
     }
-
-
 
 
     public String getResultForSectionWiseLimits(int firstLimit, int secondLimit, int thirdLimit, float meanSectionScore) {
@@ -158,21 +166,56 @@ public class SubModule extends LeftPane implements RatingSystem {
     }
 
 
+    public void getListOfValidQuestionnaires() {
 
-    public static SubModule getSubModule(Context context, String questionName){
 
-     List<Question> questions =   SurveyDataSingleton.getInstance(context).getQuestions();
+        boolean isQuestionnaireA = false;
+        boolean isQuestionnaireB = false;
+        boolean isQuestionnaireC = false;
+        boolean isQuestionnaireD = false;
+        boolean isQuestionnaireE = false;
+        boolean isQuestionnaireF = true;
+        int response = 0;
+        for (int i = 0; i < 3; i++) {
+            Question question = questions.get(i);
+            response += question.getAnswerIndex();
+            if (response < 2) {
+                isQuestionnaireA = true;
+                break;
+            }
+        }
+        if (questions.get(3).getAnswerIndex() == 0) {
+            isQuestionnaireB = true;
+        }
+        if (questions.get(2).getAnswerIndex() == 0 && questions.get(6).getAnswerIndex() == 0) {
+            isQuestionnaireC = true;
+        }
+        for (int i = 4; i < 10; i++) {
+            if (questions.get(i).getAnswerIndex() == 0) {
+                isQuestionnaireD = true;
+                break;
+            }
+        }
+        if (questions.get(10).getAnswerIndex() != 0) {
+            isQuestionnaireE = true;
+        }
+    }
 
-     SubModule subModule;
 
-     for(int i = 0; i<questions.size(); i++){
+    public static SubModule getSubModule(Context context, String questionName) {
 
-         if(questions.get(i).getQuestionName().equals(questionName)){
-             return questions.get(i).getSubModule();
-         }
-     }
+        List<Question> questions = SurveyDataSingleton.getInstance(context).getQuestions();
 
-     throw new IllegalArgumentException("Question value from Db doesn't match with Survey Value");
+        SubModule subModule;
+
+        for (int i = 0; i < questions.size(); i++) {
+
+            if (questions.get(i).getQuestionName().equals(questionName)) {
+                return questions.get(i).getSubModule();
+            }
+        }
+
+        throw new IllegalArgumentException("Question value from Db doesn't match with Survey Value");
 
     }
 
@@ -209,7 +252,7 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof SubModule){
+        if (obj instanceof SubModule) {
             return ((SubModule) obj).name.equals(this.name);
         }
         return false;

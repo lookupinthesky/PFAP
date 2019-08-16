@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Activities.SurveyActivity;
@@ -72,6 +73,14 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     }
 
     public void setData(Module module) {
+
+        if(module.isResultBased){
+
+            module = module.getFilteredModule()
+
+
+        }
+
         this.module = module;
     }
 
@@ -87,6 +96,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         } else {
             createLeftPaneListData();
             setDataToAdapter();
+            setClicked(leftPaneList.get(0));
         }
     }
 
@@ -144,6 +154,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         parent = view.findViewById(R.id.parent_sections_list);
         createLeftPaneListData();
         adapter = new LeftPaneAdapter(leftPaneList, this);
+        parent.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         parent.setLayoutManager(new LayoutManager(context));
         parent.setAdapter(adapter);
         loadSectionDetails(mCurrentDomainIndex == -1 ? getLeftPaneItemForPosition(mCurrentSectionIndex) : getLeftPaneItemForPosition(mCurrentDomainIndex));
@@ -166,6 +177,27 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     public interface OnListItemClickListener {
         void onListItemClick(LeftPane item);
     }
+
+
+    private class QuestionnaireHelper{
+
+        boolean isQuestionnaireA;
+        boolean isQuestionnaireB;
+        boolean isQuestionnaireC;
+        boolean isQuestionnaireD;
+        boolean isQuestionnaireE;
+        boolean isQuestionnaireF;
+
+
+
+
+
+
+
+
+
+    }
+
 
 
 }

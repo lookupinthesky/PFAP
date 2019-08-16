@@ -94,21 +94,30 @@ public class JSONHelper {
             moduleSet.add(module1);
         }
         modules = new ArrayList<>(moduleSet);
+        for(Module module: modules){
+            module.setIndex(modules.indexOf(module));
+            if(module.getName().equals("Assessing Need For PFA-P")){
+                module.setResultBased(true);
+            }
+        }
     }
 
     private void createSubModulesArray(JSONArray data) throws JSONException {
         Set<SubModule> subModuleSet = new LinkedHashSet<>();
+       // int count = 0;
         for (int i = 0; i < data.length(); i++) {
             JSONObject eachObject = data.getJSONObject(i);
             String subModuleName = eachObject.getString("section_name");
             SubModule subModule = new SubModule(subModuleName);
             String moduleName = eachObject.getString("module_name");
             for (Module module5 : modules) {
+              //  module5.setIndex(count++);
                 if (module5.getName().equals(moduleName)) {
+                    subModule.setModule(module5);
                 }
-                subModule.setModule(module5);
             }
             subModuleSet.add(subModule);
+      //      subModule.setIndex(count++);
         }
         subModules = new ArrayList<>(subModuleSet);
     }
@@ -116,11 +125,13 @@ public class JSONHelper {
 
     private void createDomainsArray(JSONArray data) throws JSONException {
         Set<Domain> domainSet = new LinkedHashSet<>();
+    //    int count = 0;
         for (int i = 0; i < data.length(); i++) {
             JSONObject object = data.getJSONObject(i);
             String domainName = object.getString("domain_name");
             if (!domainName.equals("null")) {
                 Domain domain = new Domain(domainName);
+
                 domainSet.add(domain);
             }
         }
@@ -174,9 +185,11 @@ public class JSONHelper {
     }
 
     private void setDomainsToSubModules(List<SubModule> subModules, List<Domain> domains) {
+        int count = 0;
         for (SubModule submodule : subModules) {
             for (Domain domain : domains) {
                 if (domain.getSubModule().getName().equals(submodule.getName())) {
+                    domain.setIndex(count++);
                     domainSectionWise.add(domain);
                 }
             }
@@ -198,9 +211,11 @@ public class JSONHelper {
     }
 
     private void setSubModulesToModules(List<Module> modules, List<SubModule> subModules) {
+       int count = 0;
         for (Module module : modules) {
             for (SubModule subModule6 : subModules) {
                 if (subModule6.getModule().getName().equals(module.getName())) {
+                    subModule6.setIndex(count++);
                     sectionsModuleWise.add(subModule6);
                 }
             }

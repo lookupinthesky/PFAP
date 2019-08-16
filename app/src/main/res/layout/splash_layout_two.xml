@@ -7,7 +7,7 @@
     android:background="#000"
     android:layout_height="match_parent">
 
-    <TextView
+   <!-- <TextView
         android:gravity="center_horizontal|center_vertical"
         android:id="@+id/textView3"
         android:layout_width="340dp"
@@ -107,5 +107,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
-         />
+         />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

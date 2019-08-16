@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -83,6 +84,7 @@ public class SectionDetailsFragment extends Fragment {
             SubModule subModule = module.getSections().get(sectionNumber);
             List<Question> questions = subModule.getQuestions();*/
       //      adapter = new QuestionsAdapter(rightPaneList);
+
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
             parent.setLayoutManager(layoutManager);
             //   parent.setAdapter(adapter);
@@ -196,6 +198,7 @@ public class SectionDetailsFragment extends Fragment {
 
 
         parent = view.findViewById(R.id.parent_list_section_details);
+      //  parent.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
     //    layoutManager.setAutoMeasureEnabled(false);
         parent.setLayoutManager(layoutManager);

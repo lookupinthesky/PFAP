@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
@@ -70,8 +71,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         });
 
 
-        if(getActionBar()!=null)
-        getActionBar().show();
+        if (getActionBar() != null)
+            getActionBar().show();
         surveyData = SurveyDataSingleton.getInstance(this);
         modules = surveyData.getModules();
         Intent intent = getIntent();
@@ -95,20 +96,24 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     private void calculateNext(List<Module> modules) {
         List<SubModule> subModules = modules.get(mCurrentModuleIndex).getSections();
         List<Domain> domains = subModules.get(mCurrentSectionIndex).getDomains();
-        if (mCurrentDomainIndex > domains.size() - 1) {
-            if (mCurrentSectionIndex > subModules.size() - 1) {
-                if (mCurrentModuleIndex > modules.size() - 1) {
-                    throw new IllegalStateException("Unexpected Request for next set");
+            if (mCurrentDomainIndex > domains.size() - 1 || mCurrentDomainIndex == domains.size()-1) {
+                if (mCurrentSectionIndex > subModules.size() - 1 || mCurrentSectionIndex == subModules.size()-1) {
+                    if (mCurrentModuleIndex > modules.size() - 1) {
+                        throw new IllegalStateException("Unexpected Request for next set");
+                    } else {
+                        isModuleChanged = true;
+                        mCurrentModuleIndex++;
+                        mCurrentSectionIndex = 0;
+                        mCurrentDomainIndex = 0;
+                    }
                 } else {
-                    isModuleChanged = true;
-                    mCurrentModuleIndex++;
+                    mCurrentSectionIndex++;
+                    mCurrentDomainIndex = 0;
                 }
             } else {
-                mCurrentSectionIndex++;
+                mCurrentDomainIndex++;
             }
-        } else {
-            mCurrentDomainIndex++;
-        }
+
     }
 
     @Override
@@ -125,7 +130,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
         sectionDetailsFragment = SectionDetailsFragment.newInstance(/*DEFAULT_SECTIONS_EMPTY*/);
         fm.beginTransaction().add(R.id.fragment_section_details_parent, sectionDetailsFragment).commit();
-    //    fm.executePendingTransactions();
+        //    fm.executePendingTransactions();
     }
 
     private void loadQuestions(LeftPane item) {
@@ -140,12 +145,22 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     }
 
 
-   // @Override
+    // @Override
     public void onNextClick() {
+
+
         calculateNext(modules); //TODO:
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);
         } else {
+            Module module = modules.get(mCurrentModuleIndex);
+            if(module.isResultBased()){
+                Module module1 = modules.get(mCurrentModuleIndex - 1){
+                 module =  module1.calculate(module);
+                }
+            }
+
+
             sectionsListFragment.setCurrentState(0, 0);
             sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
             sectionsListFragment.onStateChanged(true);

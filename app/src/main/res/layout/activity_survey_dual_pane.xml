@@ -29,8 +29,11 @@
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_alignParentEnd="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginEnd="24dp"
-                    android:background="@drawable/button_effect" />
+                    android:background="@drawable/button_effect"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="24dp" />
             </RelativeLayout>
 
         </Toolbar>
@@ -45,12 +48,12 @@
             android:id="@+id/fragment_sections_list_parent"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="4" />
+            android:layout_weight="2" />
 
         <FrameLayout
             android:id="@+id/fragment_section_details_parent"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="9" />
+            android:layout_weight="7" />
     </LinearLayout>
 </LinearLayout>
