@@ -26,6 +26,7 @@
             android:theme="@style/Theme.AppCompat.NoActionBar"
             android:screenOrientation="landscape"/>
         <activity
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:name=".Activities.MainActivity"
             android:screenOrientation="landscape"
            />

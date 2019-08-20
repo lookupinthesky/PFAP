@@ -10,20 +10,27 @@ import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
 
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.pfa_p.Database.SurveyContract;
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
+import com.example.pfa_p.Database.SurveyDbHelper;
+import com.example.pfa_p.Database.SurveyProvider;
 import com.example.pfa_p.Database.SurveyTaskLoader;
 import com.example.pfa_p.Fragments.SectionDetailsFragment;
 import com.example.pfa_p.Fragments.SectionsListFragment;
@@ -35,7 +42,9 @@ import com.example.pfa_p.Model.Result;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
 
@@ -97,23 +106,23 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     private void calculateNext(List<Module> modules) {
         List<SubModule> subModules = modules.get(mCurrentModuleIndex).getSections();
         List<Domain> domains = subModules.get(mCurrentSectionIndex).getDomains();
-            if (mCurrentDomainIndex > domains.size() - 1 || mCurrentDomainIndex == domains.size()-1) {
-                if (mCurrentSectionIndex > subModules.size() - 1 || mCurrentSectionIndex == subModules.size()-1) {
-                    if (mCurrentModuleIndex > modules.size() - 1) {
-                        throw new IllegalStateException("Unexpected Request for next set");
-                    } else {
-                        isModuleChanged = true;
-                        mCurrentModuleIndex++;
-                        mCurrentSectionIndex = 0;
-                        mCurrentDomainIndex = 0;
-                    }
+        if (mCurrentDomainIndex > domains.size() - 1 || mCurrentDomainIndex == domains.size() - 1) {
+            if (mCurrentSectionIndex > subModules.size() - 1 || mCurrentSectionIndex == subModules.size() - 1) {
+                if (mCurrentModuleIndex > modules.size() - 1) {
+                    throw new IllegalStateException("Unexpected Request for next set");
                 } else {
-                    mCurrentSectionIndex++;
+                    isModuleChanged = true;
+                    mCurrentModuleIndex++;
+                    mCurrentSectionIndex = 0;
                     mCurrentDomainIndex = 0;
                 }
             } else {
-                mCurrentDomainIndex++;
+                mCurrentSectionIndex++;
+                mCurrentDomainIndex = 0;
             }
+        } else {
+            mCurrentDomainIndex++;
+        }
 
     }
 
@@ -125,14 +134,14 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         loadQuestions(item);
     }
 
-    private void createSectionDetailsFragment() {
+   /* private void createSectionDetailsFragment() {
 
         FragmentManager fm = getSupportFragmentManager();
 
-        sectionDetailsFragment = SectionDetailsFragment.newInstance(/*DEFAULT_SECTIONS_EMPTY*/);
+        sectionDetailsFragment = SectionDetailsFragment.newInstance(*//*DEFAULT_SECTIONS_EMPTY*//*);
         fm.beginTransaction().add(R.id.fragment_section_details_parent, sectionDetailsFragment).commit();
         //    fm.executePendingTransactions();
-    }
+    }*/
 
     private void loadQuestions(LeftPane item) {
 
@@ -149,46 +158,53 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     // @Override
     public void onNextClick() {
         Module mCurrentModule = modules.get(mCurrentModuleIndex);
+        LeftPane item = sectionsListFragment.getLeftPaneItemForPosition(mCurrentDomainIndex);
+  //      saveToDb(item);
         calculateNext(modules); //TODO:
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);
         } else {
-            if(mCurrentModule.getName().equals("Basic Questionnaire")){
+            if (mCurrentModule.getName().equals("Basic Questionnaire")) {
                 Result result = new Result();
                 result.evaluateQuestionnaires(mCurrentModule, this);
             }
-           // Module module = modules.get(mCurrentModuleIndex);
-            /*if(module.isResultBased()){
-                Module module1 = modules.get(mCurrentModuleIndex - 1){
-                 module =  module1.calculate(module);
-                }
-            }*/
-
-
             sectionsListFragment.setCurrentState(0, 0);
             sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
             sectionsListFragment.onStateChanged(true);
         }
     }
-    private void saveToDb(LeftPane item){
 
-        if(item instanceof Domain){
+    private void saveToDb(LeftPane item) {
 
+        List<Question> questions;
+        if (item instanceof Domain) {
+            questions = ((Domain) item).getQuestions();
+            insertQuestions(questions);
+        } else if (item instanceof SubModule) {
+            if (!((SubModule) item).hasDomains()) {
+                questions = ((SubModule) item).getQuestions();
+                insertQuestions(questions);
 
-
-
-
+            } else {
+                throw new IllegalStateException("Header cannot be inserted into DB; No Questions Found");
+            }
         }
-        else if(item instanceof SubModule){
-            
 
 
+    }
+
+    private void showSnackBar() {
+        Snackbar.make(sectionDetailsParent.getRootView(), "Saved to Database", Snackbar.LENGTH_LONG).show();
+    }
 
 
-
+    private void insertQuestions(List<Question> questionList) {
+        for (Question question : questionList) {
+            ContentValues cv = question.getAnswerContentValues();
+            Uri uri = getContentResolver().insert(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv);
+            question.setAnswerIdInDb(ContentUris.parseId(uri));
         }
-
-
+        showSnackBar();
 
 
     }

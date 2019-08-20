@@ -17,6 +17,7 @@ public class Question extends RightPane{
     private String answer;
     private String questionIdInDb ;
     private int viewType;
+    private long answerIdInDb;
 
     public int get_idInDb() {
         return _idInDb;
@@ -24,6 +25,14 @@ public class Question extends RightPane{
 
     public void set_idInDb(int _idInDb) {
         this._idInDb = _idInDb;
+    }
+
+    public long getAnswerIdInDb() {
+        return answerIdInDb;
+    }
+
+    public void setAnswerIdInDb(long answerIdInDb) {
+        this.answerIdInDb = answerIdInDb;
     }
 
     public SubModule getSubModule() {

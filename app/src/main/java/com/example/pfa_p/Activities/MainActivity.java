@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity  {
 
    /* @BindView(R.id.column_headers)
     View headerView;*/
-    @BindView(R.id.serial_num)
+    /*@BindView(R.id.serial_num)
     TextView serialNumber;
     @BindView(R.id.prisonerId)
     TextView prisonerId;
@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity  {
     @BindView(R.id.results)
     ImageView resultsButton;
     @BindView(R.id.action_edit)
-    ImageView editButton;
+    ImageView editButton;*/
+
     @BindView(R.id.fabNewSurvey)
     FloatingActionButton newSurvey;
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity  {
         List<Module> modules = surveyData.getModules();
         List<User> users = surveyData.getUsers();
         Log.d(MainActivity.class.getName(), modules.toString());
-        populateListHeaders();
+     //   populateListHeaders();
         newSurvey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity  {
         });*/
     }
 
-    private void populateListHeaders(){
+    /*private void populateListHeaders(){
 
         serialNumber.setText("S No.");
         prisonerId.setText("Prisoner ID");
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity  {
         numberOfVisits.setText("Total Visits");
         assessmentStatus.setText("Assessment Status");
         historyStatus.setText("History Status");
-    }
+    }*/
 
 
 
