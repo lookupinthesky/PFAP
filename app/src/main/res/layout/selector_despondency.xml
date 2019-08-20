@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+    <com.example.pfa_p.Utils.RadioGridGroup
+
+        android:id="@+id/options_radioGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-4dp"
+        android:layout_marginLeft="-4dp"
+        android:layout_weight="1"
+
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/option_one"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/emoticon_sad_outline"
+            android:button="@null"
+            android:text="0" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/option_two"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/emoticon_neutral_outline"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:button="@null"
+            android:text="1" />
+
+        <androidx.appcompat.widget.AppCompatRadioButton
+            android:id="@+id/option_three"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/emoticon_happy_outline"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:button="@null"
+            android:text="2" />
+    </com.example.pfa_p.Utils.RadioGridGroup>
+</LinearLayout>

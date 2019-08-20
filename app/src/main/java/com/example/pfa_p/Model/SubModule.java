@@ -70,13 +70,13 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     }
 
-    boolean isPresent = true ;
+    private boolean isPresent = true;
 
-    private void setIsPresent(boolean flag){
+    public void setIsPresent(boolean flag) {
         this.isPresent = flag;
     }
 
-    public boolean isPresent(){
+    public boolean isPresent() {
         return isPresent;
     }
 
@@ -166,7 +166,7 @@ public class SubModule extends LeftPane implements RatingSystem {
     }
 
 
-    public void getListOfValidQuestionnaires() {
+   /* public void getListOfValidQuestionnaires() {
 
 
         boolean isQuestionnaireA = false;
@@ -199,7 +199,7 @@ public class SubModule extends LeftPane implements RatingSystem {
         if (questions.get(10).getAnswerIndex() != 0) {
             isQuestionnaireE = true;
         }
-    }
+    }*/
 
 
     public static SubModule getSubModule(Context context, String questionName) {

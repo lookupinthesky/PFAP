@@ -31,6 +31,7 @@ import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.LeftPane;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
+import com.example.pfa_p.Model.Result;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
@@ -147,24 +148,49 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     // @Override
     public void onNextClick() {
-
-
+        Module mCurrentModule = modules.get(mCurrentModuleIndex);
         calculateNext(modules); //TODO:
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);
         } else {
-            Module module = modules.get(mCurrentModuleIndex);
-            if(module.isResultBased()){
+            if(mCurrentModule.getName().equals("Basic Questionnaire")){
+                Result result = new Result();
+                result.evaluateQuestionnaires(mCurrentModule, this);
+            }
+           // Module module = modules.get(mCurrentModuleIndex);
+            /*if(module.isResultBased()){
                 Module module1 = modules.get(mCurrentModuleIndex - 1){
                  module =  module1.calculate(module);
                 }
-            }
+            }*/
 
 
             sectionsListFragment.setCurrentState(0, 0);
             sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
             sectionsListFragment.onStateChanged(true);
         }
+    }
+    private void saveToDb(LeftPane item){
+
+        if(item instanceof Domain){
+
+
+
+
+
+        }
+        else if(item instanceof SubModule){
+            
+
+
+
+
+
+        }
+
+
+
+
     }
 
     /*@Override

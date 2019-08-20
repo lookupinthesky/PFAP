@@ -74,12 +74,12 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
 
     public void setData(Module module) {
 
-        if(module.isResultBased){
+      /*  if (module.isResultBased) {
 
             module = module.getFilteredModule()
 
 
-        }
+        }*/
 
         this.module = module;
     }
@@ -125,12 +125,15 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         List<SubModule> sections = module.getSections();
         List<Domain> domains;
         for (SubModule subModule : sections) {
-            leftPaneList.add(subModule);
-            if (subModule.hasDomains()) {
-                domains = subModule.getDomains();
-                leftPaneList.addAll(domains);
+            if (subModule.isPresent()) {
+                leftPaneList.add(subModule);
+                if (subModule.hasDomains()) {
+                    domains = subModule.getDomains();
+                    leftPaneList.addAll(domains);
+                }
             }
         }
+
     }
 
     private void moveToNext() {
@@ -145,6 +148,12 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         setClicked(item)/*next clickable item in List*/;
         loadSectionDetails(item);
     }
+
+
+
+
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -179,7 +188,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     }
 
 
-    private class QuestionnaireHelper{
+    private class QuestionnaireHelper {
 
         boolean isQuestionnaireA;
         boolean isQuestionnaireB;
@@ -189,15 +198,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         boolean isQuestionnaireF;
 
 
-
-
-
-
-
-
-
     }
-
 
 
 }

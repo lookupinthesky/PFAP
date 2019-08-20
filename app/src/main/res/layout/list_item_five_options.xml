@@ -20,7 +20,7 @@
             android:text="NAME" />
 
         <com.example.pfa_p.Utils.RadioGridGroup
-            android:id = "@+id/two_options_radioGroup"
+            android:id = "@+id/options_radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="-4dp"

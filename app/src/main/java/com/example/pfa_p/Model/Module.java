@@ -43,6 +43,7 @@ public class Module {
     }
 
     public void setNumberOfSections(int numberOfSections) {
+        //TODO
         this.numberOfSections = numberOfSections;
     }
 
@@ -51,7 +52,7 @@ public class Module {
     }
 
 
-
+/*
     public List<SubModule> getSectionst() {
 
         if (isResultBased) {
@@ -60,11 +61,11 @@ public class Module {
                 sections.remove(i);
             }
 
-        } /*else {
+        } *//*else {
             return getSections();
-        }*/
+        }*//*
         return sections;
-    }
+    }*/
 
   /*  private Module calculate(Module module){
 
@@ -80,7 +81,7 @@ public class Module {
 
     }*/
 
-
+/*
     public Module getFilteredModule(int... indicesToRemove) {
 
         List<SubModule> sections = getSections();
@@ -91,9 +92,9 @@ public class Module {
         return this;
 
 
-    }
+    }*/
 
-    public Module calculate() {
+  /*  public Module calculate() {
 
         boolean isQuestionnaireA = false;
         boolean isQuestionnaireB = false;
@@ -129,7 +130,7 @@ public class Module {
         if (questions.get(10).getAnswerIndex() != 0) {
             isQuestionnaireE = true;
         }
-    }
+    }*/
 
     public void setSections(List<SubModule> sections) {
         this.sections = sections;
