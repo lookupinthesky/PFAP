@@ -28,12 +28,11 @@
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="24dp"
                     android:layout_marginLeft="24dp"
-
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginRight="24dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -44,25 +43,28 @@
                         <TextView
                             android:id="@+id/tv_survey_number"
                             android:layout_width="match_parent"
-                            android:layout_height="104dp"
-                            android:text="TextView" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="20"
+                            android:textSize="64sp" />
 
                         <TextView
                             android:id="@+id/tv_survey_text"
                             android:layout_width="match_parent"
                             android:layout_height="57dp"
-                            android:text="TextView" />
+                            android:gravity="center"
+                            android:text="TOTAL SURVEYS"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
-
                     android:layout_marginRight="24dp"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="12dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -72,23 +74,27 @@
                         <TextView
                             android:id="@+id/tv_user_number"
                             android:layout_width="match_parent"
-                            android:layout_height="104dp"
-                            android:text="TextView" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="18"
+                            android:textSize="64sp" />
 
                         <TextView
                             android:id="@+id/tv_user_text"
                             android:layout_width="match_parent"
                             android:layout_height="57dp"
-                            android:text="TextView" />
+                            android:gravity="center"
+                            android:text="TOTAL USERS"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="12dp"
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -99,7 +105,7 @@
                         <TextView
                             android:id="@+id/textView"
                             android:layout_width="match_parent"
-                            android:layout_height="104dp"
+                            android:layout_height="wrap_content"
                             android:text="TextView" />
 
                         <TextView
@@ -128,13 +134,13 @@
                     android:layout_margin="24dp">
 
                     <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="30dp"
                             android:text="Recent Activity" />
 
                         <ListView
@@ -143,7 +149,6 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-
 
             </LinearLayout>
         </LinearLayout>
@@ -161,6 +166,30 @@
                 android:layout_height="0dp"
                 android:layout_margin="24dp"
                 android:layout_weight="5">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ToggleButton
+                        android:text="AutoSync"
+                        android:textOff="Off"
+                        android:textOn="On"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <me.tankery.lib.circularseekbar.CircularSeekBar
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        app:cs_negative_enabled="true"
+                        android:layout_gravity="center_horizontal"
+                        app:cs_circle_style="butt"
+                        app:cs_circle_stroke_width="36dp"
+                        app:cs_pointer_stroke_width="36dp"
+                        app:cs_pointer_angle="180"/>
+
+
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
