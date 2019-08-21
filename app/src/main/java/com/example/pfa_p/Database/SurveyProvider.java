@@ -14,7 +14,7 @@ import android.util.Log;
 
 public class SurveyProvider extends ContentProvider {
     private static final String LOG_TAG = SurveyProvider.class.getSimpleName();
-    private static final UriMatcher sUriMatcher = buildUriMatcher();
+    public static final UriMatcher sUriMatcher = buildUriMatcher();
     private SurveyDbHelper mOpenHelper;
 
     // Codes for the UriMatcher //////

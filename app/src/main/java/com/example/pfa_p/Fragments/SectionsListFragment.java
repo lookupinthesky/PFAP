@@ -133,8 +133,8 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
                 }
             }
         }
-
     }
+
 
     private void moveToNext() {
         LeftPane item;
@@ -148,11 +148,6 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         setClicked(item)/*next clickable item in List*/;
         loadSectionDetails(item);
     }
-
-
-
-
-
 
 
     @Override
@@ -170,7 +165,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     }
 
 
-    private LeftPane getLeftPaneItemForPosition(int position) {
+    public LeftPane getLeftPaneItemForPosition(int position) {
         return leftPaneList.get(position);
     }
 
@@ -188,7 +183,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     }
 
 
-    private class QuestionnaireHelper {
+   /* private class QuestionnaireHelper {
 
         boolean isQuestionnaireA;
         boolean isQuestionnaireB;
@@ -198,7 +193,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         boolean isQuestionnaireF;
 
 
-    }
+    }*/
 
 
 }
