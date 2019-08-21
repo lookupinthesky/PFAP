@@ -10,10 +10,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.BeforeSurveyActivity"
-
-            android:screenOrientation="landscape"></activity>
-        <activity android:name=".Activities.SplashActivity"
+        <activity android:name=".Activities.ResultsActivity"></activity>
+        <activity
+            android:name=".Activities.LoginActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activities.SplashActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
@@ -22,20 +25,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.SurveyActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:screenOrientation="landscape"/>
         <activity
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:name=".Activities.MainActivity"
+            android:name=".Activities.SurveyActivity"
             android:screenOrientation="landscape"
-           />
-        
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".Activities.DashboardActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
         <provider
-            android:authorities="com.example.pfa_p.app"
-            android:name=".Database.SurveyProvider"/>
-
-
+            android:name=".Database.SurveyProvider"
+            android:authorities="com.example.pfa_p.app" />
     </application>
 
 </manifest>

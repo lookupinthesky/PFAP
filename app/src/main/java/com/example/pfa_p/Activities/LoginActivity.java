@@ -28,23 +28,23 @@ import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.List;
 
-public class BeforeSurveyActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks {
+public class LoginActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks {
     FragmentManager fm;
     FragmentTransaction ft;
     SurveySchemaFragment schemaFragment;
-    UserEntryDialogFragment userEntryFragment;
+ //   UserEntryDialogFragment userEntryFragment;
     CoordinatorLayout parent;
     private static final int LOADER_ID = 100;
     LoaderManager.LoaderCallbacks<Object> mCallbacks;
-    private static final String LOG_TAG = BeforeSurveyActivity.class.getName();
-
+    private static final String LOG_TAG = LoginActivity.class.getName();
+    DialogFragment dialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_before_survey);
+        setContentView(R.layout.activity_login);
         parent = findViewById(R.id.fragment_container);
-    //    parent.setAlpha(0.2f);
+        //    parent.setAlpha(0.2f);
         mCallbacks = this;
 
         /* fm = getSupportFragmentManager();
@@ -54,42 +54,47 @@ public class BeforeSurveyActivity extends FragmentActivity implements LoaderMana
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
-      //  DialogFragment dialogFragment = new UserEntryDialogFragment();
+     //   ft.addToBackStack(null);
+        //  DialogFragment dialogFragment = new UserEntryDialogFragment();
 
 
         schemaFragment = SurveySchemaFragment.getInstance(new SurveySchemaFragment.StartSurveyListener() {
             @Override
             public void onStartClick() {
-                Intent intent = new Intent(BeforeSurveyActivity.this, SurveyActivity.class);
+                Intent intent = new Intent(LoginActivity.this, SurveyActivity.class);
                 intent.putExtra("current_module_index", mCurrentModuleIndex);
                 intent.putExtra("current_section_index", mCurrentSectionIndex);
                 intent.putExtra("current_domain_index", mCurrentDomainIndex);
-                BeforeSurveyActivity.this.startActivity(intent);
+                LoginActivity.this.startActivity(intent);
             }
         });
-        DialogFragment dialogFragment = UserEntryDialogFragment.getInstance(new UserEntryDialogFragment.NextButtonListener() {
+         dialogFragment = UserEntryDialogFragment.getInstance(new UserEntryDialogFragment.NextButtonListener() {
             @Override
             public void onNextButtonClick() {
 
-                BeforeSurveyActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, schemaFragment).addToBackStack(null).commit();
-                LoaderManager.getInstance(BeforeSurveyActivity.this).initLoader(LOADER_ID, null,mCallbacks);
+                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, schemaFragment).addToBackStack(null).commit();
+                LoaderManager.getInstance(LoginActivity.this).initLoader(LOADER_ID, null, mCallbacks);
 
                 //     ft.replace(R.id.fragment_container, schemaFragment);
-            //    parent.setAlpha(1);
+                //    parent.setAlpha(1);
                 //    ft.commit();
 
             }
         });
+       dialogFragment.setCancelable(false);
+//        dialogFragment.*/
+
         dialogFragment.show(ft, "dialog");
         /*ft.add(R.id.fragment_container, userEntryFragment);
         ft.commit();
 */
     }
+
     int mCurrentSectionIndex;
     int mCurrentDomainIndex;
     int mCurrentModuleIndex;
     int visitNumber = 0;
+
     private void setCurrentState(int currentModuleIndex, int currentSectionIndex, int currentDomainIndex) {
 
         this.mCurrentModuleIndex = currentModuleIndex;
@@ -97,10 +102,36 @@ public class BeforeSurveyActivity extends FragmentActivity implements LoaderMana
         this.mCurrentDomainIndex = currentDomainIndex;
     }
 
+
+    //   public void setOnBackPressedListener
+
+
+    @Override
+    public void onBackPressed() {
+
+       /* if(dialogFragment.isVisible()){
+
+
+            *//*dialogFragment.setCancelable(true);
+            dialogFragment.dismiss();*//*
+            finish();
+        }*/
+
+
+       /* if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
+            finish();
+        } else {
+            finish();
+
+        }*/
+    //    super.onBackPressed();
+    }
+
     private void insertNewUser(String prisonerId) {
         ContentValues cv = new ContentValues();
-        if(prisonerId.equals("")){
-            prisonerId = "prisonerId" ;
+        if (prisonerId.equals("")) {
+            prisonerId = "prisonerId";
         }
         cv.put(SurveyEntry.USERS_COLUMN_INMATE_ID, prisonerId);
         cv.put(SurveyEntry.USERS_COLUMN_NAME, "prisonerName");
@@ -122,12 +153,12 @@ public class BeforeSurveyActivity extends FragmentActivity implements LoaderMana
      * @param prisonerId
      */
     private void startSurvey(String prisonerId) {
-        BeforeSurveyActivity.SurveyHelperForUser helper = new BeforeSurveyActivity.SurveyHelperForUser();
+        LoginActivity.SurveyHelperForUser helper = new LoginActivity.SurveyHelperForUser();
         long user_Id = helper.fetchUserData(prisonerId, this);
         if (user_Id == -1) {
             insertNewUser(prisonerId);
             setCurrentState(0, 0, 0);
-       //     schemaFragment.receiveProgressUpdate(30);
+            //     schemaFragment.receiveProgressUpdate(30);
             Log.d(LOG_TAG, "Method: StartSurvey, user not found, inserting a new user");
         } else {
             if (helper.isHistoryCompleted) {

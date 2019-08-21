@@ -2,16 +2,13 @@ package com.example.pfa_p.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,7 +21,6 @@ import com.example.pfa_p.Model.QuestionHeader;
 import com.example.pfa_p.Model.RightPane;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
-import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +61,7 @@ public class SectionDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
        // setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.master_section_details, container, false);
+        return inflater.inflate(R.layout.fragment_right_pane, container, false);
     }
 
 

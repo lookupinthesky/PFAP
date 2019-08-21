@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Menu;
 
 import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
@@ -21,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 SurveyDataSingleton.getInstance(SplashActivity.this);
                 /* Create an Intent that will start the Menu-Activity. */
-                Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
+                Intent mainIntent = new Intent(SplashActivity.this, DashboardActivity.class);
                 startActivity(mainIntent);
                 finish();
             }

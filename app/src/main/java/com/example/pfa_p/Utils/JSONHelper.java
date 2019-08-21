@@ -2,7 +2,7 @@ package com.example.pfa_p.Utils;
 
 import android.util.Log;
 
-import com.example.pfa_p.Activities.MainActivity;
+import com.example.pfa_p.Activities.DashboardActivity;
 import com.example.pfa_p.Model.AnswerOptions;
 import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.Module;
@@ -14,7 +14,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +25,7 @@ public class JSONHelper {
             createSurveyData(jsonString);
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.d(MainActivity.class.getName(), "Problem in JSON Parsing, Cannot create JSONHelper Object");
+            Log.d(DashboardActivity.class.getName(), "Problem in JSON Parsing, Cannot create JSONHelper Object");
         }
     }
 

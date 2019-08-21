@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.pfa_p.Adapter.RecentActivityAdapter;
 import com.example.pfa_p.Model.Module;
@@ -23,7 +21,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity  {
+public class DashboardActivity extends AppCompatActivity  {
 
 
     @BindView(R.id.recent_activity)
@@ -57,17 +55,17 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_dashboard);
         SurveyDataSingleton surveyData = SurveyDataSingleton.getInstance(this);
         ButterKnife.bind(this);
         List<Module> modules = surveyData.getModules();
         List<User> users = surveyData.getUsers();
-        Log.d(MainActivity.class.getName(), modules.toString());
+        Log.d(DashboardActivity.class.getName(), modules.toString());
      //   populateListHeaders();
         newSurvey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, BeforeSurveyActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -82,7 +80,7 @@ public class MainActivity extends AppCompatActivity  {
             public void onEditClick(User user) {
 
                 //further implementation required
-                Intent intent = new Intent(MainActivity.this, BeforeSurveyActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
 

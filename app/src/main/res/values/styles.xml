@@ -23,5 +23,8 @@
         <item name="android:backgroundDimEnabled">true</item>
 
     </style>
+    <style name="TextLabel" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">16sp</item>
+    </style>
 
 </resources>

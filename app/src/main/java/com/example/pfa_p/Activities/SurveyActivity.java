@@ -1,37 +1,20 @@
 package com.example.pfa_p.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.AsyncTaskLoader;
-import androidx.loader.content.Loader;
 
 
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
-
-import com.example.pfa_p.Database.SurveyContract;
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
-import com.example.pfa_p.Database.SurveyDbHelper;
-import com.example.pfa_p.Database.SurveyProvider;
-import com.example.pfa_p.Database.SurveyTaskLoader;
 import com.example.pfa_p.Fragments.SectionDetailsFragment;
 import com.example.pfa_p.Fragments.SectionsListFragment;
 import com.example.pfa_p.Model.Domain;
@@ -44,9 +27,7 @@ import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class SurveyActivity extends FragmentActivity implements SectionsListFragment.OnListItemClickListener
         /*SectionDetailsFragment.OnNextClickListener*/ {
@@ -68,7 +49,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_survey_dual_pane);
+        setContentView(R.layout.activity_survey);
 
         android.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);

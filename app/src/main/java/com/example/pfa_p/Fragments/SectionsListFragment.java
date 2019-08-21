@@ -63,7 +63,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.master_sections_list, container, false);
+        return inflater.inflate(R.layout.fragment_left_pane, container, false);
     }
 
     @Override
