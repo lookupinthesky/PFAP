@@ -11,6 +11,7 @@ import com.example.pfa_p.Utils.JSONHelper;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,6 +26,23 @@ public class SurveyDataSingleton {
 
     private List<Question> questions;
     List<User> users;
+
+    private int totalSurveysTaken;
+    private int totalUserSurveyed;
+    private int totalUnSyncedEntries = 0;
+
+    public int getTotalSurveysTaken() {
+        return totalSurveysTaken;
+    }
+
+    public int getTotalUserSurveyed() {
+        return totalUserSurveyed;
+    }
+
+    public int getTotalUnSyncedEntries() {
+        return totalUnSyncedEntries;
+    }
+
     private Context mContext;
     String[] projection_users = new String[]{SurveyEntry.USERS_ID, SurveyEntry.USERS_COLUMN_INMATE_ID, SurveyEntry.USERS_COLUMN_NAME, SurveyEntry.USERS_COLUMN_FLAG};
 
@@ -84,10 +102,16 @@ public class SurveyDataSingleton {
                     user.setPrisonerId(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_INMATE_ID)));
                     user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
                     user.set_id(cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID)));
-                    user.setSynced(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_FLAG)));
+                    String flag = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_FLAG));
+                    user.setSynced(flag);
+                    if(flag.equals("dirty")){
+                        totalUnSyncedEntries++;
+                    }
                     users.add(user);
                 }
                 while (cursor.moveToNext());
+                totalSurveysTaken = users.size();
+                totalUserSurveyed = new HashSet<>(users).size();
 
             } else {
 

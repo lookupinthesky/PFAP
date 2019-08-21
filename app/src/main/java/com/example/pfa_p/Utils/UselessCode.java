@@ -409,8 +409,71 @@ public class UselessCode {
 
     private int getSectionNumber(){}*/
 
+/*
+                    <LinearLayout
+    android:layout_width="863dp"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
+                        <TextView
+    android:id="@+id/serial_num"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+    android:layout_weight="1" />
 
+                        <TextView
+    android:id="@+id/prisonerId"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+    android:layout_weight="3" />
+
+                        <TextView
+    android:id="@+id/volunteer_id"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+    android:layout_weight="3" />
+
+                        <TextView
+    android:id="@+id/numberOfVisits"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+
+    android:layout_weight="1" />
+
+                        <TextView
+    android:id="@+id/history_status"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+    android:layout_weight="2" />
+
+                        <TextView
+    android:id="@+id/assessment_status"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+    android:layout_weight="2" />
+
+                        <ImageView
+    android:id="@+id/results"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+    android:layout_weight="1"
+    android:src="@drawable/round_play_arrow_black_24" />
+
+                        <ImageView
+    android:id="@+id/action_edit"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+    android:layout_weight="1"
+    android:src="@drawable/round_create_24" />
+
+                        <ImageView
+    android:id="@+id/action_delete"
+    android:layout_width="0dp"
+    android:layout_height="24dp"
+    android:layout_weight="1"
+    android:src="@drawable/round_delete_24" />
+
+                    </LinearLayout>*/
 
 
 }
