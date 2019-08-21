@@ -1,5 +1,12 @@
 package com.example.pfa_p.Activities;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -10,13 +17,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.util.Log;
 
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Database.SurveyTaskLoader;
@@ -47,8 +47,6 @@ public class LoginActivity extends FragmentActivity implements LoaderManager.Loa
         //    parent.setAlpha(0.2f);
         mCallbacks = this;
 
-        /* fm = getSupportFragmentManager();
-         ft = fm.beginTransaction();*/
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
         if (prev != null) {

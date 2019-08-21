@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Fragments.SectionDetailsFragment;
 import com.example.pfa_p.Fragments.SectionsListFragment;
@@ -109,23 +112,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     @Override
     public void onListItemClick(LeftPane item) {
-        /*if (sectionDetailsFragment == null) {
-            createSectionDetailsFragment();
-        }*//**/
         loadQuestions(item);
     }
 
-   /* private void createSectionDetailsFragment() {
-
-        FragmentManager fm = getSupportFragmentManager();
-
-        sectionDetailsFragment = SectionDetailsFragment.newInstance(*//*DEFAULT_SECTIONS_EMPTY*//*);
-        fm.beginTransaction().add(R.id.fragment_section_details_parent, sectionDetailsFragment).commit();
-        //    fm.executePendingTransactions();
-    }*/
-
     private void loadQuestions(LeftPane item) {
-
         if (sectionDetailsFragment != null) {
             if (item.getFilledValue() > 0) {
                 sectionDetailsFragment.setDataWithAnswers(item);
@@ -156,7 +146,6 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     }
 
     private void saveToDb(LeftPane item) {
-
         List<Question> questions;
         if (item instanceof Domain) {
             questions = ((Domain) item).getQuestions();
@@ -190,24 +179,4 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
-    /*@Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.survey_buttons, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.action_next){
-            calculateNext(modules); //TODO:
-            if (!isModuleChanged) {
-                sectionsListFragment.onStateChanged(false);
-            } else {
-                sectionsListFragment.setCurrentState(0, 0);
-                sectionsListFragment.setData(*//*modules.get(mCurrentModuleIndex).getSections()*//*modules.get(mCurrentModuleIndex));
-                sectionsListFragment.onStateChanged(true);
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }
