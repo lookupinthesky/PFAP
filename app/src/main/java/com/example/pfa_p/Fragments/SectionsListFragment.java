@@ -6,13 +6,11 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.pfa_p.Activities.SurveyActivity;
 import com.example.pfa_p.Adapter.LeftPaneAdapter;
 import com.example.pfa_p.Model.Domain;
@@ -20,12 +18,9 @@ import com.example.pfa_p.Model.LeftPane;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
-
+import com.tonicartos.superslim.LayoutManager;
 import java.util.ArrayList;
 import java.util.List;
-
-
-import com.tonicartos.superslim.LayoutManager;
 
 public class SectionsListFragment extends Fragment implements LeftPaneAdapter.LeftPaneClickListener {
 
@@ -73,13 +68,6 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     }
 
     public void setData(Module module) {
-
-      /*  if (module.isResultBased) {
-
-            module = module.getFilteredModule()
-
-
-        }*/
 
         this.module = module;
     }
@@ -182,18 +170,6 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         void onListItemClick(LeftPane item);
     }
 
-
-   /* private class QuestionnaireHelper {
-
-        boolean isQuestionnaireA;
-        boolean isQuestionnaireB;
-        boolean isQuestionnaireC;
-        boolean isQuestionnaireD;
-        boolean isQuestionnaireE;
-        boolean isQuestionnaireF;
-
-
-    }*/
 
 
 }

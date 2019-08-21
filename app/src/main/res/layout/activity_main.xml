@@ -171,10 +171,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ToggleButton
+                    <Switch
                         android:text="AutoSync"
-                        android:textOff="Off"
-                        android:textOn="On"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
