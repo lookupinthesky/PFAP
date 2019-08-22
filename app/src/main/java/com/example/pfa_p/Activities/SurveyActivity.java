@@ -1,10 +1,5 @@
 package com.example.pfa_p.Activities;
 
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -14,10 +9,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
+import com.example.pfa_p.Database.SurveyTaskLoader;
 import com.example.pfa_p.Fragments.SectionDetailsFragment;
 import com.example.pfa_p.Fragments.SectionsListFragment;
 import com.example.pfa_p.Model.Domain;
@@ -32,7 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
-public class SurveyActivity extends FragmentActivity implements SectionsListFragment.OnListItemClickListener
+public class SurveyActivity extends FragmentActivity implements SectionsListFragment.OnListItemClickListener, LoaderManager.LoaderCallbacks<String>
         /*SectionDetailsFragment.OnNextClickListener*/ {
 
 
@@ -45,7 +46,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     FragmentManager fm;
     FragmentTransaction ft;
     int mCurrentSectionIndex;
-    int mCurrentDomainIndex;
+    int mCurrentDomainIndex ;
     int mCurrentModuleIndex;
     private boolean isModuleChanged = false;
 
@@ -125,12 +126,18 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         }
     }
 
+    LeftPane item;
 
     // @Override
     public void onNextClick() {
         Module mCurrentModule = modules.get(mCurrentModuleIndex);
-        LeftPane item = sectionsListFragment.getLeftPaneItemForPosition(mCurrentDomainIndex);
-  //      saveToDb(item);
+//        item = sectionsListFragment.getCurrentItem();
+
+        /*if (!item.isEveryQuestionAnswered()) {
+            showSnackBar("Please complete all the fields!");
+            return;
+        }
+        saveToDb(item);*/
         calculateNext(modules); //TODO:
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);
@@ -145,38 +152,94 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         }
     }
 
-    private void saveToDb(LeftPane item) {
+    private boolean saveToDb(LeftPane item) {
         List<Question> questions;
         if (item instanceof Domain) {
             questions = ((Domain) item).getQuestions();
-            insertQuestions(questions);
+
+
+            insertAnswers(questions);
+            return true;
         } else if (item instanceof SubModule) {
             if (!((SubModule) item).hasDomains()) {
                 questions = ((SubModule) item).getQuestions();
-                insertQuestions(questions);
+                insertAnswers(questions);
+                return true;
 
             } else {
                 throw new IllegalStateException("Header cannot be inserted into DB; No Questions Found");
             }
         }
-
+        return false;
 
     }
 
-    private void showSnackBar() {
-        Snackbar.make(sectionDetailsParent.getRootView(), "Saved to Database", Snackbar.LENGTH_LONG).show();
+    private void showSnackBar(String display) {
+     Snackbar snackBar =   Snackbar.make(sectionDetailsParent.getRootView(), display, Snackbar.LENGTH_LONG);
+       /* CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
+                snackBar.getView().getLayoutParams();
+        params.setMargins(params.leftMargin , //TODO: Show snackbar above Bottomnavigation
+                params.topMargin,
+                params.rightMargin ,
+                params.bottomMargin + 48);
+
+        snackBar.getView().setLayoutParams(params);*/
+        snackBar.show();
     }
 
 
-    private void insertQuestions(List<Question> questionList) {
+    private void insertAnswers(List<Question> questionList) {
         for (Question question : questionList) {
             ContentValues cv = question.getAnswerContentValues();
             Uri uri = getContentResolver().insert(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv);
-            question.setAnswerIdInDb(ContentUris.parseId(uri));
+            long _id = ContentUris.parseId(uri);
+            if (_id != -1)
+                question.setAnswerIdInDb(_id);
         }
-        showSnackBar();
 
 
     }
 
+
+    //TODO: initloader
+
+    @NonNull
+    @Override
+    public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
+        return new SurveyTaskLoader<String>(this/*, prisonerId*/) {
+            @Nullable
+            @Override
+            public String loadInBackground() {
+                if (saveToDb(item))
+                    return new String("Saved to Database");
+                return "Could Not Save values to Database";
+            }
+
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<String> loader, String data) {
+        if (data != null) {
+            showSnackBar((String) data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<String> loader) {
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        if (item.isEveryQuestionAnswered()) {
+            saveToDb(item);
+        }
+
+        super.onDestroy();
+    }
 }

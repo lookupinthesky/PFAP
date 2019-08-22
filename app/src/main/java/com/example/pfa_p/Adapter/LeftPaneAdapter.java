@@ -49,6 +49,7 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
                 tv.setOnClickListener(this);
             } else if(item instanceof SubModule && ((SubModule) item).hasDomains() && headerName != null) {
                     headerName.setText(((SubModule) item).getName());
+                    headerName.setOnClickListener(null);
             } else if(tv!=null && item instanceof SubModule && !((SubModule) item).hasDomains()){
                 tv.setText(((SubModule) item).getName());
                 tv.setOnClickListener(this);

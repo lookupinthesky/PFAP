@@ -1,18 +1,18 @@
 package com.example.pfa_p.Adapter;
 
-import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatRadioButton;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,9 +25,6 @@ import com.example.pfa_p.Utils.RadioGridGroup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.SurveyViewHolder> {
 
@@ -81,6 +78,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             questionText.setText(question.getQuestionName());
             views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
             editText = (EditText) views.get(0);
+            editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            editText.setInputType(InputType.TYPE_CLASS_TEXT);
             editText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -177,6 +176,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 break;
         }
         Log.d(LOG_TAG, "method call: onBindViewWithId, size of views array = " + views.size());
+        Collections.reverse(views);
         return views;
     }
 

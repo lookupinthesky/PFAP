@@ -1,12 +1,10 @@
 package com.example.pfa_p.Model;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import com.example.pfa_p.SurveyDataSingleton;
 import com.example.pfa_p.Utils.RatingSystem;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class SubModule extends LeftPane implements RatingSystem {
     }
 
     public boolean hasDomains() {
-        return hasDomains;
+        return domains!=null;
     }
 
     public void setHasDomains(boolean hasDomains) {
@@ -266,5 +264,10 @@ public class SubModule extends LeftPane implements RatingSystem {
     @Override
     public int getMaxValue() {
         return 0;
+    }
+
+    @Override
+    public boolean isEveryQuestionAnswered() {
+        return false;
     }
 }

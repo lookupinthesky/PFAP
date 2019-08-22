@@ -14,7 +14,7 @@ public class Question extends RightPane{
     private int answerIndex;
     private boolean isAssessment = false ;
     private int serialNumber;
-    private String answer;
+    private String answer = null;
     private String questionIdInDb ;
     private int viewType;
     private long answerIdInDb;
@@ -90,6 +90,10 @@ public class Question extends RightPane{
     public void setAnswer(String response, boolean isAssessment){
         this.answer = response;
         this.isAssessment = isAssessment;
+        if(getOptions().getOptions().size()>0){
+        answerIndex =   getOptions().getOptions().indexOf(response);
+        }
+
     }
 
     public void setAnswer(int index, String response, boolean isAssessment){

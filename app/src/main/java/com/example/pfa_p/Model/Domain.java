@@ -146,4 +146,11 @@ public class Domain extends LeftPane {
     public int getMaxValue() {
         return 0;
     }
+
+    @Override
+    public boolean isEveryQuestionAnswered() {
+
+
+        return false;
+    }
 }

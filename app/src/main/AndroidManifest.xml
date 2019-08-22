@@ -13,7 +13,7 @@
         <activity android:name=".Activities.ResultsActivity"></activity>
         <activity
             android:name=".Activities.LoginActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="stateHidden|adjustNothing"
             android:screenOrientation="landscape" />
         <activity
             android:name=".Activities.SplashActivity"

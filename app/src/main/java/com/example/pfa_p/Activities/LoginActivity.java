@@ -28,14 +28,14 @@ import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.List;
 
-public class LoginActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks {
+public class LoginActivity extends FragmentActivity  {
     FragmentManager fm;
     FragmentTransaction ft;
     SurveySchemaFragment schemaFragment;
  //   UserEntryDialogFragment userEntryFragment;
     CoordinatorLayout parent;
     private static final int LOADER_ID = 100;
-    LoaderManager.LoaderCallbacks<Object> mCallbacks;
+    LoaderManager.LoaderCallbacks<String> mCallbacks;
     private static final String LOG_TAG = LoginActivity.class.getName();
     DialogFragment dialogFragment;
 
@@ -45,7 +45,39 @@ public class LoginActivity extends FragmentActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_login);
         parent = findViewById(R.id.fragment_container);
         //    parent.setAlpha(0.2f);
-        mCallbacks = this;
+        mCallbacks = new LoaderManager.LoaderCallbacks<String>() {
+            @NonNull
+            @Override
+            public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
+                return new SurveyTaskLoader<String>(LoginActivity.this/*, prisonerId*/) {
+
+                    @Nullable
+                    @Override
+                    public String loadInBackground() {
+                        startSurvey(prisonerId);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+                    }
+                };
+            }
+
+            @Override
+            public void onLoadFinished(@NonNull Loader<String> loader, String data) {
+
+                schemaFragment.receiveProgressUpdate(10000);
+
+            }
+
+            @Override
+            public void onLoaderReset(@NonNull Loader<String> loader) {
+
+            }
+            };
+
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
@@ -155,7 +187,7 @@ public class LoginActivity extends FragmentActivity implements LoaderManager.Loa
         long user_Id = helper.fetchUserData(prisonerId, this);
         if (user_Id == -1) {
             insertNewUser(prisonerId);
-            setCurrentState(0, 0, 0);
+            setCurrentState(0, 0, -1);
             //     schemaFragment.receiveProgressUpdate(30);
             Log.d(LOG_TAG, "Method: StartSurvey, user not found, inserting a new user");
         } else {
@@ -174,36 +206,7 @@ public class LoginActivity extends FragmentActivity implements LoaderManager.Loa
 
     String prisonerId = "prisonerId";
 
-    @NonNull
-    @Override
-    public Loader onCreateLoader(int id, @Nullable Bundle args) {
-        return new SurveyTaskLoader(this, prisonerId) {
 
-            @Nullable
-            @Override
-            public Object loadInBackground() {
-                startSurvey(prisonerId);
-                return null;
-            }
-
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader loader, Object data) {
-
-        schemaFragment.receiveProgressUpdate(10000);
-
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader loader) {
-
-    }
 
 
     /**
@@ -259,7 +262,6 @@ public class LoginActivity extends FragmentActivity implements LoaderManager.Loa
          */
         void fetchHistoryTableDataForUser(long userId, Context context) {
 
-
             String selection_history = SurveyEntry.ANSWERS_COLUMN_USER_ID + " = ?";
 
             String[] selectionArgs_history = new String[]{String.valueOf(userId)};
@@ -276,12 +278,13 @@ public class LoginActivity extends FragmentActivity implements LoaderManager.Loa
                     response = cursor.getString(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_RESPONSE));
                     for (Question question : questions) {
                         if (question.get_idInDb() == questionId) { //TODO: implement a Database interface to POJO classes
+                           //setting answers because recreating run time data
                             question.setAnswer(response, false); // TODO: modify questions pojo to receive string answers for radiobuttons
-//determine state from last question in database
+                            //determine state from last question in database
                             if (count == cursor.getCount()) {
                                 currentSectionIndex = question.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
                                 currentModuleIndex = question.getSubModule().getModule().getIndex();
-                                currentDomainIndex = question.getDomain().getIndex();
+                                currentDomainIndex = -1;
                                 setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
                             }
                         }

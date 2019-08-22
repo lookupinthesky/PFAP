@@ -134,7 +134,7 @@ public class SectionDetailsFragment extends Fragment {
 
     OnNextClickListener mListener;
 
-    private void onNextClick() {
+    /*private void onNextClick() {
 
         if (item.getFilledValue() < item.getMaxValue()) {
             showDialog();
@@ -142,7 +142,7 @@ public class SectionDetailsFragment extends Fragment {
             mListener.onNextClick();
         }
 
-    }
+    }*/
 
     public void setOnNextClickListener(OnNextClickListener mListener) {
         this.mListener = mListener;

@@ -88,11 +88,25 @@ public class SurveyDataSingleton {
         questions = helper.getQuestions();
     }
 
+
+    private void writeToDb(Context context){
+        //TODO: write questions, sections, domains, survey tables data to db and get IDs
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     private void getUsersDataFromDb(Context context) {
-
-
         Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
-
         users = new ArrayList<>();
         User user = new User();
         try {

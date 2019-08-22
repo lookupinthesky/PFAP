@@ -1,44 +1,49 @@
 package com.example.pfa_p.Fragments;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.icu.util.ValueIterator;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.daimajia.numberprogressbar.NumberProgressBar;
-import com.daimajia.numberprogressbar.OnProgressBarListener;
 import com.example.pfa_p.R;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import com.victor.loading.book.BookLoading;
 
 public class SurveySchemaFragment extends Fragment {
 
     StartSurveyListener mListener;
     Button startButton;
-    NumberProgressBar progressBar;
+  //  NumberProgressBar progressBar;
     public static final String LOG_TAG = SurveySchemaFragment.class.getName();
+    private BookLoading progressView;
+    double elapsedSeconds;
+    long elapsedMilliSeconds;
+    long endTime;
+    long startTime;
   //  int mCurrentProgress = 1000;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.survey_schema_fragment, container, false);
-        progressBar = (NumberProgressBar)view.findViewById(R.id.progress_bar);
+        View view = inflater.inflate(R.layout.fragment_loading_survey, container, false);
+        progressView = view.findViewById(R.id.progressView);
+        progressView.start();
+        startTime  = SystemClock.elapsedRealtime();
+
+
+
+
+//        progressBar = (NumberProgressBar)view.findViewById(R.id.progress_bar);
 //        progressBar.setMax(10000);
    //     progressBar.setProgress(0);
-        progressBar.setOnProgressBarListener(new OnProgressBarListener() {
+       /* progressBar.setOnProgressBarListener(new OnProgressBarListener() {
 
 
 
@@ -50,7 +55,7 @@ public class SurveySchemaFragment extends Fragment {
                 }
                 Log.d(LOG_TAG, "onProgressChanged Called with current = " + current + " and max = " + max);
             }
-        });
+        });*/
 
        /* startButton = view.findViewById(R.id.start_button);
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -63,13 +68,30 @@ public class SurveySchemaFragment extends Fragment {
     }
 
     public void receiveProgressUpdate(int progress){
-
+        if(progress==10000){
+            endTime = SystemClock.elapsedRealtime();
+            elapsedMilliSeconds  = endTime - startTime;
+       //     elapsedSeconds = elapsedMilliSeconds / 1000.0;
+            if(elapsedMilliSeconds>5000) {
+                progressView.stop();
+                mListener.onStartClick();
+            } else{
+           final Handler  handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressView.stop();
+                        mListener.onStartClick();
+                    }
+                }, 5000-elapsedMilliSeconds);
+            }
+        }
 
     //    progressBar.setProgress(progress);
 
-        int mCurrentProgress = progressBar.getProgress();
+   //     int mCurrentProgress = progressBar.getProgress();
 
-        ObjectAnimator progressAnim =   ObjectAnimator.ofInt(progressBar, "progress",  progress).setDuration(5000);
+        /*ObjectAnimator progressAnim =   ObjectAnimator.ofInt(progressBar, "progress",  progress).setDuration(5000);
         progressAnim.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
@@ -92,7 +114,7 @@ public class SurveySchemaFragment extends Fragment {
             }
         });
 
-        progressAnim.start();
+        progressAnim.start();*/
 
 
 

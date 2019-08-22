@@ -6,11 +6,13 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.pfa_p.Activities.SurveyActivity;
 import com.example.pfa_p.Adapter.LeftPaneAdapter;
 import com.example.pfa_p.Model.Domain;
@@ -19,6 +21,7 @@ import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.tonicartos.superslim.LayoutManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,10 +111,13 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         }, 100);
     }
 
+    List<SubModule> sections;
+    List<Domain> domains;
+
     private void createLeftPaneListData() {
         leftPaneList = new ArrayList<>();
-        List<SubModule> sections = module.getSections();
-        List<Domain> domains;
+        sections = module.getSections();
+
         for (SubModule subModule : sections) {
             if (subModule.isPresent()) {
                 leftPaneList.add(subModule);
@@ -128,10 +134,10 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         LeftPane item;
         if (mCurrentDomainIndex != -1) {
             mCurrentDomainIndex++;
-            item = getLeftPaneItemForPosition(mCurrentDomainIndex);
+            item = sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
         } else {
             mCurrentSectionIndex++;
-            item = getLeftPaneItemForPosition(mCurrentSectionIndex);
+            item = sections.get(mCurrentSectionIndex);
         }
         setClicked(item)/*next clickable item in List*/;
         loadSectionDetails(item);
@@ -149,12 +155,23 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         parent.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         parent.setLayoutManager(new LayoutManager(context));
         parent.setAdapter(adapter);
-        loadSectionDetails(mCurrentDomainIndex == -1 ? getLeftPaneItemForPosition(mCurrentSectionIndex) : getLeftPaneItemForPosition(mCurrentDomainIndex));
+
+
+        loadSectionDetails(mCurrentDomainIndex == -1 ? leftPaneList.get(mCurrentSectionIndex) : ((SubModule)leftPaneList.get(mCurrentSectionIndex)).getDomains().get(mCurrentDomainIndex));
     }
 
 
     public LeftPane getLeftPaneItemForPosition(int position) {
         return leftPaneList.get(position);
+    }
+
+    public LeftPane getCurrentItem() {
+
+        if (mCurrentDomainIndex == -1) {
+            return leftPaneList.get(mCurrentSectionIndex);
+        } else {
+            return sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
+        }
     }
 
     private void loadSectionDetails(LeftPane item) {
@@ -169,7 +186,6 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     public interface OnListItemClickListener {
         void onListItemClick(LeftPane item);
     }
-
 
 
 }

@@ -104,11 +104,13 @@ public class Result implements RatingSystem {
         isSectionIPresent[1] = questions.get(3).getAnswerIndex() == 0;
         isSectionIPresent[2] = questions.get(2).getAnswerIndex() == 0 && questions.get(6).getAnswerIndex() == 0;
         for (int i = 4; i < 10; i++) {
-            if (isSectionIPresent[3] = questions.get(i).getAnswerIndex() == 0)
+            if ( questions.get(i).getAnswerIndex() == 0) {
+                isSectionIPresent[3] = true;
                 break;
-
+            }
         }
         isSectionIPresent[4] = questions.get(10).getAnswerIndex() != 0;
+        isSectionIPresent[5] = true;
 
         for(int i = 0; i<nextModule.getSections().size(); i++){
 
