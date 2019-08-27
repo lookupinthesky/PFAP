@@ -3,6 +3,7 @@ package com.example.pfa_p.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,10 +89,15 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
             createLeftPaneListData();
             setDataToAdapter();
             setClicked(leftPaneList.get(0));
+          //  loadSectionDetails(leftPaneList.get(0));
         }
     }
 
+
+
     public void setCurrentState(/*int moduleIndex,*/ int subModuleIndex, int domainIndex) {
+
+        Log.d(LOG_TAG, "mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex);
         this.mCurrentDomainIndex = domainIndex;
         this.mCurrentSectionIndex = subModuleIndex;
     }

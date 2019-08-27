@@ -17,12 +17,12 @@ import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.LeftPane;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
-import com.example.pfa_p.Model.QuestionHeader;
 import com.example.pfa_p.Model.RightPane;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SectionDetailsFragment extends Fragment {
@@ -105,6 +105,21 @@ public class SectionDetailsFragment extends Fragment {
 
 
     }
+    public boolean setEditableAnswers() {
+        String[] array = adapter.getEditableAnswers();
+
+        if(Arrays.equals(array,getOriginalArray()))
+            return false;
+
+        for (int i = 0; i < rightPaneList.size(); i++) {
+            if (array[i] == null)
+                continue;
+            ((Question) rightPaneList.get(i)).setAnswer(array[i], false);
+        }
+        return  true;
+    }
+
+     // return   adapter.getEditableAnswers();
 
 
     public void setDataWithAnswers(LeftPane item) {
@@ -117,7 +132,7 @@ public class SectionDetailsFragment extends Fragment {
         } else {
             adapter.setData(rightPaneList);
         }*/
-        setAnswers();
+        setAnswersTwo();
 
     }
 
@@ -158,13 +173,33 @@ public class SectionDetailsFragment extends Fragment {
         } else if (item instanceof SubModule) {
             questions = ((SubModule) item).getQuestions();
         }
-        QuestionHeader header = new QuestionHeader();
-        rightPaneList.add(header);
+        /*QuestionHeader header = new QuestionHeader();
+        rightPaneList.add(header);*/
         rightPaneList.addAll(questions);
 
     }
 
     List<Question> questions;
+
+
+    private void setAnswersTwo() {
+
+        String[] answersArray = adapter.getEditableAnswers();
+
+        for (int i = 0; i < questions.size(); i++) {
+            answersArray[i] = questions.get(i).getAnswer();
+        }
+
+    }
+
+    private String[] getOriginalArray(){
+
+        String [] originalArray = new String[questions.size()];
+        for (int i = 0; i < questions.size(); i++) {
+            originalArray[i] = questions.get(i).getAnswer();
+        }
+        return originalArray;
+    }
 
     private void setAnswers() {
 

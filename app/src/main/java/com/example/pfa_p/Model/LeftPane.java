@@ -4,8 +4,6 @@ public abstract class LeftPane {
 
 public abstract int getFilledValue();
 
-public abstract int getMaxValue();
-
 public abstract boolean isEveryQuestionAnswered();
 
 }

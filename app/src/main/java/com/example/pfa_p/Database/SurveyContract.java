@@ -22,6 +22,7 @@ public class SurveyContract {
 
 
         public static final String TABLE_DOMAINS = "domains";
+
         public static final String DOMAINS_COLUMN_ID = "_ID";
         public static final String DOMAINS_COLUMN_NAME = "domain_name";
         public static final String DOMAINS_COLUMN_SECTION_ID = "section_id";
@@ -29,6 +30,7 @@ public class SurveyContract {
 
 
         public static final String TABLE_SURVEYS = "surveys";
+
         public static final String SURVEYS_COLUMN_PK = "_ID";
         public static final String SURVEY_COLUMN_SURVEY_ID = "survey_id";
 

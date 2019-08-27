@@ -1,10 +1,5 @@
 package com.example.pfa_p.Utils;
 
-import com.example.pfa_p.Model.Question;
-import com.example.pfa_p.Model.SubModule;
-
-import java.util.List;
-
 public interface RatingSystem {
 
 
@@ -19,7 +14,7 @@ public interface RatingSystem {
     String RESULT_NORMAL_RESPONSE = "Normal response";
     String RESULT_OVER_EXPRESSIVE = "Over Expressive (Require PFA - P and/or referral)";
     String RESULT_MILD_DESPONDENCY = "Mild Despondency (Require PFA-P)" ;
-    String RESULT_SEVERe_DESPONDENCY = "Moderate to Severe Despondency (Require referral and/or PFA-P)";
+    String RESULT_SEVERE_DESPONDENCY = "Moderate to Severe Despondency (Require referral and/or PFA-P)";
 
     String RESULT_NORMAL = "Normal";
     String RESULT_MILD = "Mild";

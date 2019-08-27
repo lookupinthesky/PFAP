@@ -46,7 +46,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     FragmentManager fm;
     FragmentTransaction ft;
     int mCurrentSectionIndex;
-    int mCurrentDomainIndex ;
+    int mCurrentDomainIndex;
     int mCurrentModuleIndex;
     private boolean isModuleChanged = false;
 
@@ -118,7 +118,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     private void loadQuestions(LeftPane item) {
         if (sectionDetailsFragment != null) {
-            if (item.getFilledValue() > 0) {
+            if (item.isEveryQuestionAnswered()) {
                 sectionDetailsFragment.setDataWithAnswers(item);
             } else {
                 sectionDetailsFragment.setData(item);
@@ -128,42 +128,50 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     LeftPane item;
 
+
     // @Override
     public void onNextClick() {
+        boolean isUpdate;
         Module mCurrentModule = modules.get(mCurrentModuleIndex);
-//        item = sectionsListFragment.getCurrentItem();
-
-        /*if (!item.isEveryQuestionAnswered()) {
+        item = sectionsListFragment.getCurrentItem();
+        isUpdate = !sectionDetailsFragment.setEditableAnswers();
+        if (!item.isEveryQuestionAnswered()) {
             showSnackBar("Please complete all the fields!");
             return;
         }
-        saveToDb(item);*/
+        saveToDb(item, isUpdate);
         calculateNext(modules); //TODO:
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);
         } else {
             if (mCurrentModule.getName().equals("Basic Questionnaire")) {
-                Result result = new Result();
-                result.evaluateQuestionnaires(mCurrentModule, this);
+                Result.evaluateQuestionnaires(mCurrentModule, this);
             }
+
             sectionsListFragment.setCurrentState(0, 0);
             sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
             sectionsListFragment.onStateChanged(true);
         }
     }
 
-    private boolean saveToDb(LeftPane item) {
+    private boolean saveToDb(LeftPane item, boolean isUpdate) {
         List<Question> questions;
         if (item instanceof Domain) {
             questions = ((Domain) item).getQuestions();
-
-
-            insertAnswers(questions);
+            insertAnswers(questions, true, isUpdate);
             return true;
         } else if (item instanceof SubModule) {
             if (!((SubModule) item).hasDomains()) {
                 questions = ((SubModule) item).getQuestions();
-                insertAnswers(questions);
+                String userId = String.valueOf(((SubModule)item).getModule().getUser().getIdInDb());
+                if (((SubModule) item).getName().equals("Basic Questionnaire")) {
+                    insertAnswers(questions, true, isUpdate);
+                } else {
+                    insertAnswers(questions, false, isUpdate);
+                    if(((SubModule) item).getIndex()== ((SubModule) item).getModule().getSections().size()-1)
+
+                    updateHistoryFlagInUserTable(userId);
+                }
                 return true;
 
             } else {
@@ -174,8 +182,15 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
+    private void updateHistoryFlagInUserTable(String userId){
+
+        ContentValues cv = new ContentValues();
+        cv.put(SurveyEntry.USERS_COLUMN_HISTORY_FLAG, "COMPLETED");
+        getContentResolver().update(SurveyEntry.TABLE_USERS_CONTENT_URI, cv, SurveyEntry.USERS_ID + " =?", new String[]{userId});
+    }
+
     private void showSnackBar(String display) {
-     Snackbar snackBar =   Snackbar.make(sectionDetailsParent.getRootView(), display, Snackbar.LENGTH_LONG);
+        Snackbar snackBar = Snackbar.make(sectionDetailsParent.getRootView(), display, Snackbar.LENGTH_LONG);
        /* CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
                 snackBar.getView().getLayoutParams();
         params.setMargins(params.leftMargin , //TODO: Show snackbar above Bottomnavigation
@@ -188,13 +203,30 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     }
 
 
-    private void insertAnswers(List<Question> questionList) {
+    private void insertAnswers(List<Question> questionList, boolean isAssessment, boolean isUpdate) {
+        Uri uri;
+
         for (Question question : questionList) {
+            String userId = String.valueOf(question.getSubModule().getModule().getUser().getIdInDb());
+            String visitNumber = String.valueOf(question.getVisitNumber());
             ContentValues cv = question.getAnswerContentValues();
-            Uri uri = getContentResolver().insert(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv);
-            long _id = ContentUris.parseId(uri);
-            if (_id != -1)
-                question.setAnswerIdInDb(_id);
+            if (!isUpdate) {
+                if (isAssessment)
+                    uri = getContentResolver().insert(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv);
+                else
+                    uri = getContentResolver().insert(SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, cv);
+                long _id = ContentUris.parseId(uri);
+                if (_id != -1)
+                    question.setAnswerIdInDb(_id);
+            } else {
+                if (isAssessment)
+                    getContentResolver().update(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv,
+                            SurveyEntry.ANSWERS_COLUMN_USER_ID + " =? AND " + SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + " =?", new String[]{userId, visitNumber});
+                else
+                    getContentResolver().update(SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, cv, SurveyEntry.ANSWERS_COLUMN_USER_ID + " = ?",
+                            new String[]{userId});
+            }
+
         }
 
 
@@ -210,7 +242,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             @Nullable
             @Override
             public String loadInBackground() {
-                if (saveToDb(item))
+                if (saveToDb(item, false))
                     return new String("Saved to Database");
                 return "Could Not Save values to Database";
             }
@@ -236,8 +268,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     @Override
     protected void onDestroy() {
 
-        if (item.isEveryQuestionAnswered()) {
-            saveToDb(item);
+        if (item != null && item.isEveryQuestionAnswered()) {
+            saveToDb(item, false);
         }
 
         super.onDestroy();

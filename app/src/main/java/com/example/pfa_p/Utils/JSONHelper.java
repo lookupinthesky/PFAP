@@ -29,12 +29,21 @@ public class JSONHelper {
         }
     }
 
+
+    public static String getSurveyId(){
+
+        return "survey_id";
+    }
+
+
     public List<Module> getModules() {
         return modules;
     }
     public List<Question> getQuestions() {
         return questions;
     }
+    public List<Domain> getDomains(){return domains; }
+    public List<SubModule> getSections(){return subModules;}
 
     private List<Module> modules;
     private List<SubModule> subModules;
@@ -160,6 +169,7 @@ public class JSONHelper {
                     question.getSubModule().setModule(module);
                 }
             }
+
             question.setOptions(getAnswerOptionsForQuestion(object));
             question.setSerialNumber(object.getInt("serial_number"));
             questions.add(question);
@@ -184,8 +194,9 @@ public class JSONHelper {
     }
 
     private void setDomainsToSubModules(List<SubModule> subModules, List<Domain> domains) {
-        int count = 0;
+
         for (SubModule submodule : subModules) {
+            int count = 0;
             for (Domain domain : domains) {
                 if (domain.getSubModule().getName().equals(submodule.getName())) {
                     domain.setIndex(count++);
@@ -210,8 +221,9 @@ public class JSONHelper {
     }
 
     private void setSubModulesToModules(List<Module> modules, List<SubModule> subModules) {
-       int count = 0;
+
         for (Module module : modules) {
+            int count = 0;
             for (SubModule subModule6 : subModules) {
                 if (subModule6.getModule().getName().equals(module.getName())) {
                     subModule6.setIndex(count++);

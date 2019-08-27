@@ -1,7 +1,6 @@
 package com.example.pfa_p.Adapter;
 
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,18 +33,21 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     private int moduleIndex;
     private int sectionIndex;
     private List<RightPane> rightPaneList;
+    String[] answersArray;
 
     public QuestionsAdapter(List<RightPane> data) {
 
         //TODO: call to super????????????
         super();
         this.rightPaneList = data;
+        answersArray = new String[rightPaneList.size()];
     }
 
     public void setData(List<RightPane> data) {
 
         this.rightPaneList = data;
         notifyDataSetChanged();
+        answersArray = new String[rightPaneList.size()];
     }
 
     static abstract class SurveyViewHolder extends RecyclerView.ViewHolder {
@@ -59,28 +61,120 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         abstract void bind(RightPane item);
     }
 
+
+    private class CustomEditTextListener implements TextWatcher {
+
+        //int position;
+        public CustomEditTextListener(Question question) {
+            this.question = question;
+        }
+
+        private Question question;
+
+        public void setQuestion(Question question) {
+            this.question = question;
+        }
+
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+           // question.setAnswer(editable.toString(), moduleIndex == 1);
+            answersArray[rightPaneList.indexOf(question)] = editable.toString();
+        }
+    }
+
+
     public class EditableItemViewHolder extends SurveyViewHolder {
 
         public EditText editText;
         List<View> views;
         View parent;
         Question question;
+        TextWatcher mTextWatcher;
 
         EditableItemViewHolder(@NonNull View parent) {
             super(parent);
             this.parent = parent;
             questionText = parent.findViewById(R.id.question_text);
+            editText = parent.findViewById(R.id.option_editable);
+            mTextWatcher = new CustomEditTextListener(question);
+
+           /* new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                   *//* if (charSequence != null) {
+                        question.setAnswer(charSequence.toString(), moduleIndex == 1);
+                    }*//*
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    question.setAnswer(editable.toString(), moduleIndex == 1);
+                    Log.d(LOG_TAG, "after textchanged for question " + question.getQuestionName() + " answer = " + editable.toString());
+                }
+            };*/
         }
 
         @Override
         void bind(RightPane item) {
-            Question question = (Question) item;
+            question = (Question) item;
             questionText.setText(question.getQuestionName());
-            views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
-            editText = (EditText) views.get(0);
+
+            editText.removeTextChangedListener(mTextWatcher);
+            mTextWatcher = new CustomEditTextListener(question);
+            editText.addTextChangedListener(mTextWatcher);
+            editText.setText(answersArray[rightPaneList.indexOf(question)]);
+            //    views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
+            //    editText = (EditText) views.get(0);
+           /* TextWatcher mTextWatcher = new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    if (charSequence != null) {
+                        question.setAnswer(charSequence.toString(), moduleIndex == 1);
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    question.setAnswer(editable.toString(), moduleIndex == 1);
+                    Log.d(LOG_TAG, "after textchanged for question " + question.getQuestionName() + " answer = " + editable.toString() );
+                }
+            };*/
+          /*  editText.removeTextChangedListener(mTextWatcher);
+            editText.setText("");
+            if(question.getAnswer()!=null && question.getAnswer().length()>0){ // condition for when view recycles no data loses
+                editText.removeTextChangedListener(mTextWatcher);
+                editText.setText(question.getAnswer());
+                Log.d(LOG_TAG, "Answer being set for question after recycling " + question.getQuestionName() + " answer = " + question.getAnswer());
+                editText.addTextChangedListener(mTextWatcher);
+            }*/
+
+
             editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            editText.setInputType(InputType.TYPE_CLASS_TEXT);
-            editText.addTextChangedListener(new TextWatcher() {
+            editText.setInputType(question.getOptions().getInputType());
+            /* editText.addTextChangedListener(mTextWatcher);*//*new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -98,9 +192,28 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 public void afterTextChanged(Editable editable) {
 
                 }
-            });
+            });*/
         }
     }
+
+
+   /* private int getInputType(Question question){
+
+        String inputType =question.getOptions().getInputType();
+        int inputTypefinal;
+        switch (inputType){
+
+
+            case "NUMBER":
+        }
+
+
+
+    }*/
+
+   public String[] getEditableAnswers(){
+       return answersArray;
+   }
 
     public class TwoOptionsViewHolder extends SurveyViewHolder implements RadioGridGroup.OnCheckedChangeListener {
 
@@ -125,15 +238,42 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             Question question = (Question) item;
             views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
             for (int i = 0; i < views.size(); i++) {
-                ((RadioButton) views.get(i)).setText(question.getOptions().getOptions().get(i));
+                RadioButton rb = (RadioButton) views.get(i);
+                rb.setText(question.getOptions().getOptions().get(i));
             }
+            options.setOnCheckedChangeListener(null);
+            options.clearCheck();
+
+
+            if (question.getAnswer() != null) { // condition for when view recycles, no data loses
+                if (question.getAnswerIndex() >= 0) {
+                    options.setOnCheckedChangeListener(null);
+                    options.check(views.get(question.getAnswerIndex()).getId());
+                    options.setOnCheckedChangeListener(this);
+                }
+            }
+
             Log.d(LOG_TAG, "is options null in bind method ? " + options.toString() + " ; postion = " + rightPaneList.indexOf(item));
+           /* RadioGridGroup.OnCheckedChangeListener mListener = new RadioGridGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGridGroup group, int checkedId) {
+                    RadioButton button = (RadioButton) group.findViewById(checkedId);
+                    Log.d(LOG_TAG, "checkedId = " + checkedId + " question is " + question.getQuestionName());
+                    button.setChecked(true);
+                    int index = group.indexOfChild(button);
+                    // boolean isAssessment = question.getSubModule().getModule();
+                    question.setAnswer(button.getText().toString(), moduleIndex == 1);
+                }
+            };*/
             options.setOnCheckedChangeListener(this);
+
         }
 
         @Override
         public void onCheckedChanged(RadioGridGroup group, int checkedId) {
-            RadioButton button = group.findViewById(checkedId);
+            RadioButton button = (RadioButton) group.findViewById(checkedId);
+            Log.d(LOG_TAG, "checkedId = " + checkedId + " question is " + question.getQuestionName());
+            button.setChecked(true);
             int index = group.indexOfChild(button);
             // boolean isAssessment = question.getSubModule().getModule();
             question.setAnswer(button.getText().toString(), moduleIndex == 1);
@@ -311,6 +451,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     @Override
     public void onBindViewHolder(@NonNull SurveyViewHolder holder, int position) {
 
+        //     holder.setIsRecyclable(false);
         holder.bind(rightPaneList.get(position));
         Log.d(LOG_TAG, "method call: onBindViewHolder, position = " + position);
     }

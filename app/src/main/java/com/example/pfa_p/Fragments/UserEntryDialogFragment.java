@@ -1,8 +1,6 @@
 package com.example.pfa_p.Fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
@@ -16,9 +14,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
-import com.example.pfa_p.Activities.LoginActivity;
 import com.example.pfa_p.R;
 
 
@@ -105,9 +101,14 @@ public class UserEntryDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
 
+                String prisonerIdText = prisonerId.getText().toString();
+                String volunteerIdText = volunteerId.getText().toString();
+                if(volunteerIdText.equals("")){
+                    volunteerIdText = "volunteerId";
+                }
                 if (validatefields()) {
                     dismiss();
-                    mListener.onNextButtonClick();
+                    mListener.onNextButtonClick(prisonerIdText,volunteerIdText);
                 }
             }
         });
@@ -132,6 +133,6 @@ public class UserEntryDialogFragment extends DialogFragment {
 
     public interface NextButtonListener {
 
-        void onNextButtonClick();
+        void onNextButtonClick(String prisonerId, String volunteerId);
     }
 }

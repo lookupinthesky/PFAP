@@ -1,24 +1,28 @@
 package com.example.pfa_p.Adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.LeftPane;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.tonicartos.superslim.LayoutManager;
 import com.tonicartos.superslim.LinearSLM;
+
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-
-
+import static com.example.pfa_p.Fragments.SectionsListFragment.LOG_TAG;
 
 
 public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPaneViewHolder> {
@@ -49,6 +53,7 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
                 tv.setOnClickListener(this);
             } else if(item instanceof SubModule && ((SubModule) item).hasDomains() && headerName != null) {
                     headerName.setText(((SubModule) item).getName());
+                    Log.d(LOG_TAG, "SubModule has domains  " + ((SubModule) item).hasDomains());
                     headerName.setOnClickListener(null);
             } else if(tv!=null && item instanceof SubModule && !((SubModule) item).hasDomains()){
                 tv.setText(((SubModule) item).getName());

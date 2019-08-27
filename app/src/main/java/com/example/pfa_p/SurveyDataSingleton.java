@@ -1,11 +1,16 @@
 package com.example.pfa_p;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
+import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
+import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.Utils.JSONHelper;
 
@@ -30,6 +35,15 @@ public class SurveyDataSingleton {
     private int totalSurveysTaken;
     private int totalUserSurveyed;
     private int totalUnSyncedEntries = 0;
+    private static long mCurrentPrisonerId;
+
+    public static long getCurrentPrisonerId() {
+        return mCurrentPrisonerId;
+    }
+
+    public static void setCurrentPrisonerId(long mPrisonerId) {
+        mCurrentPrisonerId = mPrisonerId;
+    }
 
     public int getTotalSurveysTaken() {
         return totalSurveysTaken;
@@ -43,7 +57,7 @@ public class SurveyDataSingleton {
         return totalUnSyncedEntries;
     }
 
-    private Context mContext;
+    // private Context mContext;
     String[] projection_users = new String[]{SurveyEntry.USERS_ID, SurveyEntry.USERS_COLUMN_INMATE_ID, SurveyEntry.USERS_COLUMN_NAME, SurveyEntry.USERS_COLUMN_FLAG};
 
 
@@ -56,9 +70,9 @@ public class SurveyDataSingleton {
         getUsersDataFromDb(context);
     }
 
-    public void setContext(Context mContext) {
+   /* public void setContext(Context mContext) {
         this.mContext = mContext;
-    }
+    }*/
 
     public List<Module> getModules() {
         return modules;
@@ -80,67 +94,148 @@ public class SurveyDataSingleton {
     }
 
 
+    List<Domain> domains;
+    List<SubModule> sections;
+
     private void createSurveyData(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.surveydata);
+        InputStream inputStream = context.getResources().openRawResource(R.raw.surveydatav2);
         String jsonString = new Scanner(inputStream).useDelimiter("\\A").next();
         JSONHelper helper = new JSONHelper(jsonString);
         modules = helper.getModules();
+        sections = helper.getSections();
+        domains = helper.getDomains();
         questions = helper.getQuestions();
+        writeToDb(context);
+
     }
 
 
-    private void writeToDb(Context context){
+    private void writeToDb(Context context) {
         //TODO: write questions, sections, domains, survey tables data to db and get IDs
+
+        insertSurvey(context);
+        if (!isSurveyPresent) {
+            insertSections(context);
+            insertDomains(context);
+            insertQuestions(context);
+        }
+
     }
 
+    boolean isSurveyPresent = false;
 
+    private void insertSurvey(Context context) {
 
+        String[] survey_projections = new String[]{SurveyEntry.SURVEYS_COLUMN_PK, SurveyEntry.SURVEY_COLUMN_SURVEY_ID};
 
+        String surveyId = JSONHelper.getSurveyId();
 
+        Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_SURVEYS_CONTENT_URI, survey_projections, SurveyEntry.SURVEY_COLUMN_SURVEY_ID + " = ?", new String[]{surveyId}, null);
 
+        if (cursor.moveToFirst()) {
+            isSurveyPresent = true;
 
-
-
-
-
-
-
-    private void getUsersDataFromDb(Context context) {
-        Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
-        users = new ArrayList<>();
-        User user = new User();
-        try {
-            if (cursor.moveToFirst()) {
-
-                do {
-                    user.setPrisonerId(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_INMATE_ID)));
-                    user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
-                    user.set_id(cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID)));
-                    String flag = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_FLAG));
-                    user.setSynced(flag);
-                    if(flag.equals("dirty")){
-                        totalUnSyncedEntries++;
-                    }
-                    users.add(user);
-                }
-                while (cursor.moveToNext());
-                totalSurveysTaken = users.size();
-                totalUserSurveyed = new HashSet<>(users).size();
-
-            } else {
-
-                user.setPrisonerId("");
-                user.setName("");
-                user.set_id(0);
-                user.setSynced("dirty");
-                users.add(user);
-            }
-        } finally {
-            cursor.close();
+        } else {
+            ContentValues cv = new ContentValues();
+            cv.put(SurveyEntry.SURVEY_COLUMN_SURVEY_ID, surveyId);
+            context.getContentResolver().insert(SurveyEntry.TABLE_SURVEYS_CONTENT_URI, cv);
         }
 
 
     }
+
+    private void insertSections(Context context) {
+
+        ContentValues sectionContentValues = new ContentValues();
+
+        for (SubModule subModule : sections) {
+            sectionContentValues = subModule.getContentValues();
+            Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_SECTIONS_CONTENT_URI, sectionContentValues); //TODO: assign section ids to corresponding sections
+            long _id = ContentUris.parseId(uri);
+            subModule.setId(_id);
+
+        }
+    }
+
+
+    private void insertDomains(Context context) {
+
+        for (Domain domain : domains) {
+
+            ContentValues domainContentValues = domain.getContentValues();
+            Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_DOMAINS_CONTENT_URI, domainContentValues);
+            long _id = ContentUris.parseId(uri);
+            domain.setId(_id);
+
+        }
+
+    }
+
+    private void insertQuestions(Context context) {
+
+        String[] question_projection = new String[]{SurveyEntry.QUESTIONS_ID};
+
+        // if(!isSurveyPresent)
+        for (Question question : questions) {
+
+            ContentValues questionContentValues = question.getQuestionContentValues();
+            Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, questionContentValues);
+            long _id = ContentUris.parseId(uri);
+            question.setId(_id);
+            //   }
+        }
+     /* else{
+          Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, question_projection, null, null, null);
+
+          if(cursor.moveToFirst()){
+
+              for(Question question: questions)
+
+
+
+          }
+
+
+      }*/
+
+    }
+
+        private void getUsersDataFromDb (Context context){
+            Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
+            users = new ArrayList<>();
+            User user = new User();
+            try {
+                if (cursor.moveToFirst()) {
+
+                    do {
+                        user.setPrisonerId(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_INMATE_ID)));
+                        user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
+                        user.setIdInDb(cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID)));
+                        String flag = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_FLAG));
+                        user.setSynced(flag);
+                        if (flag.equals("dirty")) {
+                            totalUnSyncedEntries++;
+                        }
+                        users.add(user);
+                    }
+                    while (cursor.moveToNext());
+                    totalSurveysTaken = users.size();
+                    totalUserSurveyed = new HashSet<>(users).size();
+
+                } else {
+
+                    user.setPrisonerId("");
+                    user.setName("");
+                    user.setIdInDb(0);
+                    user.setSynced("dirty");
+                    users.add(user);
+                }
+            } finally {
+                cursor.close();
+            }
+
+
+        }
 
 
 
@@ -351,9 +446,10 @@ public class SurveyDataSingleton {
         this.modules = modulesNew;
     }*/
 
-    public List<Module> getSurveyData() {
-        return this.modules;
-    }
+        public List<Module> getSurveyData(){
+            return this.modules;
+        }
+
 
 
 }

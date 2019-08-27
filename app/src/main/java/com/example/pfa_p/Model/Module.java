@@ -1,6 +1,5 @@
 package com.example.pfa_p.Model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Module {
@@ -9,7 +8,15 @@ public class Module {
     private int numberOfSections;
     private List<SubModule> sections;
     private int index;
+    private User user;
     private boolean isResultBased = false;
+
+    public void setUser(User user){
+        this.user = user;
+    }
+    public User getUser(){
+        return user;
+    }
 
     public Module(String moduleName) {
         this.name = moduleName;

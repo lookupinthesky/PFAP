@@ -1,10 +1,22 @@
 package com.example.pfa_p.Model;
 
-import com.example.pfa_p.Utils.RatingSystem;
+import android.content.ContentValues;
+
+import com.example.pfa_p.Database.SurveyContract;
 
 import java.util.List;
 
 public class Domain extends LeftPane {
+
+    private List<Question> questions;
+    private long domainIdInDb;
+    private SubModule subModule;
+    private int index = 0;
+    private String name;
+    private boolean hasDespondency = false;
+    private Result result;
+    boolean isDomainResultCalculated = false;
+
     public int getIndex() {
         return index;
     }
@@ -12,8 +24,6 @@ public class Domain extends LeftPane {
     public void setIndex(int index) {
         this.index = index;
     }
-
-    private int index = 0;
 
     public Domain(String name) {
         this.name = name;
@@ -43,8 +53,7 @@ public class Domain extends LeftPane {
             return answerIndex;
     }
 
-
-    public int getDespondancy() {
+    public int getDespondency() {
         return 0;
     }
 
@@ -52,7 +61,10 @@ public class Domain extends LeftPane {
         return domainIdInDb;
     }
 
-    String name;
+    public void setId(long _id){
+        this.domainIdInDb = _id ;
+    }
+
 
     public SubModule getSubModule() {
         return subModule;
@@ -62,12 +74,69 @@ public class Domain extends LeftPane {
         this.subModule = subModule;
     }
 
-    List<Question> questions;
-    long domainIdInDb;
-    SubModule subModule;
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_NAME, name);
+        values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SECTION_ID, getSubModule().getId());
+      //  values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SURVEY_ID, getSurveyId());
+        return values;
+
+    }
 
 
-    public String getResults(float meanSectionScore) {
+    public Result getResult() {
+
+        this.result = new Result(this);
+        isDomainResultCalculated = true;
+        return result;
+    }
+
+
+    @Override
+    public int hashCode() {
+        return 12;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Domain) {
+            return ((Domain) obj).name.equals(this.name);
+        }
+        return false;
+    }
+
+    @Override
+    public int getFilledValue() {
+        return 0;
+    }
+
+    @Override
+    public boolean isEveryQuestionAnswered() {
+        for (Question question : questions) {
+            if (question.getAnswer() == null || question.getAnswer().length() == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*public String getResults(float meanSectionScore) {
 
         switch (getSubModule().getName()) {
 
@@ -83,8 +152,7 @@ public class Domain extends LeftPane {
             case "Questionnaire D": {
                 if (meanSectionScore > 1) {
                     return RatingSystem.RESULT_NEED_REFERRAL;
-                }
-                else
+                } else
                     return RatingSystem.RESULT_NORMAL;
             }
             case "Questionnaire E": {
@@ -121,36 +189,4 @@ public class Domain extends LeftPane {
                 return "";
         }
 
-    }
-
-    @Override
-    public int hashCode() {
-        return 12;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof Domain){
-            return ((Domain) obj).name.equals(this.name);
-        }
-        return false;
-    }
-
-
-    @Override
-    public int getFilledValue() {
-        return 0;
-    }
-
-    @Override
-    public int getMaxValue() {
-        return 0;
-    }
-
-    @Override
-    public boolean isEveryQuestionAnswered() {
-
-
-        return false;
-    }
-}
+    }*/

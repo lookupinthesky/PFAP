@@ -2,13 +2,13 @@ package com.example.pfa_p.Model;
 
 public class User {
 
-    String prisonerId;
-    long _id;
-    String name;
-    int numberOfVisits;
-    boolean ifHistoryTaken;
-    boolean ifAssessmentTaken;
-    boolean isSynced;
+    private String prisonerId;
+    private long idInDb;
+    private String name;
+    private int numberOfVisits;
+    private boolean ifHistoryTaken;
+    private boolean ifAssessmentTaken;
+    private boolean isSynced;
 
     public boolean isSynced() {
         return isSynced;
@@ -27,12 +27,12 @@ public class User {
         this.prisonerId = prisonerId;
     }
 
-    public long get_id() {
-        return _id;
+    public long getIdInDb() {
+        return idInDb;
     }
 
-    public void set_id(long _id) {
-        this._id = _id;
+    public void setIdInDb(long idInDb) {
+        this.idInDb = idInDb;
     }
 
     public String getName() {

@@ -1,15 +1,12 @@
 package com.example.pfa_p.Database;
 
 import android.content.ContentProvider;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
-
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.UriMatcher;
-import android.database.sqlite.SQLiteConstraintException;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import android.net.Uri;
 
 
 public class SurveyProvider extends ContentProvider {
@@ -410,8 +407,8 @@ public class SurveyProvider extends ContentProvider {
             }
             case USERS: {
                 numDeleted = db.delete(SurveyContract.SurveyEntry.TABLE_USERS, selection, selectionArgs);
-                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
-                        SurveyContract.SurveyEntry.TABLE_USERS + "'");
+/*                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
+                        SurveyContract.SurveyEntry.TABLE_USERS + "'");*/
                 break;
             }
             case ANSWERS_ASSESSMENT: {
@@ -540,84 +537,84 @@ public class SurveyProvider extends ContentProvider {
                 break;
             }
             case DOMAINS: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_DOMAINS,
                         contentValues,
                         selection,
                         selectionArgs);
                 break;
             }
             case DOMAINS_WITH_ID: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_DOMAINS,
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 break;
             }
             case QUESTIONS: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_QUESTIONS,
                         contentValues,
                         selection,
                         selectionArgs);
                 break;
             }
             case QUESTIONS_WITH_ID: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_QUESTIONS,
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 break;
             }
             case ANSWERS_ASSESSMENT: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS,
                         contentValues,
                         selection,
                         selectionArgs);
                 break;
             }
             case ANSWERS_ASSESSMENT_WITH_ID: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS,
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 break;
             }
             case ANSWERS_HISTORY: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS,
                         contentValues,
                         selection,
                         selectionArgs);
                 break;
             }
             case ANSWERS_HISTORY_WITH_ID: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS,
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 break;
             }
             case SURVEYS: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SURVEYS,
                         contentValues,
                         selection,
                         selectionArgs);
                 break;
             }
             case SURVEYS_WITH_ID: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SURVEYS,
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 break;
             }
             case USERS: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_USERS,
                         contentValues,
                         selection,
                         selectionArgs);
                 break;
             }
             case USERS_WITH_ID: {
-                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_SECTIONS,
+                numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_USERS,
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});

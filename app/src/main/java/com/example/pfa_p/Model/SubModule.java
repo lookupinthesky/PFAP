@@ -1,20 +1,30 @@
 package com.example.pfa_p.Model;
 
+import android.content.ContentValues;
 import android.content.Context;
 
+import com.example.pfa_p.Database.SurveyContract;
 import com.example.pfa_p.SurveyDataSingleton;
-import com.example.pfa_p.Utils.RatingSystem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SubModule extends LeftPane implements RatingSystem {
+import static com.example.pfa_p.Utils.JSONHelper.getSurveyId;
+
+public class SubModule extends LeftPane {
 
     private String name;
-
-    private boolean hasDomains;
-
+    //   private boolean hasDomains;
+    private Module module;
     private int numberOfDomains;
+    private int index; // index in module list
+    private List<Domain> domains;
+    private int numberOfQuestions;
+    private long sectionIdInDb;
+    private List<Question> questions;
+    private boolean isPresent = true;
+    private Result result;
+
 
     public int getIndex() {
         return index;
@@ -23,16 +33,6 @@ public class SubModule extends LeftPane implements RatingSystem {
     public void setIndex(int index) {
         this.index = index;
     }
-
-    private List<Domain> domains;
-
-    private int numberOfQuestions;
-
-    private int index;
-
-    private long sectionIdInDb;
-
-    private List<Question> questions;
 
     public String getName() {
         return name;
@@ -43,11 +43,7 @@ public class SubModule extends LeftPane implements RatingSystem {
     }
 
     public boolean hasDomains() {
-        return domains!=null;
-    }
-
-    public void setHasDomains(boolean hasDomains) {
-        this.hasDomains = hasDomains;
+        return domains.size()>0 ;
     }
 
     public int getNumberOfDomains() {
@@ -68,8 +64,6 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     }
 
-    private boolean isPresent = true;
-
     public void setIsPresent(boolean flag) {
         this.isPresent = flag;
     }
@@ -80,6 +74,10 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     public long getId() {
         return sectionIdInDb;
+    }
+
+    public void setId(long _id){
+        this.sectionIdInDb = _id ;
     }
 
     public int getNumberOfQuestions() {
@@ -113,29 +111,14 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     }
 
-    @Override
-    public float getMeanScore() {
+    public ContentValues getContentValues() {
 
-
-        //     List<Question> questionsListSectionWise = submodule.getQuestions();
-
-        int rating = 0;
-        if (getModule().getIndex() > 0) {
-
-
-            for (int i = 0; i < getQuestions().size(); i++) {
-
-                Question question = getQuestions().get(i);
-
-                rating += question.getDomain().getRatingForResponse(question.getAnswerIndex());
-            }
-        }
-        return (float) rating / (getNumberOfDomains());
-
+        ContentValues values = new ContentValues();
+        values.put(SurveyContract.SurveyEntry.SECTIONS_COLUMN_NAME, name);
+        values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SURVEY_ID, getSurveyId());
+        return values;
 
     }
-
-    private Module module;
 
     public void setModule(Module module) {
 
@@ -145,59 +128,6 @@ public class SubModule extends LeftPane implements RatingSystem {
     public Module getModule() {
         return module;
     }
-
-
-    public String getResultForSectionWiseLimits(int firstLimit, int secondLimit, int thirdLimit, float meanSectionScore) {
-
-
-        if (meanSectionScore > 0 && meanSectionScore <= firstLimit) {
-
-            return RatingSystem.RESULT_NO_INTERVENTION_REQUIRED;
-        } else if (meanSectionScore > firstLimit && meanSectionScore <= secondLimit) {
-            return RatingSystem.RESULT_INTERVENTION_REQUIRED;
-        } else if (meanSectionScore > secondLimit && meanSectionScore <= thirdLimit) {
-            return RatingSystem.RESULT_INTERVETION_REQUIRED_WITH_FOLLOW_UP;
-        } else {
-            return RatingSystem.RESULT_NEED_REFERRAL;
-        }
-
-    }
-
-
-   /* public void getListOfValidQuestionnaires() {
-
-
-        boolean isQuestionnaireA = false;
-        boolean isQuestionnaireB = false;
-        boolean isQuestionnaireC = false;
-        boolean isQuestionnaireD = false;
-        boolean isQuestionnaireE = false;
-        boolean isQuestionnaireF = true;
-        int response = 0;
-        for (int i = 0; i < 3; i++) {
-            Question question = questions.get(i);
-            response += question.getAnswerIndex();
-            if (response < 2) {
-                isQuestionnaireA = true;
-                break;
-            }
-        }
-        if (questions.get(3).getAnswerIndex() == 0) {
-            isQuestionnaireB = true;
-        }
-        if (questions.get(2).getAnswerIndex() == 0 && questions.get(6).getAnswerIndex() == 0) {
-            isQuestionnaireC = true;
-        }
-        for (int i = 4; i < 10; i++) {
-            if (questions.get(i).getAnswerIndex() == 0) {
-                isQuestionnaireD = true;
-                break;
-            }
-        }
-        if (questions.get(10).getAnswerIndex() != 0) {
-            isQuestionnaireE = true;
-        }
-    }*/
 
 
     public static SubModule getSubModule(Context context, String questionName) {
@@ -217,30 +147,11 @@ public class SubModule extends LeftPane implements RatingSystem {
 
     }
 
-    // this is redundant
-   /* private void createDomainsArray(boolean has_domains, int number_of_domains){
 
-        if(has_domains){
-            hasDomains = has_domains;
-            numberOfDomains = number_of_domains ;
-            domains = new String[numberOfDomains];
-        }
-        else
-            domains = new String[1];
+    public Result getResult() {
+        this.result = new Result(this);
+        return result;
     }
-
-    public void setDomainNames(int num, String name){
-        if(num<numberOfDomains){
-            domains[num] = name;
-        }
-    }*/
-
-  /*  public void setDomainNames(int stringArrayResource){
-        Resources res = getResources();
-        domains = res.getStringArray(stringArrayResource);
-    }*/
-
-    //getters and setters
 
 
     @Override
@@ -262,12 +173,53 @@ public class SubModule extends LeftPane implements RatingSystem {
     }
 
     @Override
-    public int getMaxValue() {
-        return 0;
-    }
-
-    @Override
     public boolean isEveryQuestionAnswered() {
-        return false;
+        for (Question question : questions) {
+            if (question.getAnswer() == null || question.getAnswer().length() == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
+/* public void setHasDomains(boolean hasDomains) {
+        this.hasDomains = hasDomains;
+    }*/
+
+ /* public String getResultForSectionWiseLimits(int firstLimit, int secondLimit, int thirdLimit, float meanSectionScore) {
+
+
+        if (meanSectionScore > 0 && meanSectionScore <= firstLimit) {
+
+            return RatingSystem.RESULT_NO_INTERVENTION_REQUIRED;
+        } else if (meanSectionScore > firstLimit && meanSectionScore <= secondLimit) {
+            return RatingSystem.RESULT_INTERVENTION_REQUIRED;
+        } else if (meanSectionScore > secondLimit && meanSectionScore <= thirdLimit) {
+            return RatingSystem.RESULT_INTERVETION_REQUIRED_WITH_FOLLOW_UP;
+        } else {
+            return RatingSystem.RESULT_NEED_REFERRAL;
+        }
+
+    }*/
+
+    /*@Override
+    public float getMeanScore() {
+
+
+        //     List<Question> questionsListSectionWise = submodule.getQuestions();
+
+        int rating = 0;
+        if (getModule().getIndex() > 0) {
+
+
+            for (int i = 0; i < getQuestions().size(); i++) {
+
+                Question question = getQuestions().get(i);
+
+                rating += question.getDomain().getRatingForResponse(question.getAnswerIndex());
+            }
+        }
+        return (float) rating / (getNumberOfDomains());
+
+
+    }*/

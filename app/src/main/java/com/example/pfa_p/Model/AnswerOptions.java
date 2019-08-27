@@ -1,6 +1,6 @@
 package com.example.pfa_p.Model;
 
-import android.content.res.Resources;
+import android.text.InputType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +22,7 @@ public class AnswerOptions {
     private int viewType;
 
     public int getNumberOfOptions() {
-        if(numberOfOptions>8)
+        if (numberOfOptions > 8)
             return options.size();
 
         return numberOfOptions;
@@ -32,19 +32,23 @@ public class AnswerOptions {
         this.numberOfOptions = numberOfOptions;
     }
 
-    public int getViewType() {
+    /*public int getViewType() {
 
         return answerType;
 
 
-    }
+    }*/
 
     public AnswerOptions(String answerType, int numberOfOptions, String... options1) {
-
+        this.answerType = answerType;
         this.options = new ArrayList<>();
         this.numberOfOptions = numberOfOptions;
-      //  this.answerType = answerType;
+        //  this.answerType = answerType;
         options = Arrays.asList(options1);
+    }
+
+    public String getAnswerType(){
+        return  answerType;
     }
 
     public List<String> getOptions() {
@@ -52,10 +56,26 @@ public class AnswerOptions {
     }
 
     private List<String> options;
-    private int answerType;
+    private String answerType;
 
-    public int getAnswerType() {
-        return answerType;
+    public int getInputType() {
+
+        switch (answerType) {
+
+
+            case "TEXT": {
+                return InputType.TYPE_CLASS_TEXT;
+            }
+            case "NUMBER": {
+                return InputType.TYPE_CLASS_NUMBER;
+            }
+            case "DATE": {
+                return InputType.TYPE_CLASS_DATETIME;
+            }
+
+            default:
+                return InputType.TYPE_CLASS_TEXT;
+        }
     }
 
     /*public void createOptionsArray(int options_type) throws IllegalAccessException {
@@ -75,16 +95,16 @@ public class AnswerOptions {
         options = new String[numberOfOptions];
     }*/
 
-    public void setAnswerType(int answerTypeCode) {
+    /*public void setAnswerType(int answerTypeCode) {
 
         this.answerType = answerTypeCode;
-    }
+    }*/
 
-    public void setAnswerOptions(String... option) {
+   /* public void setAnswerOptions(String... option) {
         if (answerType != 102) {
             options.addAll(Arrays.asList(option));
         }
-    }
+    }*/
 
 
 }
