@@ -72,9 +72,7 @@ public class LoginActivity extends FragmentActivity {
 
             @Override
             public void onLoadFinished(@NonNull Loader<String> loader, String data) {
-
                 schemaFragment.receiveProgressUpdate(10000);
-
             }
 
             @Override
@@ -198,7 +196,6 @@ public class LoginActivity extends FragmentActivity {
         for (Module module : modules) {
             module.setUser(user);
         }
-
     }
 
     private void deleteUser(long userId) {

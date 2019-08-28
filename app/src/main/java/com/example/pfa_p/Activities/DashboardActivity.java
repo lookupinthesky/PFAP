@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.pfa_p.Adapter.RecentActivityAdapter;
 import com.example.pfa_p.Model.Module;
@@ -51,6 +52,12 @@ public class DashboardActivity extends AppCompatActivity  {
     @BindView(R.id.fabNewSurvey)
     FloatingActionButton newSurvey;
 
+    @BindView(R.id.tv_survey_number)
+    TextView totalSurveys;
+
+    @BindView(R.id.tv_user_number)
+    TextView userNumber;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,8 @@ public class DashboardActivity extends AppCompatActivity  {
         List<Module> modules = surveyData.getModules();
         List<User> users = surveyData.getUsers();
         Log.d(DashboardActivity.class.getName(), modules.toString());
+  //      totalSurveys.setText(surveyData.getTotalSurveysTaken());
+  //      userNumber.setText(surveyData.getTotalUserSurveyed());
      //   populateListHeaders();
         newSurvey.setOnClickListener(new View.OnClickListener() {
             @Override

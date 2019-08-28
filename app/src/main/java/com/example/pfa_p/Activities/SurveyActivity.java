@@ -156,7 +156,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
 
             if (mCurrentModuleIndex < 3) {
-                sectionsListFragment.setCurrentState(0, 0);
+                int domainIndex = mCurrentModuleIndex==1?-1:0;
+                sectionsListFragment.setCurrentState(0, domainIndex);
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
             }

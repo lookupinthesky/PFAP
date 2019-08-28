@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 public class RecentActivityAdapter extends ArrayAdapter<User> implements View.OnClickListener {
 
     List<User> users;
+    int position;
     Context mContext;
     ActionButtonsListener mListener;
     // String[]headers = {"S No.", "Prisoner Id", "Name", "No. of Visits", "History Status", "Assessment Status", "Edit", "Delete", "Results"};
@@ -52,11 +53,6 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
         return 0;
     }
 
-
-
-
-    int position;
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -73,10 +69,8 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
         holder.resultsButton.setOnClickListener(this);
         holder.editButton.setOnClickListener(this);
         User user = getItem(position);
-
+        holder.prisonerId.setText(user.getPrisonerId());
         //TODO: set user values to fields.
-
-
         return convertView;
     }
 

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,6 +44,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     private Context context;
     private OnListItemClickListener mListener;
     private RecyclerView parent;
+    private TextView moduleName;
     private int mCurrentSectionIndex;
     private int mCurrentDomainIndex;
     private List<LeftPane> leftPaneList;
@@ -88,11 +90,11 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         } else {
             createLeftPaneListData();
             setDataToAdapter();
-            setClicked(leftPaneList.get(0));
-          //  loadSectionDetails(leftPaneList.get(0));
+            int clickedPosition = module.getIndex() == 2 ? 1 : 0;
+            setClicked(leftPaneList.get(clickedPosition));
+            //  loadSectionDetails(leftPaneList.get(0));
         }
     }
-
 
 
     public void setCurrentState(/*int moduleIndex,*/ int subModuleIndex, int domainIndex) {
@@ -143,59 +145,64 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
             item = sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
         } else {
             mCurrentSectionIndex++;
-            item = sections.get(mCurrentSectionIndex);
+            if (mCurrentDomainIndex != -1) {
+                mCurrentDomainIndex = 0;
+                item = sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
+            } else {
+                item = sections.get(mCurrentSectionIndex);
+            }
         }
-        setClicked(item)/*next clickable item in List*/;
-        loadSectionDetails(item);
-    }
+            setClicked(item)/*next clickable item in List*/;
+            loadSectionDetails(item);
+        }
 
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        @Override
+        public void onViewCreated (@NonNull View view, @Nullable Bundle savedInstanceState){
 
-        //TODO: setValue to module Name to TextView
+            //TODO: setValue to module Name to TextView
 
-        parent = view.findViewById(R.id.parent_sections_list);
-        createLeftPaneListData();
-        adapter = new LeftPaneAdapter(leftPaneList, this);
-        parent.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-        parent.setLayoutManager(new LayoutManager(context));
-        parent.setAdapter(adapter);
-
-
-        int subModuleIndexInList =  leftPaneList.indexOf(sections.get(mCurrentSectionIndex));
-
-
-        loadSectionDetails(mCurrentDomainIndex == -1 ? leftPaneList.get(mCurrentSectionIndex) :
-                leftPaneList.get(subModuleIndexInList + mCurrentDomainIndex + 1));
-    }
+            parent = view.findViewById(R.id.parent_sections_list);
+            moduleName = view.findViewById(R.id.list_module_name);
+            createLeftPaneListData();
+            adapter = new LeftPaneAdapter(leftPaneList, this);
+            parent.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+            parent.setLayoutManager(new LayoutManager(context));
+            parent.setAdapter(adapter);
+            int subModuleIndexInList = leftPaneList.indexOf(sections.get(mCurrentSectionIndex));
+            loadSectionDetails(mCurrentDomainIndex == -1 ? leftPaneList.get(mCurrentSectionIndex) :
+                    leftPaneList.get(subModuleIndexInList + mCurrentDomainIndex + 1));
+            moduleName.setText(module.getName());
+        }
 
 
-    public LeftPane getLeftPaneItemForPosition(int position) {
-        return leftPaneList.get(position);
-    }
+        public LeftPane getLeftPaneItemForPosition ( int position){
+            return leftPaneList.get(position);
+        }
 
-    public LeftPane getCurrentItem() {
+        public LeftPane getCurrentItem () {
 
-        if (mCurrentDomainIndex == -1) {
-            return leftPaneList.get(mCurrentSectionIndex);
-        } else {
-            return sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
+            Log.d(LOG_TAG, "mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex);
+            if (sections.get(mCurrentSectionIndex).getName().equals("Basic Questionnaire")) {
+                return sections.get(mCurrentSectionIndex);
+            }
+            if (mCurrentDomainIndex == -1) {
+                return leftPaneList.get(mCurrentSectionIndex);
+            } else {
+                return sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
+            }
+        }
+
+        private void loadSectionDetails (LeftPane item){
+            mListener.onListItemClick(item);
+        }
+
+        @Override
+        public void onItemClick (LeftPane item){
+            mListener.onListItemClick(item);
+        }
+
+        public interface OnListItemClickListener {
+            void onListItemClick(LeftPane item);
         }
     }
-
-    private void loadSectionDetails(LeftPane item) {
-        mListener.onListItemClick(item);
-    }
-
-    @Override
-    public void onItemClick(LeftPane item) {
-        mListener.onListItemClick(item);
-    }
-
-    public interface OnListItemClickListener {
-        void onListItemClick(LeftPane item);
-    }
-
-
-}

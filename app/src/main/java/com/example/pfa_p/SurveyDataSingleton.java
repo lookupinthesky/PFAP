@@ -25,17 +25,16 @@ public class SurveyDataSingleton {
     private static volatile SurveyDataSingleton sInstance;
     private List<Module> modules;
 
-    public List<User> getUsers() {
-        return users;
-    }
-
     private List<Question> questions;
-    List<User> users;
-
+    private List<User> users;
     private int totalSurveysTaken;
     private int totalUserSurveyed;
     private int totalUnSyncedEntries = 0;
     private static long mCurrentPrisonerId;
+
+    public List<User> getUsers() {
+        return users;
+    }
 
     public static long getCurrentPrisonerId() {
         return mCurrentPrisonerId;
@@ -65,11 +64,11 @@ public class SurveyDataSingleton {
     private SurveyDataSingleton(Context context) {
         if (sInstance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
-        } else
+        } else {
             createSurveyData(context);
-        getUsersDataFromDb(context);
+            getUsersDataFromDb(context);
+        }
     }
-
    /* public void setContext(Context mContext) {
         this.mContext = mContext;
     }*/
@@ -115,9 +114,9 @@ public class SurveyDataSingleton {
 
         insertSurvey(context);
         /*if (!isSurveyPresent) {*/
-            insertSections(context);
-            insertDomains(context);
-            insertQuestions(context);
+        insertSections(context);
+        insertDomains(context);
+        insertQuestions(context);
         //}
 
     }
@@ -238,11 +237,11 @@ public class SurveyDataSingleton {
     private void getUsersDataFromDb(Context context) {
         Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
         users = new ArrayList<>();
-        User user = new User();
         try {
             if (cursor.moveToFirst()) {
 
                 do {
+                    User user = new User();
                     user.setPrisonerId(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_INMATE_ID)));
                     user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
                     user.setIdInDb(cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID)));
@@ -258,7 +257,7 @@ public class SurveyDataSingleton {
                 totalUserSurveyed = new HashSet<>(users).size();
 
             } else {
-
+                User user = new User();
                 user.setPrisonerId("");
                 user.setName("");
                 user.setIdInDb(0);

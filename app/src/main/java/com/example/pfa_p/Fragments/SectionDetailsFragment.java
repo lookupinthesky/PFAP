@@ -33,6 +33,8 @@ public class SectionDetailsFragment extends Fragment {
     boolean isDataSet = false;
 
     LeftPane item;
+    QuestionsAdapter adapter;
+    Context context;
 
 
     @Override
@@ -41,7 +43,7 @@ public class SectionDetailsFragment extends Fragment {
         this.context = context;
     }
 
-    Context context;
+
 
     public static SectionDetailsFragment newInstance(/*int sectionNumber*/) {
        /* Bundle bundle = new Bundle();
@@ -68,7 +70,7 @@ public class SectionDetailsFragment extends Fragment {
         return false;
     }
 
-    QuestionsAdapter adapter;
+
 
     public void createLayout() {
         if (ifEmptyFields()) {
