@@ -174,13 +174,13 @@ public class LoginActivity extends FragmentActivity {
         }
         cv.put(SurveyEntry.USERS_COLUMN_INMATE_ID, prisonerId);
         cv.put(SurveyEntry.USERS_COLUMN_NAME, "prisonerName");
-        cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, 0);
+        cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, 1);
         cv.put(SurveyEntry.USERS_COLUMN_FLAG, "dirty");
         cv.put(SurveyEntry.USERS_COLUMN_HISTORY_FLAG, "INCOMPLETE");
         cv.put(SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG, "INCOMPLETE");
         Uri uri = getContentResolver().insert(SurveyEntry.TABLE_USERS_CONTENT_URI, cv);
         long _id = ContentUris.parseId(uri);
-        setUserToModules(prisonerId,_id);
+        setUserToModules(prisonerId, _id);
        /* User user = new User();
         user.setPrisonerId(prisonerId);
         user.setIdInDb(_id);
@@ -190,7 +190,7 @@ public class LoginActivity extends FragmentActivity {
         }*/
     }
 
-    private void setUserToModules(String prisonerId, long idInDb){
+    private void setUserToModules(String prisonerId, long idInDb) {
         User user = new User();
         user.setPrisonerId(prisonerId);
         user.setIdInDb(idInDb);
@@ -226,13 +226,13 @@ public class LoginActivity extends FragmentActivity {
             //     schemaFragment.receiveProgressUpdate(30);
             Log.d(LOG_TAG, "Method: StartSurvey, user not found, inserting a new user");
         } else {
-            setUserToModules(prisonerId,user_Id);
+            setUserToModules(prisonerId, user_Id);
             if (helper.isHistoryCompleted) {
                 if (helper.isAssessmentCompleted) {
                     incrementVisitCounter();
                     setCurrentState(0, 0, 0);
                 } else {
-                    helper.fetchAssessmentTableDataForUser(user_Id, helper.totalVisits, this);
+                    helper.fetchAssessmentTableDataForUser(user_Id, 1/*helper.totalVisits*/, this);
                 }
             } else {
                 helper.fetchHistoryTableDataForUser(user_Id, this);
@@ -259,7 +259,7 @@ public class LoginActivity extends FragmentActivity {
                 /*SurveyEntry.ANSWERS_COLUMN_SURVEY_ID,*/
                 SurveyEntry.ANSWERS_COLUMN_USER_ID,
                 SurveyEntry.ANSWERS_COLUMN_RESPONSE};
-        String[] projection_assessment = new String[]{SurveyEntry.ANSWERS_COLUMN_QUESTION_ID,
+        String[] projection_assessment = new String[]{SurveyEntry.ANSWERS_COLUMN_QUESTION_ID, SurveyEntry.ANSWERS_COLUMN_RESPONSE,
                 /*SurveyEntry.ANSWERS_COLUMN_SURVEY_ID,*/
                 SurveyEntry.ANSWERS_COLUMN_USER_ID};
 
@@ -305,40 +305,45 @@ public class LoginActivity extends FragmentActivity {
             long questionId = -1;
             String response = "";
             int count = 0;
-            int loopcounter = 0 ;
+            int loopcounter = 0;
             if (cursor.moveToFirst()) {
 
                 loopcounter = cursor.getCount();
 
-                for(int i = 0; i<loopcounter; i++) {
+                for (int i = 0; i < loopcounter; i++) {
                     // do {
                     count++;
                     questionId = cursor.getLong(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_QUESTION_ID));
                     response = cursor.getString(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_RESPONSE));
 
                     Question question = questions.get(i);
-                    question.setAnswer(response,false);
+                    if (questionId == question.getId())
+                        question.setAnswer(response, false);
 
 
-              //      for (Question question : questions) {
-            //            if (question.getId() == questionId) {// this is unnecessary as of now since multiple surveys are not supported //TODO: implement a Database interface to POJO classes
-                            //setting answers because recreating run time data
-                            question.setAnswer(response, false); // TODO: modify questions pojo to receive string answers for radiobuttons
-                            //determine state from last question in database
-                            if (count == cursor.getCount()) {
-                                currentSectionIndex = question.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
-                                currentModuleIndex = question.getSubModule().getModule().getIndex();
-                                currentDomainIndex = -1;
-                                Log.d(LOG_TAG, "In loginActivity when user exists: mCurrentSectionIndex = " + mCurrentSectionIndex);
-                                setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
-                                break;
-                            }
+                    //      for (Question question : questions) {
+                    //            if (question.getId() == questionId) {// this is unnecessary as of now since multiple surveys are not supported //TODO: implement a Database interface to POJO classes
+                    //setting answers because recreating run time data
+                    //            question.setAnswer(response, false); // TODO: modify questions pojo to receive string answers for radiobuttons
+                    //determine state from last question in database
+                    if (count == cursor.getCount()) {
+                        Question question1 = questions.get(i + 1);
+                        currentSectionIndex = question1.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
+                        currentModuleIndex = question1.getSubModule().getModule().getIndex();
+                        if (question1.getDomain() == null) {
+                            currentDomainIndex = -1;
+                        } else
+                            currentDomainIndex = question1.getDomain().getIndex();
+                        Log.d(LOG_TAG, "In loginActivity when user exists: mCurrentSectionIndex = " + mCurrentSectionIndex);
+                        setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
+                        break;
+                    }
 
-                           if(!cursor.isAfterLast()) cursor.moveToNext();
+                    if (!cursor.isAfterLast()) cursor.moveToNext();
                        /* } else {
                             throw new IllegalStateException("Survey Questions do not match those in database");
                         }*/
-                  //  }
+                    //  }
                 }
                /* } while (cursor.moveToNext());
                 cursor.close();*/
@@ -362,32 +367,49 @@ public class LoginActivity extends FragmentActivity {
             String[] selectionArgs_assessment = new String[]{String.valueOf(userId), String.valueOf(visitNumber)};
             Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, projection_assessment, selection_assessment, selectionArgs_assessment, null);
             List<Question> questions = SurveyDataSingleton.getInstance(context).getQuestions();
+            List<Module> modules = SurveyDataSingleton.getInstance(context).getModules();
+            int questionSerialNumber = modules.get(1).getSections().get(0).getQuestions().get(0).getSerialNumber();
+            int lastSerialNumber = questions.size() ;
             long questionId;
             String response;
             int count = 0;
             int tempVisitNumber = -1;
+            int loopcounter = 0;
+
             if (cursor.moveToFirst()) {
-                while (cursor.moveToNext()) {
+                loopcounter = cursor.getCount();
+                for (int i = questionSerialNumber - 1; i < questionSerialNumber + loopcounter - 1; i++) {
+                    // do {
                     count++;
                     questionId = cursor.getLong(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_QUESTION_ID));
                     response = cursor.getString(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_RESPONSE));
-                    //     tempVisitNumber = cursor.getInt(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER));
-                    //get assessment table data for the given visit number
-                    for (Question question : questions) {
-                        if (question.getId() == questionId) { //TODO: implement a Database interface to POJO classes
-                            question.setAnswer(response, false);
-                            if (count == cursor.getCount()) {
-                                currentSectionIndex = question.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
-                                currentModuleIndex = question.getSubModule().getModule().getIndex();
-                                currentDomainIndex = question.getDomain().getIndex();
-                                setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
-                            }
-                        }
-                    }
-                    cursor.close();
-                }
-            }
-        }
 
+                    Question question = questions.get(i);
+                    if (questionId == question.getId())
+                        question.setAnswer(response, true);
+                    if (count == loopcounter && i < lastSerialNumber - 1) {
+                        Question question1 = questions.get(i + 1);
+                        currentSectionIndex = question1.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
+                        currentModuleIndex = question1.getSubModule().getModule().getIndex();
+                        if (question1.getDomain() == null) {
+                            currentDomainIndex = -1;
+                        } else
+                            currentDomainIndex = question1.getDomain().getIndex();
+                        Log.d(LOG_TAG, "In loginActivity when user exists: mCurrentSectionIndex = " + mCurrentSectionIndex);
+                        setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
+                        break;
+                    }else if (i == lastSerialNumber -1){
+                        setCurrentState(3,-1,-1);
+                    }
+                    if (!cursor.isAfterLast()) cursor.moveToNext();
+                }
+            } else {
+
+                //    deleteUser(userId);
+                setCurrentState(1, 0, -1);
+            }
+            //cursor.close();
+        }
     }
 }
+

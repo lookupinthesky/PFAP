@@ -29,7 +29,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
     @Override
     public ResultsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        return new ResultsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.header_view_left_pane, parent, false));
+        return new ResultsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_view_results, parent, false));
     }
 
 
@@ -81,6 +81,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
             for (Domain domain : domains) {
                 Result result = domain.getResult();
                 Bar bar = new Bar(itemView.getContext(), result.getMaxResultValue(), result.getResultValueActual(), result.getNameForResults(), result.getResultText());
+                details.addView(bar.getView());
             }
 
             Result result = subModule.getResult();

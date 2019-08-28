@@ -10,7 +10,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.ResultsActivity"></activity>
+        <activity android:name=".Activities.ResultsActivity"
+            android:screenOrientation="landscape"
+            />
         <activity
             android:name=".Activities.LoginActivity"
             android:windowSoftInputMode="stateHidden|adjustNothing"

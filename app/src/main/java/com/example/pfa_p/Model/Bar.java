@@ -60,15 +60,17 @@ public class Bar {
         parent.setLayoutParams(params);
         description = new TextView(context);
         descriptionParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-        descriptionParams.weight = 2;
+        descriptionParams.weight = 3;
+        descriptionParams.rightMargin = 12;
         description.setLayoutParams(descriptionParams);
         description.setText(descriptionText);
-        description.setBackgroundColor(Color.YELLOW);
+      //  description.setBackgroundColor(Color.YELLOW);
+
         parent.addView(description);
         rating = new LinearLayout(context);
         rating.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams params_rating = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-        params_rating.weight = 6;
+        params_rating.weight = 5;
         rating.setLayoutParams(params_rating);
         valueSpace = new View(context);
         LinearLayout.LayoutParams params_space = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -85,7 +87,8 @@ public class Bar {
         parent.addView(rating);
         value = new TextView(context);
         LinearLayout.LayoutParams params_value = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-        params_value.weight = 1;
+        params_value.weight = 2;
+
         value.setLayoutParams(params_value);
         value.setText(valueText);
         value.setBackgroundColor(Color.YELLOW);

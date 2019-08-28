@@ -22,7 +22,6 @@ import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SectionDetailsFragment extends Fragment {
@@ -108,15 +107,23 @@ public class SectionDetailsFragment extends Fragment {
     public boolean setEditableAnswers() {
         String[] array = adapter.getEditableAnswers();
 
-        if(Arrays.equals(array,getOriginalArray()))
-            return false;
+        /*boolean isUpdate = getIsUpdate();
 
+        if(Arrays.equals(array,getOriginalArray())) // when coming second time answers are already stored in model classes as well as string array in adapter
+            return false; //isUpdate true
+        else{
+            if(getIsUpdate()){
+
+            }
+        }*/
+
+        //set array
         for (int i = 0; i < rightPaneList.size(); i++) {
             if (array[i] == null)
                 continue;
             ((Question) rightPaneList.get(i)).setAnswer(array[i], false);
         }
-        return  true;
+        return  true; //isUpdate false
     }
 
      // return   adapter.getEditableAnswers();
@@ -133,6 +140,7 @@ public class SectionDetailsFragment extends Fragment {
             adapter.setData(rightPaneList);
         }*/
         setAnswersTwo();
+     //  setIsUpdate(true);
 
     }
 

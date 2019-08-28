@@ -276,7 +276,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             button.setChecked(true);
             int index = group.indexOfChild(button);
             // boolean isAssessment = question.getSubModule().getModule();
-            question.setAnswer(button.getText().toString(), moduleIndex == 1);
+            question.setAnswer(button.getText().toString(), question.getSubModule().getModule().getIndex()!= 0);
         }
     }
 

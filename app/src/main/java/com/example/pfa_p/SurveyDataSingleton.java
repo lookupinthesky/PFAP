@@ -114,11 +114,11 @@ public class SurveyDataSingleton {
         //TODO: write questions, sections, domains, survey tables data to db and get IDs
 
         insertSurvey(context);
-        if (!isSurveyPresent) {
+        /*if (!isSurveyPresent) {*/
             insertSections(context);
             insertDomains(context);
             insertQuestions(context);
-        }
+        //}
 
     }
 
@@ -145,97 +145,132 @@ public class SurveyDataSingleton {
     }
 
     private void insertSections(Context context) {
+        String[] section_projection = new String[]{SurveyEntry.SECTIONS_ID, SurveyEntry.SECTIONS_COLUMN_NAME};
 
         ContentValues sectionContentValues = new ContentValues();
+        if (!isSurveyPresent) {
+            for (SubModule subModule : sections) {
+                sectionContentValues = subModule.getContentValues();
+                Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_SECTIONS_CONTENT_URI, sectionContentValues); //TODO: assign section ids to corresponding sections
+                long _id = ContentUris.parseId(uri);
+                subModule.setId(_id);
 
-        for (SubModule subModule : sections) {
-            sectionContentValues = subModule.getContentValues();
-            Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_SECTIONS_CONTENT_URI, sectionContentValues); //TODO: assign section ids to corresponding sections
-            long _id = ContentUris.parseId(uri);
-            subModule.setId(_id);
-
+            }
+        } else {
+            Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_SECTIONS_CONTENT_URI, section_projection, null, null, SurveyEntry.SECTIONS_ID + " ASC");
+            String name;
+            long _id;
+            if (cursor.moveToFirst()) {
+                for (SubModule subModule : sections) {
+                    name = cursor.getString(cursor.getColumnIndex(SurveyEntry.SECTIONS_COLUMN_NAME));
+                    _id = cursor.getLong(cursor.getColumnIndex(SurveyEntry.SECTIONS_ID));
+                    if (subModule.getName().equals(name)) {
+                        subModule.setId(_id);
+                    }
+                    cursor.moveToNext();
+                }
+                cursor.close();
+            }
         }
+
     }
 
 
     private void insertDomains(Context context) {
 
-        for (Domain domain : domains) {
+        String[] domain_projection = new String[]{SurveyEntry.DOMAINS_COLUMN_ID, SurveyEntry.DOMAINS_COLUMN_NAME};
+        if (!isSurveyPresent) {
+            for (Domain domain : domains) {
+                ContentValues domainContentValues = domain.getContentValues();
+                Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_DOMAINS_CONTENT_URI, domainContentValues);
+                long _id = ContentUris.parseId(uri);
+                domain.setId(_id);
 
-            ContentValues domainContentValues = domain.getContentValues();
-            Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_DOMAINS_CONTENT_URI, domainContentValues);
-            long _id = ContentUris.parseId(uri);
-            domain.setId(_id);
-
+            }
+        } else {
+            Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_DOMAINS_CONTENT_URI, domain_projection, null, null, SurveyEntry.DOMAINS_COLUMN_ID + " ASC");
+            String name;
+            long _id;
+            if (cursor.moveToFirst()) {
+                for (Domain domain : domains) {
+                    name = cursor.getString(cursor.getColumnIndex(SurveyEntry.DOMAINS_COLUMN_NAME));
+                    _id = cursor.getLong(cursor.getColumnIndex(SurveyEntry.DOMAINS_COLUMN_ID));
+                    if (domain.getName().equals(name)) {
+                        domain.setId(_id);
+                    }
+                    cursor.moveToNext();
+                }
+                cursor.close();
+            }
         }
 
     }
 
     private void insertQuestions(Context context) {
 
-        String[] question_projection = new String[]{SurveyEntry.QUESTIONS_ID};
-
-        // if(!isSurveyPresent)
-        for (Question question : questions) {
-
-            ContentValues questionContentValues = question.getQuestionContentValues();
-            Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, questionContentValues);
-            long _id = ContentUris.parseId(uri);
-            question.setId(_id);
-            //   }
-        }
-     /* else{
-          Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, question_projection, null, null, null);
-
-          if(cursor.moveToFirst()){
-
-              for(Question question: questions)
-
-
-
-          }
-
-
-      }*/
-
-    }
-
-        private void getUsersDataFromDb (Context context){
-            Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
-            users = new ArrayList<>();
-            User user = new User();
-            try {
-                if (cursor.moveToFirst()) {
-
-                    do {
-                        user.setPrisonerId(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_INMATE_ID)));
-                        user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
-                        user.setIdInDb(cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID)));
-                        String flag = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_FLAG));
-                        user.setSynced(flag);
-                        if (flag.equals("dirty")) {
-                            totalUnSyncedEntries++;
-                        }
-                        users.add(user);
-                    }
-                    while (cursor.moveToNext());
-                    totalSurveysTaken = users.size();
-                    totalUserSurveyed = new HashSet<>(users).size();
-
-                } else {
-
-                    user.setPrisonerId("");
-                    user.setName("");
-                    user.setIdInDb(0);
-                    user.setSynced("dirty");
-                    users.add(user);
-                }
-            } finally {
-                cursor.close();
+        String[] question_projection = new String[]{SurveyEntry.QUESTIONS_ID, SurveyEntry.QUESTIONS_COLUMN_NAME};
+        if (!isSurveyPresent)
+            for (Question question : questions) {
+                ContentValues questionContentValues = question.getQuestionContentValues();
+                Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, questionContentValues);
+                long _id = ContentUris.parseId(uri);
+                question.setId(_id);
             }
 
-
+        else {
+            Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, question_projection, null, null, SurveyEntry.QUESTIONS_ID + " ASC");
+            String name;
+            long _id;
+            if (cursor.moveToFirst()) {
+                for (Question question : questions) {
+                    name = cursor.getString(cursor.getColumnIndex(SurveyEntry.QUESTIONS_COLUMN_NAME));
+                    _id = cursor.getLong(cursor.getColumnIndex(SurveyEntry.QUESTIONS_ID));
+                    if (question.getQuestionName().equals(name)) {
+                        question.setId(_id);
+                    }
+                    cursor.moveToNext();
+                }
+                cursor.close();
+            }
         }
+    }
+
+    private void getUsersDataFromDb(Context context) {
+        Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
+        users = new ArrayList<>();
+        User user = new User();
+        try {
+            if (cursor.moveToFirst()) {
+
+                do {
+                    user.setPrisonerId(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_INMATE_ID)));
+                    user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
+                    user.setIdInDb(cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID)));
+                    String flag = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_FLAG));
+                    user.setSynced(flag);
+                    if (flag.equals("dirty")) {
+                        totalUnSyncedEntries++;
+                    }
+                    users.add(user);
+                }
+                while (cursor.moveToNext());
+                totalSurveysTaken = users.size();
+                totalUserSurveyed = new HashSet<>(users).size();
+
+            } else {
+
+                user.setPrisonerId("");
+                user.setName("");
+                user.setIdInDb(0);
+                user.setSynced("dirty");
+                users.add(user);
+            }
+        } finally {
+            cursor.close();
+        }
+
+
+    }
 
 
 
@@ -446,10 +481,9 @@ public class SurveyDataSingleton {
         this.modules = modulesNew;
     }*/
 
-        public List<Module> getSurveyData(){
-            return this.modules;
-        }
-
+    public List<Module> getSurveyData() {
+        return this.modules;
+    }
 
 
 }

@@ -10,7 +10,7 @@ public class Question extends RightPane {
     private String questionName;
     private AnswerOptions options;
     private SubModule subModule;
-    private Domain domain;
+    private Domain domain = null;
     private long questionIdInDb;
     private int answerIndex;
     private boolean isAssessment = false;

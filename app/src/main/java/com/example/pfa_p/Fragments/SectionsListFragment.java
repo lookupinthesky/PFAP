@@ -138,7 +138,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
 
     private void moveToNext() {
         LeftPane item;
-        if (mCurrentDomainIndex != -1) {
+        if (mCurrentDomainIndex != -1 && mCurrentDomainIndex < sections.get(mCurrentSectionIndex).getDomains().size() - 1) {
             mCurrentDomainIndex++;
             item = sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
         } else {
@@ -163,7 +163,11 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         parent.setAdapter(adapter);
 
 
-        loadSectionDetails(mCurrentDomainIndex == -1 ? leftPaneList.get(mCurrentSectionIndex) : ((SubModule)leftPaneList.get(mCurrentSectionIndex)).getDomains().get(mCurrentDomainIndex));
+        int subModuleIndexInList =  leftPaneList.indexOf(sections.get(mCurrentSectionIndex));
+
+
+        loadSectionDetails(mCurrentDomainIndex == -1 ? leftPaneList.get(mCurrentSectionIndex) :
+                leftPaneList.get(subModuleIndexInList + mCurrentDomainIndex + 1));
     }
 
 

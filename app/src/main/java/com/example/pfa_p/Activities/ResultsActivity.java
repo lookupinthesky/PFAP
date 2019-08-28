@@ -3,12 +3,13 @@ package com.example.pfa_p.Activities;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Adapter.ResultsAdapter;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
+import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +24,10 @@ public class ResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-
         parent = findViewById(R.id.results_list);
-
-        parent.setLayoutManager(new GridLayoutManager(this, 2));
+        parent.setLayoutManager(new LinearLayoutManager(this));
+        List<SubModule> subModules = SurveyDataSingleton.getInstance(this).getModules().get(2).getSections();
+        setDataAndInvalidate(subModules);
 
     }
 

@@ -26,6 +26,7 @@ public class Result implements RatingSystem {
             maxResultValue = calculateMaxResultValue((Domain) item);
             resultValueActual = calculateActualResultsValue((Domain) item);
             resultText = generateResultText((Domain) item);
+            nameForResults = createNameForResults((Domain)item);
 
         } else if(item instanceof SubModule) {
             if (((SubModule) item).hasDomains()) {
@@ -39,6 +40,25 @@ public class Result implements RatingSystem {
             }
 
         }
+    }
+
+
+    private String createNameForResults(Domain domain){
+        String name = domain.getName();
+
+        String assessing = "Assessing ";
+        String checking = "Checking ";
+        String finalString = "";
+
+
+        if(name.contains(assessing)){
+         finalString =   name.replaceAll(assessing,"");
+        }
+        if(finalString.contains(checking)){
+            finalString = finalString.replaceAll(checking,"");
+        }
+        return finalString;
+
     }
 
     private String generateResultText(Domain domain) {

@@ -74,18 +74,24 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         mCurrentModuleIndex = intent.getExtras().getInt("current_module_index");
         mCurrentSectionIndex = intent.getExtras().getInt("current_section_index");
         mCurrentDomainIndex = intent.getExtras().getInt("current_domain_index");
-        fm = getSupportFragmentManager();
-        ft = fm.beginTransaction();
-        sectionDetailsParent = findViewById(R.id.fragment_section_details_parent);
-        sectionsListParent = findViewById(R.id.fragment_sections_list_parent);
-        sectionDetailsFragment = SectionDetailsFragment.newInstance(/*DEFAULT_SECTIONS_EMPTY*/);
-        sectionsListFragment = SectionsListFragment.newInstance(0/*DEFAULT_SECTIONS_EMPTY*/);
-        sectionsListFragment.setData(modules.get(mCurrentModuleIndex));
-        sectionsListFragment.setCurrentState(mCurrentSectionIndex, mCurrentDomainIndex);
-        sectionsListFragment.setOnListItemClickListener(this);
-        ft.add(R.id.fragment_section_details_parent, sectionDetailsFragment);
-        ft.add(R.id.fragment_sections_list_parent, sectionsListFragment);
-        ft.commit();
+       if(mCurrentModuleIndex<3) {
+           fm = getSupportFragmentManager();
+           ft = fm.beginTransaction();
+           sectionDetailsParent = findViewById(R.id.fragment_section_details_parent);
+           sectionsListParent = findViewById(R.id.fragment_sections_list_parent);
+           sectionDetailsFragment = SectionDetailsFragment.newInstance(/*DEFAULT_SECTIONS_EMPTY*/);
+           sectionsListFragment = SectionsListFragment.newInstance(0/*DEFAULT_SECTIONS_EMPTY*/);
+           sectionsListFragment.setData(modules.get(mCurrentModuleIndex));
+           sectionsListFragment.setCurrentState(mCurrentSectionIndex, mCurrentDomainIndex);
+           sectionsListFragment.setOnListItemClickListener(this);
+           ft.add(R.id.fragment_section_details_parent, sectionDetailsFragment);
+           ft.add(R.id.fragment_sections_list_parent, sectionsListFragment);
+           ft.commit();
+       }
+       else{
+           Intent intent1 = new Intent(SurveyActivity.this, ResultsActivity.class);
+           startActivity(intent1);
+       }
     }
 
     private void calculateNext(List<Module> modules) {
@@ -118,13 +124,13 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     private void loadQuestions(LeftPane item) {
         if (sectionDetailsFragment != null) {
-            if (item.isEveryQuestionAnswered()) {
-                sectionDetailsFragment.setDataWithAnswers(item);
-            } else {
-                sectionDetailsFragment.setData(item);
-            }
+           /* if (item.isEveryQuestionAnswered()) {
+               // sectionDetailsFragment.setDataWithAnswers(item);
+            } else {*/
+            sectionDetailsFragment.setData(item);
         }
     }
+
 
     LeftPane item;
 
@@ -148,9 +154,20 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                 Result.evaluateQuestionnaires(mCurrentModule, this);
             }
 
-            sectionsListFragment.setCurrentState(0, 0);
-            sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
-            sectionsListFragment.onStateChanged(true);
+
+            if (mCurrentModuleIndex < 3) {
+                sectionsListFragment.setCurrentState(0, 0);
+                sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
+                sectionsListFragment.onStateChanged(true);
+            }
+            else{
+
+                Intent intent = new Intent(SurveyActivity.this, ResultsActivity.class);
+                startActivity(intent);
+
+
+            }
+
         }
     }
 
@@ -163,14 +180,14 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         } else if (item instanceof SubModule) {
             if (!((SubModule) item).hasDomains()) {
                 questions = ((SubModule) item).getQuestions();
-                String userId = String.valueOf(((SubModule)item).getModule().getUser().getIdInDb());
+                String userId = String.valueOf(((SubModule) item).getModule().getUser().getIdInDb());
                 if (((SubModule) item).getName().equals("Basic Questionnaire")) {
                     insertAnswers(questions, true, isUpdate);
                 } else {
                     insertAnswers(questions, false, isUpdate);
-                    if(((SubModule) item).getIndex()== ((SubModule) item).getModule().getSections().size()-1)
+                    if (((SubModule) item).getIndex() == ((SubModule) item).getModule().getSections().size() - 1)
 
-                    updateHistoryFlagInUserTable(userId);
+                        updateHistoryFlagInUserTable(userId);
                 }
                 return true;
 
@@ -182,7 +199,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
-    private void updateHistoryFlagInUserTable(String userId){
+    private void updateHistoryFlagInUserTable(String userId) {
 
         ContentValues cv = new ContentValues();
         cv.put(SurveyEntry.USERS_COLUMN_HISTORY_FLAG, "COMPLETED");
