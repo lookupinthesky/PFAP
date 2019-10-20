@@ -2,13 +2,13 @@ package com.example.pfa_p.Model;
 
 public class User {
 
-    private String prisonerId;
-    private long idInDb;
-    private String name;
-    private int numberOfVisits;
-    private boolean ifHistoryTaken;
-    private boolean ifAssessmentTaken;
-    private boolean isSynced;
+    private String prisonerId; // the inmate_id as filled at the login screen
+    private long idInDb; // the PRIMARY KEY in users table
+    private String name; // name of prisoner
+    private int numberOfVisits; // total times visited COMPLETELY
+    private boolean ifHistoryTaken; // status of history
+    private boolean ifAssessmentTaken; // status of assessment in the current visit number
+    private boolean isSynced; // is synced to server
 
     public boolean isSynced() {
         return isSynced;

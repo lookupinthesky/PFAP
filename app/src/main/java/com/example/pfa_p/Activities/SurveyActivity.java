@@ -74,26 +74,31 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         mCurrentModuleIndex = intent.getExtras().getInt("current_module_index");
         mCurrentSectionIndex = intent.getExtras().getInt("current_section_index");
         mCurrentDomainIndex = intent.getExtras().getInt("current_domain_index");
-       if(mCurrentModuleIndex<3) {
-           fm = getSupportFragmentManager();
-           ft = fm.beginTransaction();
-           sectionDetailsParent = findViewById(R.id.fragment_section_details_parent);
-           sectionsListParent = findViewById(R.id.fragment_sections_list_parent);
-           sectionDetailsFragment = SectionDetailsFragment.newInstance(/*DEFAULT_SECTIONS_EMPTY*/);
-           sectionsListFragment = SectionsListFragment.newInstance(0/*DEFAULT_SECTIONS_EMPTY*/);
-           sectionsListFragment.setData(modules.get(mCurrentModuleIndex));
-           sectionsListFragment.setCurrentState(mCurrentSectionIndex, mCurrentDomainIndex);
-           sectionsListFragment.setOnListItemClickListener(this);
-           ft.add(R.id.fragment_section_details_parent, sectionDetailsFragment);
-           ft.add(R.id.fragment_sections_list_parent, sectionsListFragment);
-           ft.commit();
-       }
-       else{
-           Intent intent1 = new Intent(SurveyActivity.this, ResultsActivity.class);
-           startActivity(intent1);
-       }
+        if (mCurrentModuleIndex < 3) {
+            fm = getSupportFragmentManager();
+            ft = fm.beginTransaction();
+            sectionDetailsParent = findViewById(R.id.fragment_section_details_parent);
+            sectionsListParent = findViewById(R.id.fragment_sections_list_parent);
+            sectionDetailsFragment = SectionDetailsFragment.newInstance(/*DEFAULT_SECTIONS_EMPTY*/);
+            sectionsListFragment = SectionsListFragment.newInstance(0/*DEFAULT_SECTIONS_EMPTY*/);
+            sectionsListFragment.setData(modules.get(mCurrentModuleIndex));
+            sectionsListFragment.setCurrentState(mCurrentSectionIndex, mCurrentDomainIndex);
+            sectionsListFragment.setOnListItemClickListener(this);
+            ft.add(R.id.fragment_section_details_parent, sectionDetailsFragment);
+            ft.add(R.id.fragment_sections_list_parent, sectionsListFragment);
+            ft.commit();
+        } else {
+            Intent intent1 = new Intent(SurveyActivity.this, ResultsActivity.class);
+            startActivity(intent1);
+        }
     }
 
+    /**
+     * Calculates and increments the current value by 1 of one of mCurrentDomainIndex, mCurrentSectionIndex, mCurrentModuleIndex
+     * depending upon current position while filling the form
+     *
+     * @param modules
+     */
     private void calculateNext(List<Module> modules) {
         List<SubModule> subModules = modules.get(mCurrentModuleIndex).getSections();
         List<Domain> domains = subModules.get(mCurrentSectionIndex).getDomains();
@@ -117,11 +122,18 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
+
+    /**
+     * @param item
+     */
     @Override
     public void onListItemClick(LeftPane item) {
         loadQuestions(item);
     }
 
+    /**
+     * @param item
+     */
     private void loadQuestions(LeftPane item) {
         if (sectionDetailsFragment != null) {
            /* if (item.isEveryQuestionAnswered()) {
@@ -135,7 +147,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     LeftPane item;
 
 
-    // @Override
+    /**
+     * method called by ClickListener for the next button on the the toolbar.
+     *
+     */
     public void onNextClick() {
         boolean isUpdate;
         Module mCurrentModule = modules.get(mCurrentModuleIndex);
@@ -145,23 +160,20 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             showSnackBar("Please complete all the fields!");
             return;
         }
-        saveToDb(item, isUpdate);
-        calculateNext(modules); //TODO:
+        saveToDb(item, isUpdate); //TODO: push on background thread
+        calculateNext(modules);
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);
         } else {
             if (mCurrentModule.getName().equals("Basic Questionnaire")) {
-                Result.evaluateQuestionnaires(mCurrentModule, this);
+                Result.evaluateQuestionnaires(mCurrentModule, this);// evaluate next sections before setting data to list
             }
-
 
             if (mCurrentModuleIndex < 3) {
                 sectionsListFragment.setCurrentState(0, 0);
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
-            }
-            else{
-
+            } else {
                 Intent intent = new Intent(SurveyActivity.this, ResultsActivity.class);
                 startActivity(intent);
 
@@ -171,6 +183,12 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         }
     }
 
+    /**
+     *
+     * @param item the clicked left pane item i.e. the submodule or subdomain for which the questions are being answered
+     * @param isUpdate true if entered data is being updated for example after an unexpected shutdown
+     * @return true if values were inserted in database, else false
+     */
     private boolean saveToDb(LeftPane item, boolean isUpdate) {
         List<Question> questions;
         if (item instanceof Domain) {
@@ -199,6 +217,12 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
+    /**
+     * History flag is by default incomplete and would remain incomplete until all the sections are completed.
+     * When Module is changed and entries are saved to database it must be marked completed in the user table
+     * @see com.example.pfa_p.Database.SurveyContract
+     * @param userId
+     */
     private void updateHistoryFlagInUserTable(String userId) {
 
         ContentValues cv = new ContentValues();
@@ -206,6 +230,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         getContentResolver().update(SurveyEntry.TABLE_USERS_CONTENT_URI, cv, SurveyEntry.USERS_ID + " =?", new String[]{userId});
     }
 
+    /**
+     * Shows snackbar at the bottom when user clicks next button without completing the form
+     * @param display
+     */
     private void showSnackBar(String display) {
         Snackbar snackBar = Snackbar.make(sectionDetailsParent.getRootView(), display, Snackbar.LENGTH_LONG);
        /* CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams)
@@ -219,7 +247,14 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         snackBar.show();
     }
 
-
+    /**
+     * Inserts the data filled by the user into local database
+     * @param questionList List of questions which needs to be saved to database
+     * @param isAssessment if the list is for assessment table as history and assessment tables are different
+     *                     needs to marked true for basic questionnaire
+     * @see com.example.pfa_p.Database.SurveyContract
+     * @param isUpdate if the method is called for changing already saved values or an incomplete form
+     */
     private void insertAnswers(List<Question> questionList, boolean isAssessment, boolean isUpdate) {
         Uri uri;
 

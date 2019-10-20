@@ -15,12 +15,12 @@ import androidx.fragment.app.Fragment;
 import com.example.pfa_p.R;
 import com.victor.loading.book.BookLoading;
 
-public class SurveySchemaFragment extends Fragment {
+public class LoadingScreenFragment extends Fragment {
 
     StartSurveyListener mListener;
     Button startButton;
   //  NumberProgressBar progressBar;
-    public static final String LOG_TAG = SurveySchemaFragment.class.getName();
+    public static final String LOG_TAG = LoadingScreenFragment.class.getName();
     private BookLoading progressView;
     double elapsedSeconds;
     long elapsedMilliSeconds;
@@ -121,9 +121,9 @@ public class SurveySchemaFragment extends Fragment {
 
 }
 
-    public static SurveySchemaFragment getInstance(StartSurveyListener mListener) {
+    public static LoadingScreenFragment getInstance(StartSurveyListener mListener) {
 
-        SurveySchemaFragment fragment = new SurveySchemaFragment();
+        LoadingScreenFragment fragment = new LoadingScreenFragment();
         fragment.mListener = mListener;
         return fragment;
 

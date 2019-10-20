@@ -20,9 +20,9 @@ public class SubModule extends LeftPane {
     private int index; // index in module list
     private List<Domain> domains;
     private int numberOfQuestions;
-    private long sectionIdInDb;
+    private long sectionIdInDb; // PRIMARY KEY in TABLE_SECTIONS
     private List<Question> questions;
-    private boolean isPresent = true;
+    private boolean isPresent = true; //a flag which takes false value only in assessment module
     private Result result;
 
 
@@ -115,7 +115,7 @@ public class SubModule extends LeftPane {
 
         ContentValues values = new ContentValues();
         values.put(SurveyContract.SurveyEntry.SECTIONS_COLUMN_NAME, name);
-        values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SURVEY_ID, getSurveyId());
+        values.put(SurveyContract.SurveyEntry.SECTIONS_COLUMN_SURVEY_ID, getSurveyId());
         return values;
 
     }

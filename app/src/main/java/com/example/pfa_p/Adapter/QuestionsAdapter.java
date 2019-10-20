@@ -89,7 +89,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         @Override
         public void afterTextChanged(Editable editable) {
            // question.setAnswer(editable.toString(), moduleIndex == 1);
-            answersArray[rightPaneList.indexOf(question)] = editable.toString();
+            answersArray[rightPaneList.indexOf(question)] = editable.toString(); // this is the right method to retain data
         }
     }
 
@@ -136,10 +136,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             question = (Question) item;
             questionText.setText(question.getQuestionName());
 
-            editText.removeTextChangedListener(mTextWatcher);
+            editText.removeTextChangedListener(mTextWatcher); // for view recycling
             mTextWatcher = new CustomEditTextListener(question);
             editText.addTextChangedListener(mTextWatcher);
             editText.setText(answersArray[rightPaneList.indexOf(question)]);
+            editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            editText.setInputType(question.getOptions().getInputType());
             //    views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
             //    editText = (EditText) views.get(0);
            /* TextWatcher mTextWatcher = new TextWatcher() {
@@ -172,8 +174,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             }*/
 
 
-            editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            editText.setInputType(question.getOptions().getInputType());
+
             /* editText.addTextChangedListener(mTextWatcher);*//*new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -241,7 +242,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 RadioButton rb = (RadioButton) views.get(i);
                 rb.setText(question.getOptions().getOptions().get(i));
             }
-            options.setOnCheckedChangeListener(null);
+
+            options.setOnCheckedChangeListener(null); //reset when view recycles
             options.clearCheck();
 
 
@@ -285,7 +287,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         List<View> views = new ArrayList<>();
         Log.d("QuestionsAdapter", "methodcall: onBindViewWithId, number of options = " + numberOfOptions);
         switch (numberOfOptions) {
-
+// The order is important here, case 8 must be checked before case 7 and so on
             case 8:
                 AppCompatRadioButton option8 = parent.findViewById(R.id.option_eight);
                 views.add(option8);
@@ -321,15 +323,14 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     }
 
     class ThreeOptionsViewHolder extends TwoOptionsViewHolder {
+
         ThreeOptionsViewHolder(@NonNull View parent) {
             super(parent);
-
         }
 
         @Override
         void bind(RightPane item) {
             super.bind(item);
-
         }
     }
 

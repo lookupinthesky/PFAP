@@ -6,15 +6,43 @@ import com.example.pfa_p.Database.SurveyContract;
 
 import java.util.List;
 
+/**
+ * Domain is the subsection of a given submodule. It is only present in Assessment Module.
+ * It functions with a submodule and questions just like a submodule functions with module and questions
+ * Each domain has its own set of rules on how the results of questions must be calculated, which is handled by @link Result instance present
+ */
 public class Domain extends LeftPane {
-
+    /**
+     * The list of questions belonging to the domain
+     */
     private List<Question> questions;
+    /**
+     * The PRIMARY KEY of domain in TABLE_DOMAINS
+     */
     private long domainIdInDb;
+    /**
+     * The submodule this domain belongs to
+     */
     private SubModule subModule;
+    /**
+     * the index of domain within a SUBMODULE
+     */
     private int index = 0;
+    /**
+     * name of domain
+     */
     private String name;
-    private boolean hasDespondency = false;
+    /**
+     * One domain has despondency as a variable, and needs a different view representation than the rest of the domains
+     */
+    private boolean hasDespondency = false; //TODO:
+    /**
+     * The result instance acts as a mediator. It receives the result from the Result class and keeps it stored here for future access
+     */
     private Result result;
+    /**
+     * flag if the result has been already calculated
+     */
     boolean isDomainResultCalculated = false;
 
     public int getIndex() {
@@ -61,8 +89,8 @@ public class Domain extends LeftPane {
         return domainIdInDb;
     }
 
-    public void setId(long _id){
-        this.domainIdInDb = _id ;
+    public void setId(long _id) {
+        this.domainIdInDb = _id;
     }
 
 
@@ -74,16 +102,23 @@ public class Domain extends LeftPane {
         this.subModule = subModule;
     }
 
+    /**
+     * Returns a contentvalue object to be written to TABLE_DOMAINS
+     * @return
+     */
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_NAME, name);
         values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SECTION_ID, getSubModule().getId());
-      //  values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SURVEY_ID, getSurveyId());
+        //  values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SURVEY_ID, getSurveyId());
         return values;
 
     }
 
-
+    /**
+     * Sends an instance of domain object to @see Result class and gets calculated result back as an instance
+     * @return
+     */
     public Result getResult() {
 
         this.result = new Result(this);

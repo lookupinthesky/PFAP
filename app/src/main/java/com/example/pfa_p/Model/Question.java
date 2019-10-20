@@ -7,18 +7,51 @@ import com.example.pfa_p.Database.SurveyContract;
 
 public class Question extends RightPane {
 
+    /**
+     *The text of the question
+     */
     private String questionName;
+    /**
+     * Information about the available choices, input types to answer a question
+     */
     private AnswerOptions options;
+    /**
+     *The submodule this question belongs to, cannot be null
+     */
     private SubModule subModule;
+    /**
+     * The domain this question belongs to, by default null as domains are not present everytime
+     */
     private Domain domain = null;
+    /**
+     *The PRIMARY KEY of the question in TABLE_QUESTIONS
+     */
     private long questionIdInDb;
+    /**
+     *The index of the answer within the OPTIONS of a question in an order specified by the surveydata.json or csv
+     */
     private int answerIndex;
+    /**
+     * If Question belongs to Socio-Demographics then false, else true
+     */
     private boolean isAssessment = false;
+    /**
+     * The GLOBAL serial number of question, same as index of the question in the questions array but starts from 1
+     */
     private int serialNumber;
+    /**
+     * Submitted answer
+     */
     private String answer = null;
+    /**
+     * Prisoner Information
+     */
     private User user;
-    private int viewType;
+    /**
+     * The PRIMARY KEY of stored answer in either of TABLE_ASSESSMENT_ANSWERS or TABLE_HISTORY_ANSWERS
+     */
     private long answerIdInDb;
+
 
     public long getId() {
         return questionIdInDb;
@@ -95,6 +128,13 @@ public class Question extends RightPane {
         return answerIndex;
     }
 
+    /**
+     * Returns the answer index of the question based on answer text, not applicable to input type text.
+     * @param answer
+     * @return returns a value from 0 to 7 if a matching option is found
+     * returns -2 if input type is text
+     * throws exception if no matching value is found for the text. Can happen due to mismatch in surveydata resource file and stored value in db
+     */
     public int getAnswerIndex(String answer){
         if (getOptions().getNumberOfOptions() > 0) {
             answerIndex = getOptions().getOptions().indexOf(answer);
@@ -118,23 +158,25 @@ public class Question extends RightPane {
 
         this.answer = response;
         this.isAssessment = isAssessment;
-        /*if (getOptions().getOptions().size() > 0) {
-            answerIndex = getOptions().getOptions().indexOf(response);
-        }*/
         this.answerIndex = getAnswerIndex(response);
 
     }
 
-    public void setAnswer(int index, String response, boolean isAssessment) {
+   /* public void setAnswer(int index, String response, boolean isAssessment) {
 
         this.answerIndex = index;
         setAnswer(response, isAssessment);
-    }
+    }*/
 
     public String getAnswer() {
         return answer;
     }
 
+
+    /**
+     * Returns a contentvalue object to be written to the TABLE_QUESTIONS
+     * @return
+     */
     public ContentValues getQuestionContentValues() {
 
         ContentValues questionValues = new ContentValues();
@@ -165,6 +207,10 @@ public class Question extends RightPane {
         return 1;
     }
 
+    /**
+     * Returns a contentvalue object to be written to the TABLE_ASSESSMENT_ANSWERS or TABLE_HISTORY_ANSWERS depending upon the flag
+     * @return
+     */
     public ContentValues getAnswerContentValues(/*boolean isAssessment*/) {
         ContentValues answerValues = new ContentValues();
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID, questionIdInDb);

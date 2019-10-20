@@ -6,63 +6,49 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * A model class that keeps all the information related to the available options for a question, type of  user input required
+ */
 public class AnswerOptions {
 
-
-    public static final int OPTION_YESNO = 100;  //exclusively for yes or no type questions
-    public static final int OPTION_MCQ = 101;   // for options with 2 or more than 2 choices; if more than 2 choices with yes/no
-    public static final int OPTION_TEXT = 102;  // if the user has to enter the answer as a text
-    public static final int OPTION_RATING = 103; // when filling questionnaires if the answers are from 1- 4 or 4- 1 etc.
-    public static final int OPTION_QUNATITY = 104; // when filling quantity for drugs
-
-
-    private int optionTypes;
+    /**
+     * A yes/no question will have value 2, an editable answer will be 0; as specified in the source file
+     */
     private int numberOfOptions;
-    private int viewType;
+    /**
+     * If number of options is zero list is currently filled with dummy data from surveydata file such as "option1", "option2" etc.
+     */
+    private List<String> options;
+    /**
+     * As specified in the surveydata file
+     */
+    private String answerType;
 
-    public int getNumberOfOptions() {
-        if (numberOfOptions > 8)
-            return options.size();
-
-        return numberOfOptions;
-    }
-
-    public void setNumberOfOptions(int numberOfOptions) {
-        this.numberOfOptions = numberOfOptions;
-    }
-
-    /*public int getViewType() {
-
-        return answerType;
-
-
-    }*/
 
     public AnswerOptions(String answerType, int numberOfOptions, String... options1) {
         this.answerType = answerType;
         this.options = new ArrayList<>();
         this.numberOfOptions = numberOfOptions;
-        //  this.answerType = answerType;
         options = Arrays.asList(options1);
     }
 
-    public String getAnswerType(){
-        return  answerType;
+    public String getAnswerType() {
+        return answerType;
     }
 
     public List<String> getOptions() {
         return options;
     }
 
-    private List<String> options;
-    private String answerType;
+    public int getNumberOfOptions() {
+        if (numberOfOptions > 8)
+            return options.size(); //TODO: fix this
+
+        return numberOfOptions;
+    }
 
     public int getInputType() {
-
         switch (answerType) {
-
-
             case "TEXT": {
                 return InputType.TYPE_CLASS_TEXT;
             }
@@ -72,7 +58,6 @@ public class AnswerOptions {
             case "DATE": {
                 return InputType.TYPE_CLASS_DATETIME;
             }
-
             default:
                 return InputType.TYPE_CLASS_TEXT;
         }
@@ -106,7 +91,21 @@ public class AnswerOptions {
         }
     }*/
 
+   /* public static final int OPTION_YESNO = 100;  //exclusively for yes or no type questions
+    public static final int OPTION_MCQ = 101;   // for options with 2 or more than 2 choices; if more than 2 choices with yes/no
+    public static final int OPTION_TEXT = 102;  // if the user has to enter the answer as a text
+    public static final int OPTION_RATING = 103; // when filling questionnaires if the answers are from 1- 4 or 4- 1 etc.
+    public static final int OPTION_QUNATITY = 104; // when filling quantity for drugs*/
+  /* public void setNumberOfOptions(int numberOfOptions) {
+       this.numberOfOptions = numberOfOptions;
+   }*/
 
+    /*public int getViewType() {
+
+        return answerType;
+
+
+    }*/
 }
 
 

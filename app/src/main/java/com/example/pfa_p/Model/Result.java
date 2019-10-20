@@ -62,13 +62,8 @@ public class Result implements RatingSystem {
     }
 
     private String generateResultText(Domain domain) {
-
-        //     int mean =  calculateMean();
-
         switch (domain.getName()) {
-
             case "Assessing Anti-Social Personality Traits":
-
                 if (resultValueActual > 0 && resultValueActual <= 6) {
                     return RatingSystem.RESULT_NORMAL;
                 } else if (resultValueActual > 6 && resultValueActual <= 9) {
@@ -76,16 +71,12 @@ public class Result implements RatingSystem {
                 } else {
                     return RatingSystem.RESULT_PERSONALITY_PROMINENT_ANTISOCIAL;
                 }
-
             case "Assessing Possible Severe Psychiatric Illness":
-
                 if (resultValueActual > 1) {
                     return RatingSystem.RESULT_NEED_REFERRAL;
                 } else
                     return RatingSystem.RESULT_NORMAL;
-
             case "Checking Orientation":
-
                 if (resultValueActual >= 0 && resultValueActual <= 9) {
                     return RatingSystem.RESULT_NORMAL;
                 } else if (resultValueActual >= 10 && resultValueActual <= 17) {
@@ -95,7 +86,6 @@ public class Result implements RatingSystem {
                 } else {
                     return RatingSystem.RESULT_SEVERE;
                 }
-
             case "Checking Anxiousness & Irritability":
 
                 if (resultValueActual >= 0 && resultValueActual <= 6) {
@@ -107,7 +97,6 @@ public class Result implements RatingSystem {
                 } else {
                     return RatingSystem.RESULT_SEVERE;
                 }
-
             case "Checking Social State":
 
                 if (resultValueActual >= 0 && resultValueActual <= 5) {
@@ -119,7 +108,6 @@ public class Result implements RatingSystem {
                 } else {
                     return RatingSystem.RESULT_POOR_SUPPORT;
                 }
-
             case "Checking Physical State":
 
                 if (resultValueActual >= 0 && resultValueActual <= 4) {
@@ -131,7 +119,6 @@ public class Result implements RatingSystem {
                 } else {
                     return RatingSystem.RESULT_SEVERE;
                 }
-
             case "Checking emotional state":
 
                 if (resultValueActual >= 0 && resultValueActual <= 6) {
@@ -143,7 +130,6 @@ public class Result implements RatingSystem {
                 } else {
                     return RatingSystem.RESULT_SEVERE;
                 }
-
             case "Assessing Suicidal Feelings":
 
                 if (resultValueActual == 0) {
@@ -155,7 +141,6 @@ public class Result implements RatingSystem {
                 } else {
                     return RatingSystem.RESULT_SEVERE;
                 }
-
             case "Assessing Responsiveness":
 
                 if (despondencyValue >= 0 && despondencyValue <= 5) {

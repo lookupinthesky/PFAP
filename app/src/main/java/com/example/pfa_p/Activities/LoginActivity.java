@@ -22,8 +22,8 @@ import androidx.loader.content.Loader;
 
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Database.SurveyTaskLoader;
-import com.example.pfa_p.Fragments.SurveySchemaFragment;
-import com.example.pfa_p.Fragments.UserEntryDialogFragment;
+import com.example.pfa_p.Fragments.LoadingScreenFragment;
+import com.example.pfa_p.Fragments.LoginScreenFragment;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
 import com.example.pfa_p.Model.User;
@@ -35,13 +35,17 @@ import java.util.List;
 public class LoginActivity extends FragmentActivity {
     FragmentManager fm;
     FragmentTransaction ft;
-    SurveySchemaFragment schemaFragment;
-    //   UserEntryDialogFragment userEntryFragment;
+    LoadingScreenFragment loadingScreenFragment;
+    //   LoginScreenFragment userEntryFragment;
     CoordinatorLayout parent;
     private static final int LOADER_ID = 100;
     LoaderManager.LoaderCallbacks<String> mCallbacks;
     private static final String LOG_TAG = LoginActivity.class.getName();
     DialogFragment dialogFragment;
+    int mCurrentSectionIndex;
+    int mCurrentDomainIndex;
+    int mCurrentModuleIndex;
+    int visitNumber = 0;
 
 
     @Override
@@ -73,7 +77,7 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onLoadFinished(@NonNull Loader<String> loader, String data) {
 
-                schemaFragment.receiveProgressUpdate(10000);
+                loadingScreenFragment.receiveProgressUpdate(10000);
 
             }
 
@@ -90,10 +94,10 @@ public class LoginActivity extends FragmentActivity {
             ft.remove(prev);
         }
         //   ft.addToBackStack(null);
-        //  DialogFragment dialogFragment = new UserEntryDialogFragment();
+        //  DialogFragment dialogFragment = new LoginScreenFragment();
 
 
-        schemaFragment = SurveySchemaFragment.getInstance(new SurveySchemaFragment.StartSurveyListener() {
+        loadingScreenFragment = LoadingScreenFragment.getInstance(new LoadingScreenFragment.StartSurveyListener() {
             @Override
             public void onStartClick() {
                 Intent intent = new Intent(LoginActivity.this, SurveyActivity.class);
@@ -103,17 +107,17 @@ public class LoginActivity extends FragmentActivity {
                 LoginActivity.this.startActivity(intent);
             }
         });
-        dialogFragment = UserEntryDialogFragment.getInstance(new UserEntryDialogFragment.NextButtonListener() {
+        dialogFragment = LoginScreenFragment.getInstance(new LoginScreenFragment.NextButtonListener() {
             @Override
             public void onNextButtonClick(String prisonerId, String volunteerId) {
 
                 prisonerIdText = prisonerId;
 
 
-                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, schemaFragment).addToBackStack(null).commit();
+                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, loadingScreenFragment).addToBackStack(null).commit();
                 LoaderManager.getInstance(LoginActivity.this).initLoader(LOADER_ID, null, mCallbacks);
 
-                //     ft.replace(R.id.fragment_container, schemaFragment);
+                //     ft.replace(R.id.fragment_container, loadingScreenFragment);
                 //    parent.setAlpha(1);
                 //    ft.commit();
 
@@ -128,10 +132,6 @@ public class LoginActivity extends FragmentActivity {
 */
     }
 
-    int mCurrentSectionIndex;
-    int mCurrentDomainIndex;
-    int mCurrentModuleIndex;
-    int visitNumber = 0;
 
     private void setCurrentState(int currentModuleIndex, int currentSectionIndex, int currentDomainIndex) {
 
@@ -166,7 +166,10 @@ public class LoginActivity extends FragmentActivity {
         //    super.onBackPressed();
     }
 
-
+    /**
+     * inserts prisoner information to the TABLE_USER in db
+     * @param prisonerId the official inmate id
+     */
     private void insertNewUser(String prisonerId) {
         ContentValues cv = new ContentValues();
         if (prisonerId.equals("")) {
@@ -190,6 +193,11 @@ public class LoginActivity extends FragmentActivity {
         }*/
     }
 
+    /**
+     * User information is tied to the global runtime metadata produced through json parsing. So currently, you can only fill out one user at a time
+     * @param prisonerId the inmate id
+     * @param idInDb the PRIMARY KEY corresponding to the inmate id
+     */
     private void setUserToModules(String prisonerId, long idInDb) {
         User user = new User();
         user.setPrisonerId(prisonerId);
@@ -215,6 +223,10 @@ public class LoginActivity extends FragmentActivity {
     }
 
     /**
+     * Method which checks the user history to see if the survey needs to be started from the start or from somewhere in the middle, sets the current state
+     * Checks if user exists, else inserts new user
+     * Checks the visit number based on user records in database
+     *
      * @param prisonerId
      */
     private void startSurvey(String prisonerId) {
@@ -223,7 +235,7 @@ public class LoginActivity extends FragmentActivity {
         if (user_Id == -1) {
             insertNewUser(prisonerId);
             setCurrentState(0, 0, -1);
-            //     schemaFragment.receiveProgressUpdate(30);
+            //     loadingScreenFragment.receiveProgressUpdate(30);
             Log.d(LOG_TAG, "Method: StartSurvey, user not found, inserting a new user");
         } else {
             setUserToModules(prisonerId, user_Id);
@@ -232,7 +244,7 @@ public class LoginActivity extends FragmentActivity {
                     incrementVisitCounter();
                     setCurrentState(0, 0, 0);
                 } else {
-                    helper.fetchAssessmentTableDataForUser(user_Id, 1/*helper.totalVisits*/, this);
+                    helper.fetchAssessmentTableDataForUser(user_Id, 1/*helper.totalVisits*/, this); //TODO: verify visit numbers
                 }
             } else {
                 helper.fetchHistoryTableDataForUser(user_Id, this);
@@ -291,8 +303,10 @@ public class LoginActivity extends FragmentActivity {
         }
 
         /**
-         * @param userId
-         * @param context
+         * History table data is fetched when app is closed while history data is still not filled completely, so it restores from the last point
+         *
+         * @param userId - inmate id for which the data is to be fetched
+         * @param context context
          */
         void fetchHistoryTableDataForUser(long userId, Context context) {
 
@@ -317,7 +331,7 @@ public class LoginActivity extends FragmentActivity {
                     response = cursor.getString(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_RESPONSE));
 
                     Question question = questions.get(i);
-                    if (questionId == question.getId())
+                    if (questionId == question.getId()) // verify if survey hasn't been changed in the meanwhile
                         question.setAnswer(response, false);
 
 
@@ -327,7 +341,7 @@ public class LoginActivity extends FragmentActivity {
                     //            question.setAnswer(response, false); // TODO: modify questions pojo to receive string answers for radiobuttons
                     //determine state from last question in database
                     if (count == cursor.getCount()) {
-                        Question question1 = questions.get(i + 1);
+                        Question question1 = questions.get(i + 1); //current submodule and module correspond to the question next to the last filled question
                         currentSectionIndex = question1.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
                         currentModuleIndex = question1.getSubModule().getModule().getIndex();
                         if (question1.getDomain() == null) {
@@ -351,7 +365,7 @@ public class LoginActivity extends FragmentActivity {
             } else {
 
                 //    deleteUser(userId);
-                setCurrentState(0, 0, -1);
+                setCurrentState(0, 0, -1); // start from the beginning
             }
 
         }
