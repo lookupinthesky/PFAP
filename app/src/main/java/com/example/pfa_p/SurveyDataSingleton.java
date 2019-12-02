@@ -101,6 +101,7 @@ public class SurveyDataSingleton {
         InputStream inputStream = context.getResources().openRawResource(R.raw.surveydatav2);
         String jsonString = new Scanner(inputStream).useDelimiter("\\A").next();
         JSONHelper helper = new JSONHelper(jsonString);
+ //       CSVHelper helper = new CSVHelper(inputStream);
         modules = helper.getModules();
         sections = helper.getSections();
         domains = helper.getDomains();
