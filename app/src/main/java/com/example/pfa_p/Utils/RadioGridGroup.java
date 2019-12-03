@@ -17,6 +17,15 @@ import androidx.appcompat.widget.AppCompatRadioButton;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ *
+ */
+
+
+/**
+ * DEVELOPER's NOTE: This class has been used extensively throughout the survey to create a grid of radiobuttons
+ * It is directly copied from Github @link https://gist.github.com/saiaspire/a73135cfee1110a64cb0ab3451b6ca33
+ *
+ * AUTHOR's NOTE:
  * <p>This class is used to create a multiple-exclusion scope for a set of radio
  * buttons. Checking one radio button that belongs to a radio group unchecks
  * any previously checked radio button within the same group.</p>
@@ -34,6 +43,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @see AppCompatRadioButton
  */
+
+
 public class RadioGridGroup extends GridLayout {
     private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
     private int mCheckedId = -1;

@@ -18,7 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.pfa_p.R;
 
 
-public class UserEntryDialogFragment extends DialogFragment {
+public class LoginScreenFragment extends DialogFragment {
 
     EditText prisonerId;
     EditText volunteerId;
@@ -115,9 +115,9 @@ public class UserEntryDialogFragment extends DialogFragment {
         return view;
     }
 
-    public static UserEntryDialogFragment getInstance(NextButtonListener mListener) {
+    public static LoginScreenFragment getInstance(NextButtonListener mListener) {
 
-        UserEntryDialogFragment fragment = new UserEntryDialogFragment();
+        LoginScreenFragment fragment = new LoginScreenFragment();
         fragment.mListener = mListener;
         return fragment;
 

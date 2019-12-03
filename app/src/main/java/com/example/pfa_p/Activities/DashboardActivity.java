@@ -1,7 +1,5 @@
 package com.example.pfa_p.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +7,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pfa_p.Adapter.RecentActivityAdapter;
 import com.example.pfa_p.Model.Module;
@@ -21,6 +21,14 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+/**
+ * The home screen for the PFA-P app, essentially a dashboard showing following things
+ * 1. A list of recently edited/filled entries with options to view result, continue editing, delete etc.
+ * 2. Total Number of Entries present in the Database currently
+ * 3. Total Number of Prisoners assessed till date
+ * 4. Number of synced vs unsynced entries with server and a button to start or stop the sync
+ */
 
 public class DashboardActivity extends AppCompatActivity  {
 

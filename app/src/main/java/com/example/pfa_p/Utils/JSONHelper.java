@@ -235,6 +235,7 @@ public class JSONHelper {
         }
     }
 
+    // an alternative method with O(n) complexity but more complex to implement
     private void parseData(String jsonString) throws JSONException {
 
         Question question = new Question("");

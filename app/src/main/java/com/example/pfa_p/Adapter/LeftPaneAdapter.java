@@ -40,6 +40,7 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
 
         LeftPane item;
 
+        //same viewholder is used for both header and item in the leftpane list
         public LeftPaneViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -110,7 +111,7 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
     @Override
     public void onBindViewHolder(@NonNull LeftPaneViewHolder holder, int position) {
 
-        /** Embed section configuration. **/
+        /** Embed section configuration. **/ // External Library used here for sticky header @link https://github.com/TonicArtos/SuperSLiM
         LayoutManager.LayoutParams params;
         params = (LayoutManager.LayoutParams) holder.itemView.getLayoutParams();
         params.setSlm(LinearSLM.ID);

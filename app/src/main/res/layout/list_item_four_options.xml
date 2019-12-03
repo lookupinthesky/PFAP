@@ -7,62 +7,121 @@
     android:layout_marginBottom="16dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/question_text"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="NAME" />
+            android:orientation="vertical"
+            android:padding="8dp">
 
-        <com.example.pfa_p.Utils.RadioGridGroup
-            android:id = "@+id/options_radioGroup"
+            <TextView
+                android:id="@+id/question_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="NAME" />
+
+            <com.example.pfa_p.Utils.RadioGridGroup
+                android:id="@+id/options_radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="-4dp"
+                android:layout_marginLeft="-4dp"
+                android:layout_weight="3"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/option_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:text="0" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/option_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:text="1" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/option_three"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:text="2" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/option_four"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:text="5" />
+            </com.example.pfa_p.Utils.RadioGridGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/despondency_parent"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="-4dp"
-            android:layout_weight="3"
-            android:orientation="horizontal"
-            android:layout_marginStart="-4dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/despondency_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="NAME" />
+
+            <com.example.pfa_p.Utils.RadioGridGroup
+                android:id="@+id/despondency_radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="-4dp"
+                android:layout_marginLeft="-4dp"
+                android:layout_weight="3"
+                android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/option_one"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
-                android:text="0" />
+                    android:id="@+id/despondency_sad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:button="@drawable/despondency_sad_selector"
+                    android:text="0" />
 
                 <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/option_two"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
-                android:text="1" />
+                    android:id="@+id/despondency_neutral"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:button="@drawable/despondency_neutral_selector"
+                    android:text="1" />
 
                 <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/option_three"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
-                android:text="2" />
-
-                <androidx.appcompat.widget.AppCompatRadioButton
-                android:id="@+id/option_four"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginRight="24dp"
-                android:text="5" />
-        </com.example.pfa_p.Utils.RadioGridGroup>
+                    android:id="@+id/despondency_happy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginRight="24dp"
+                    android:button="@drawable/despondency_happy_selector"
+                    android:text="2" />
+            </com.example.pfa_p.Utils.RadioGridGroup>
+        </LinearLayout>
 
     </LinearLayout>
-
-
 </androidx.cardview.widget.CardView>
 

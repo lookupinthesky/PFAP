@@ -8,8 +8,8 @@ public class Module {
     private int numberOfSections;
     private List<SubModule> sections;
     private int index;
-    private User user;
-    private boolean isResultBased = false;
+    private User user; // prisoner information
+    private boolean isResultBased = false; //TODO: implement this
 
     public void setUser(User user){
         this.user = user;
