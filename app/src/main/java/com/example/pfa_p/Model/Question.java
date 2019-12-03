@@ -240,6 +240,7 @@ public class Question extends RightPane {
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_FLAG, "dirty");
         if (isAssessment) {
             answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER, getVisitNumber());
+            answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_DESPONDENCY,getDespondency()); //TODO: by default "nil"
         }
         return answerValues;
 

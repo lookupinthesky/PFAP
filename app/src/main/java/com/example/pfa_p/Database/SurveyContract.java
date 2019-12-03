@@ -147,6 +147,8 @@ public class SurveyContract {
 
         public static final String ANSWERS_COLUMN_VISIT_NUMBER = "visit_number";
 
+        public static final String ANSWERS_COLUMN_DESPONDENCY = "despondency";
+
         /**
          * Content Uris for all tables
          */

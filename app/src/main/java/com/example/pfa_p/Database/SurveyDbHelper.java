@@ -47,6 +47,7 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_RESPONSE + " TEXT, " +
+            SurveyContract.SurveyEntry.ANSWERS_COLUMN_DESPONDENCY + " INTEGER, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_FLAG + " INTEGER NOT NULL);";
 
     private static final String SQL_CREATE_TABLE_HISTORY_ANSWERS = "CREATE TABLE " +
