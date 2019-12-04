@@ -82,7 +82,11 @@ public class Domain extends LeftPane {
     }
 
     public boolean getDespondency() {
-        return hasDespondency;
+
+        if(getSubModule().getName().equals("Questionnaire F")){
+            return true;
+        }
+        return false;
     }
 
     public long getId() {

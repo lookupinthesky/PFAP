@@ -285,7 +285,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
 
             RadioButton button = (RadioButton) group.findViewById(checkedId);
-            Log.d(LOG_TAG, "checkedId = " + checkedId + " question is " + question.getQuestionName());
+            Log.d(LOG_TAG, "checkedId = " + checkedId + " question is " + question.getQuestionName() + "question has despondency = " + question.hasDespondency());
             button.setChecked(true);
             int index = group.indexOfChild(button);
             // boolean isAssessment = question.getSubModule().getModule();

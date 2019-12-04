@@ -82,14 +82,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="NAME" />
+                android:text="Despondency" />
 
             <com.example.pfa_p.Utils.RadioGridGroup
                 android:id="@+id/despondency_radioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginStart="-4dp"
-                android:layout_marginLeft="-4dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginLeft="0dp"
                 android:layout_weight="3"
                 android:orientation="horizontal">
 
@@ -99,8 +99,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
                     android:layout_marginRight="24dp"
-                    android:button="@drawable/despondency_sad_selector"
-                    android:text="0" />
+                    android:button="@null"
+                    android:drawableTop="@drawable/despondency_sad_selector"
+                    android:text="Negative" />
 
                 <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/despondency_neutral"
@@ -108,8 +109,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
                     android:layout_marginRight="24dp"
-                    android:button="@drawable/despondency_neutral_selector"
-                    android:text="1" />
+                    android:button="@null"
+                    android:drawableTop="@drawable/despondency_neutral_selector"
+                    android:text="Neutral" />
 
                 <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/despondency_happy"
@@ -117,8 +119,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="24dp"
                     android:layout_marginRight="24dp"
-                    android:button="@drawable/despondency_happy_selector"
-                    android:text="2" />
+                    android:button="@null"
+                    android:drawableTop="@drawable/despondency_happy_selector"
+                    android:text="Positive" />
             </com.example.pfa_p.Utils.RadioGridGroup>
         </LinearLayout>
 
