@@ -149,6 +149,44 @@ public class SurveyContract {
 
         public static final String ANSWERS_COLUMN_DESPONDENCY = "despondency";
 
+
+        /**
+         * TABLE_RESULTS
+         */
+
+        public static final String TABLE_RESULTS = "results_table";
+
+        public static final String RESULTS_ID = "_id";
+
+        public static final String RESULTS_PRISONER_ID = "prisoner_id";
+
+        public static final String RESULTS_COLUMN_VISIT_NUMBER = "visit_number";
+
+        public static final String RESULTS_DOMAIN_ID = "domain_id";
+
+        public static final String RESULTS_COLUMN_TYPE_ID = "domain_result_id";
+
+        public static final String RESULTS_COLUMN_FLAG = "flag";
+
+        /**
+         * TABLE_RESULTS_TYPES
+         */
+
+        public static final String TABLE_RESULTS_TYPES = "results_types_table";
+
+        public static final String RESULTS_TYPE_ID = "_id" ;
+
+        public static final String RESULTS_TYPES_DOMAIN_ID = "domain_id";
+
+        public static final String RESULTS_TYPE_NAMES = "name";
+
+
+
+
+
+
+
+
         /**
          * Content Uris for all tables
          */
@@ -165,6 +203,11 @@ public class SurveyContract {
         public static final Uri TABLE_DOMAINS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_DOMAINS).build();
 
         public static final Uri TABLE_SURVEYS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_SURVEYS).build();
+
+        public static final Uri TABLE_RESULTS_TYPES_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_RESULTS_TYPES).build();
+
+        public static final Uri TABLE_RESULTS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_RESULTS).build();
+
 
         // create cursor of base type directory for multiple entries
         public static final String CONTENT_DIR_TYPE_SECTIONS = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_SECTIONS;
@@ -194,6 +237,14 @@ public class SurveyContract {
         public static final String CONTENT_DIR_TYPE_SURVEYS = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_ASSESSMENT_ANSWERS;
 
         public static final String CONTENT_ITEM_TYPE_SURVEYS = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_ASSESSMENT_ANSWERS;
+
+        public static final String CONTENT_DIR_TYPE_RESULTS_TYPES = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS_TYPES;
+
+        public static final String CONTENT_ITEM_TYPE_RESULTS_TYPES = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS_TYPES;
+
+        public static final String CONTENT_DIR_TYPE_RESULTS = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS;
+
+        public static final String CONTENT_ITEM_TYPE_RESULTS = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS;
 
 
         static Uri buildSectionsUri(long id) {
