@@ -5,14 +5,20 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Model.Domain;
+import com.example.pfa_p.Model.FinalResult;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
+import com.example.pfa_p.Model.ResultAbstractModel;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.Utils.JSONHelper;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -270,6 +276,31 @@ public class SurveyDataSingleton {
         }
 
 
+    }
+
+    // must only be called after survey completion
+    public String getSurveyResultForInmateInJSON(String prisonerId) {
+
+        List<FinalResult> finalResults = new ArrayList<>();
+        List<SubModule> subModules = modules.get(2).getSections();
+        for (SubModule subModule : subModules) {
+            FinalResult result = new FinalResult();
+            ResultAbstractModel sectionResult = result.getSectionResult();
+            sectionResult.setName(subModule.getName());
+            sectionResult.setScore(subModule.getResult().getMeanScore());
+            sectionResult.setResult(subModule.getResult().getResultText());
+            List<Domain> domains = subModule.getDomains();
+            for(Domain domain: domains){
+                ResultAbstractModel domainResult = new ResultAbstractModel();
+                domainResult.setName(domain.getName());
+                domainResult.setScore(domain.getResult().getResultValueActual());
+                domainResult.setResult(domain.getResult().getResultText());
+                result.getDomainResult().add(domainResult);
+            }
+            finalResults.add(result);
+        }
+        Gson gson = new Gson();
+        return gson.toJson(finalResults);
     }
 
 

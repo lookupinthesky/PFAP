@@ -169,6 +169,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
      *
      */
     public void onNextClick() {
+        String prisonerId = ""; //TODO:
+        int visitNumber = 1;
         boolean isUpdate;
         Module mCurrentModule = modules.get(mCurrentModuleIndex);
         item = sectionsListFragment.getCurrentItem();
@@ -192,6 +194,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
             } else {
+                saveResultsToDb(prisonerId,visitNumber);
                 Intent intent = new Intent(SurveyActivity.this, ResultsActivity.class);
                 startActivity(intent);
 
@@ -300,6 +303,17 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         }
 
 
+    }
+
+    private void saveResultsToDb(String prisonerId, int visitNumber){
+
+        String results = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON(prisonerId);
+        ContentValues cv = new ContentValues();
+        cv.put(SurveyEntry.RESULTS_PRISONER_ID, prisonerId);
+        cv.put(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER, visitNumber);
+        cv.put(SurveyEntry.RESULTS_JSON, results);
+        cv.put(SurveyEntry.RESULTS_COLUMN_FLAG,"dirty");
+        getContentResolver().insert(SurveyEntry.TABLE_RESULTS_CONTENT_URI,cv);
     }
 
 

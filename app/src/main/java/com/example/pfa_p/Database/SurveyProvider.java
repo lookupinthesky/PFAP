@@ -59,9 +59,9 @@ public class SurveyProvider extends ContentProvider {
         matcher.addURI(authority, SurveyContract.SurveyEntry.TABLE_USERS + "/#", USERS_WITH_ID);
         matcher.addURI(authority, SurveyContract.SurveyEntry.TABLE_RESULTS, RESULTS);
         matcher.addURI(authority, SurveyContract.SurveyEntry.TABLE_RESULTS + "/#", RESULTS_WITH_ID);
-        matcher.addURI(authority, SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES, RESULTS_TYPES);
+        /*matcher.addURI(authority, SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES, RESULTS_TYPES);
         matcher.addURI(authority, SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES + "/#", RESULTS_TYPES_WITH_ID);
-
+*/
         return matcher;
     }
 
@@ -125,12 +125,12 @@ public class SurveyProvider extends ContentProvider {
             case RESULTS_WITH_ID: {
                 return SurveyContract.SurveyEntry.CONTENT_ITEM_TYPE_RESULTS;
             }
-            case RESULTS_TYPES: {
+           /* case RESULTS_TYPES: {
                 return SurveyContract.SurveyEntry.CONTENT_DIR_TYPE_RESULTS_TYPES;
             }
             case RESULTS_TYPES_WITH_ID: {
                 return SurveyContract.SurveyEntry.CONTENT_ITEM_TYPE_RESULTS_TYPES;
-            }
+            }*/
 
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -328,7 +328,7 @@ public class SurveyProvider extends ContentProvider {
                         sortOrder);
                 return retCursor;
             }
-            case RESULTS_TYPES: {
+          /*  case RESULTS_TYPES: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES,
                         projection,
@@ -349,7 +349,7 @@ public class SurveyProvider extends ContentProvider {
                         null,
                         sortOrder);
                 return retCursor;
-            }
+            }*/
 
             default: {
                 // By default, we assume a bad URI
@@ -449,7 +449,7 @@ public class SurveyProvider extends ContentProvider {
                 break;
             }
 
-            case RESULTS_TYPES: {
+           /* case RESULTS_TYPES: {
                 _id = db.insert(SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES, null, values);
                 if (_id > 0) {
                     returnUri = SurveyContract.SurveyEntry.buildDomainsUri(_id);
@@ -457,7 +457,7 @@ public class SurveyProvider extends ContentProvider {
                     throw new android.database.SQLException("Failed to insert row into: " + uri);
                 }
                 break;
-            }
+            }*/
 
 
             default: {
@@ -531,12 +531,12 @@ public class SurveyProvider extends ContentProvider {
                 break;
             }
 
-            case RESULTS_TYPES: {
+          /*  case RESULTS_TYPES: {
                 numDeleted = db.delete(SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES, selection, selectionArgs);
                 db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
                         SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES + "'");
                 break;
-            }
+            }*/
 
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -740,7 +740,7 @@ public class SurveyProvider extends ContentProvider {
                 break;
             }
 
-            case RESULTS_TYPES: {
+           /* case RESULTS_TYPES: {
                 numUpdated = db.update(SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES,
                         contentValues,
                         selection,
@@ -754,7 +754,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 break;
-            }
+            }*/
 
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

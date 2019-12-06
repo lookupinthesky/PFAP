@@ -162,9 +162,9 @@ public class SurveyContract {
 
         public static final String RESULTS_COLUMN_VISIT_NUMBER = "visit_number";
 
-        public static final String RESULTS_DOMAIN_ID = "domain_id";
+     //   public static final String RESULTS_DOMAIN_ID = "domain_id";
 
-        public static final String RESULTS_COLUMN_TYPE_ID = "domain_result_id";
+        public static final String RESULTS_JSON = "result";
 
         public static final String RESULTS_COLUMN_FLAG = "flag";
 
@@ -172,13 +172,13 @@ public class SurveyContract {
          * TABLE_RESULTS_TYPES
          */
 
-        public static final String TABLE_RESULTS_TYPES = "results_types_table";
+      /*  public static final String TABLE_RESULTS_TYPES = "results_types_table";
 
         public static final String RESULTS_TYPE_ID = "_id" ;
 
         public static final String RESULTS_TYPES_DOMAIN_ID = "domain_id";
 
-        public static final String RESULTS_TYPE_NAMES = "name";
+        public static final String RESULTS_TYPE_NAMES = "name";*/
 
 
 
@@ -204,7 +204,7 @@ public class SurveyContract {
 
         public static final Uri TABLE_SURVEYS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_SURVEYS).build();
 
-        public static final Uri TABLE_RESULTS_TYPES_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_RESULTS_TYPES).build();
+   //     public static final Uri TABLE_RESULTS_TYPES_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_RESULTS_TYPES).build();
 
         public static final Uri TABLE_RESULTS_CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(TABLE_RESULTS).build();
 
@@ -238,9 +238,9 @@ public class SurveyContract {
 
         public static final String CONTENT_ITEM_TYPE_SURVEYS = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_ASSESSMENT_ANSWERS;
 
-        public static final String CONTENT_DIR_TYPE_RESULTS_TYPES = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS_TYPES;
+  //      public static final String CONTENT_DIR_TYPE_RESULTS_TYPES = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS_TYPES;
 
-        public static final String CONTENT_ITEM_TYPE_RESULTS_TYPES = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS_TYPES;
+  //      public static final String CONTENT_ITEM_TYPE_RESULTS_TYPES = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS_TYPES;
 
         public static final String CONTENT_DIR_TYPE_RESULTS = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_RESULTS;
 
@@ -273,6 +273,10 @@ public class SurveyContract {
 
         static Uri buildSurveysUri(long id) {
             return ContentUris.withAppendedId(TABLE_SURVEYS_CONTENT_URI, id);
+        }
+
+        static Uri buildResultsUri(long id) {
+            return ContentUris.withAppendedId(TABLE_RESULTS_CONTENT_URI, id);
         }
     }
 }

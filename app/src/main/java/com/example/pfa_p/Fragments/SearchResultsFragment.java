@@ -70,8 +70,8 @@ public class SearchResultsFragment extends Fragment {
         if (prisonerId.equals("")) {
             searchResults.setVisibility(View.GONE);
             noResultDisplayMessage.setText(getString(R.string.display_message, prisonerId));
-            startNewPrisoner.setText("Start Survey for a new inmate");
-            startAssessment.setText("Enter visit number manually and start assessment directly");
+            startNewPrisoner.setText(getString(R.string.start_new_survey));
+            startAssessment.setText(getString(R.string.start_survey_assessment));
         } else {
             noSearchResults.setVisibility(View.GONE);
             prisonerIdView.setText(prisonerId);

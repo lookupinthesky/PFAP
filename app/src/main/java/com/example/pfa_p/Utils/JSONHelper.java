@@ -54,6 +54,7 @@ public class JSONHelper {
     private List<Question> questionsDomainWise;
     private List<SubModule> sectionsModuleWise;
 
+
     private void createSurveyData(String jsonString) throws JSONException {
         intializeArrays();
         JSONArray data = new JSONArray(jsonString);
@@ -234,6 +235,14 @@ public class JSONHelper {
             sectionsModuleWise = new ArrayList<>();
         }
     }
+
+    //TODO: Domain Results must be present in the json file itself, temporarily adding it dynamically
+
+
+
+
+
+
 
     // an alternative method with O(n) complexity but more complex to implement
     private void parseData(String jsonString) throws JSONException {

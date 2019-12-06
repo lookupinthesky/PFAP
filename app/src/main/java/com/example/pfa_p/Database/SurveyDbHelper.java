@@ -91,26 +91,30 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
             SurveyContract.SurveyEntry.RESULTS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SurveyContract.SurveyEntry.RESULTS_PRISONER_ID + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER + " INTEGER NOT NULL, " +
-            SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + " INTEGER NOT NULL, " +
-            SurveyContract.SurveyEntry.RESULTS_COLUMN_TYPE_ID + " INTEGER NOT NULL, " +
+     /*       SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + " INTEGER NOT NULL, " +*/
+            SurveyContract.SurveyEntry.RESULTS_JSON + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.RESULTS_COLUMN_FLAG + " TEXT NOT NULL, " +
+
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_PRISONER_ID + ") REFERENCES " +
             SurveyContract.SurveyEntry.TABLE_USERS + " (" + SurveyContract.SurveyEntry.USERS_COLUMN_INMATE_ID + "), " +
-            " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER + ") REFERENCES " +
-            SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS + " (" + SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + "), " +
-            " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + ") REFERENCES " +
-            SurveyContract.SurveyEntry.TABLE_DOMAINS + " (" + SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + "), " +
-            " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_COLUMN_TYPE_ID + ") REFERENCES " +
-            SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES + " (" + SurveyContract.SurveyEntry.RESULTS_TYPE_ID + "));" ;
 
-    private static final String SQL_CREATE_TABLE_RESULTS_TYPE = "CREATE TABLE " +
+            " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER + ") REFERENCES " +
+            SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS + " (" + SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + "));" ;
+
+           /* " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + ") REFERENCES " +
+            SurveyContract.SurveyEntry.TABLE_DOMAINS + " (" + SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + "), " +*/
+
+           /* " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_JSON + ") REFERENCES " +
+            SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES + " (" + SurveyContract.SurveyEntry.RESULTS_TYPE_ID + "));" ;*/
+
+   /* private static final String SQL_CREATE_TABLE_RESULTS_TYPE = "CREATE TABLE " +
             SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES + "(" +
             SurveyContract.SurveyEntry.RESULTS_TYPE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SurveyContract.SurveyEntry.RESULTS_TYPES_DOMAIN_ID + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.RESULTS_TYPE_NAMES + " TEXT NOT NULL, " +
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_TYPES_DOMAIN_ID + ") REFERENCES " +
             SurveyContract.SurveyEntry.TABLE_DOMAINS + " (" + SurveyContract.SurveyEntry.DOMAINS_COLUMN_ID + "));" ;
-
+*/
 
     public SurveyDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -126,7 +130,7 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_USERS);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_ASSESSMENT_ANSWERS);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_HISTORY_ANSWERS);
-        sqLiteDatabase.execSQL(SQL_CREATE_TABLE_RESULTS_TYPE);
+    //    sqLiteDatabase.execSQL(SQL_CREATE_TABLE_RESULTS_TYPE);
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE_RESULTS);
     }
 
@@ -158,9 +162,9 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS);
         sqLiteDatabase.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
                 SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS + "'");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES);
+        /*sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES);
         sqLiteDatabase.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
-                SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES + "'");
+                SurveyContract.SurveyEntry.TABLE_RESULTS_TYPES + "'");*/
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SurveyContract.SurveyEntry.TABLE_RESULTS);
         sqLiteDatabase.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
                 SurveyContract.SurveyEntry.TABLE_RESULTS + "'");
