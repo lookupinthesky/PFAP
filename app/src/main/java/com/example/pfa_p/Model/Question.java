@@ -160,10 +160,10 @@ public class Question extends RightPane {
         return answerIndex;
     }
 
-    boolean enabled;
+    boolean isEnabled;
 
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        this.isEnabled = enabled;
         if (!enabled) {
             if(questionView!=null)
             questionView.setEnabled(false);
@@ -244,6 +244,11 @@ public class Question extends RightPane {
         questionValues.put(SurveyContract.SurveyEntry.QUESTIONS_COLUMN_FLAG, "dirty");
 
         return questionValues;
+    }
+
+
+    public boolean isEnabled(){
+        return isEnabled;
     }
 
     private String getUserId() {

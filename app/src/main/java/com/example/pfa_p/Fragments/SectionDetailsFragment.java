@@ -97,6 +97,7 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
         createRightPaneList();
         adapter = new QuestionsAdapter(rightPaneList);
         parent.setAdapter(adapter);
+        adapter.setFragmentAdapterInterface(mInterface);
        /* if (adapter == null) {
 
         } else {
@@ -280,8 +281,8 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
     //    layoutManager.setAutoMeasureEnabled(false);
         parent.setLayoutManager(layoutManager);
-        adapter.setLayoutManager(layoutManager);
-        adapter.setFragmentAdapterInterface(mInterface);
+       // adapter.setLayoutManager(layoutManager);
+
      //   createLayout();
 
         //     createLayout(0, 0);

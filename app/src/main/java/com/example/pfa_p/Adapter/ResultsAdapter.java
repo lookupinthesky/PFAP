@@ -82,6 +82,10 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
                 Result result = domain.getResult();
                 Bar bar = new Bar(itemView.getContext(), result.getMaxResultValue(), result.getResultValueActual(), result.getNameForResults(), result.getResultText());
                 details.addView(bar.getView());
+                if (domain.getDespondency()) {
+                    Bar bar1 = new Bar(itemView.getContext(), 20, result.getDespondencyValue(), result.getDespondencyText(), result.getDespondencyResultText());
+                    details.addView(bar1.getView());
+                }
             }
 
             Result result = subModule.getResult();

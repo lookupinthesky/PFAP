@@ -17,14 +17,28 @@ import com.example.pfa_p.R;
 public class SearchResultsFragment extends Fragment {
 
 
+    public long idInDb;
     public String prisonerId;
+
+    public void setVisitNumber(int visitNumber) {
+        this.visitNumber = visitNumber;
+    }
+
     public String volunteerId;
     public String demographicStatus;
-    public String basicQuestionnaireStatus;
-    public String assessmentStatus;
+    public int visitNumber;
 
     public void setPrisonerId(String prisonerId) {
         this.prisonerId = prisonerId;
+    }
+
+    public String basicQuestionnaireStatus;
+    public String assessmentStatus;
+    public SearchResultsListener mListener;
+
+
+    public void setId(long _id) {
+        this.idInDb = _id;
     }
 
     public void setVolunteerId(String volunteerId) {
@@ -67,21 +81,41 @@ public class SearchResultsFragment extends Fragment {
         TextView noResultDisplayMessage = view.findViewById(R.id.not_found_message);
 
 
-        if (prisonerId.equals("")) {
+        if (idInDb == -1) {
             searchResults.setVisibility(View.GONE);
-            noResultDisplayMessage.setText(getString(R.string.display_message, prisonerId));
+            noResultDisplayMessage.setText(getString(R.string.display_message, String.valueOf(prisonerId)));
             startNewPrisoner.setText(getString(R.string.start_new_survey));
+            startNewPrisoner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+mListener.prepareAndStartSurvey(true,prisonerId,idInDb,false);
+                }
+            });
             startAssessment.setText(getString(R.string.start_survey_assessment));
+            startAssessment.setOnClickListener(null);
         } else {
             noSearchResults.setVisibility(View.GONE);
-            prisonerIdView.setText(prisonerId);
+            prisonerIdView.setText(String.valueOf(prisonerId));
             volunteerIdView.setText(volunteerId);
             demographicStatusView.setText(demographicStatus);
             questionnaireStatus.setText(demographicStatus);
             assessmentStatusView.setText(assessmentStatus);
+            resumeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                   mListener.prepareAndStartSurvey(false,prisonerId,idInDb,true);
+                }
+            });
         }
 
         return view;
+    }
+
+
+    public interface SearchResultsListener{
+
+        void prepareAndStartSurvey(boolean newUser, String prisonerId, long idInDb, boolean resume) ;
+
     }
 }
 

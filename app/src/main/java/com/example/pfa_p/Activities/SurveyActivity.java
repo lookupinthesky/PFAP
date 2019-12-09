@@ -175,11 +175,11 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         Module mCurrentModule = modules.get(mCurrentModuleIndex);
         item = sectionsListFragment.getCurrentItem();
         isUpdate = !sectionDetailsFragment.setEditableAnswers();
-       /* if (!item.isEveryQuestionAnswered()) {
+        if (!item.isEveryQuestionAnswered()) {
             showSnackBar("Please complete all the fields!");
             return;
-        }*/
-    //    saveToDb(item, isUpdate); //TODO: push on background thread
+        }
+        saveToDb(item, isUpdate); //TODO: push on background thread
         calculateNext(modules);
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);

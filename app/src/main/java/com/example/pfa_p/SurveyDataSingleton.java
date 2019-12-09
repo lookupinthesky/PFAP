@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Model.Domain;
+import com.example.pfa_p.Model.DomainResultModel;
 import com.example.pfa_p.Model.FinalResult;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
@@ -106,7 +107,7 @@ public class SurveyDataSingleton {
         InputStream inputStream = context.getResources().openRawResource(R.raw.surveydatav2);
         String jsonString = new Scanner(inputStream).useDelimiter("\\A").next();
         JSONHelper helper = new JSONHelper(jsonString);
- //       CSVHelper helper = new CSVHelper(inputStream);
+        //       CSVHelper helper = new CSVHelper(inputStream);
         modules = helper.getModules();
         sections = helper.getSections();
         domains = helper.getDomains();
@@ -290,11 +291,15 @@ public class SurveyDataSingleton {
             sectionResult.setScore(subModule.getResult().getMeanScore());
             sectionResult.setResult(subModule.getResult().getResultText());
             List<Domain> domains = subModule.getDomains();
-            for(Domain domain: domains){
-                ResultAbstractModel domainResult = new ResultAbstractModel();
+            for (Domain domain : domains) {
+                DomainResultModel domainResult = new DomainResultModel();
                 domainResult.setName(domain.getName());
                 domainResult.setScore(domain.getResult().getResultValueActual());
                 domainResult.setResult(domain.getResult().getResultText());
+                if (domain.getDespondency()) {
+                    domainResult.setDespondencyScore(domain.getResult().getDespondencyValue());
+                    domainResult.setDespondencyResult(domain.getResult().getDespondencyResultText());
+                }
                 result.getDomainResult().add(domainResult);
             }
             finalResults.add(result);

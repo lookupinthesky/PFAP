@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.HomeActivity"></activity>
+        <activity android:name=".Activities.SurveyDetailActivity"></activity>
         <activity
             android:name=".Activities.ResultsActivity"
             android:screenOrientation="landscape" />

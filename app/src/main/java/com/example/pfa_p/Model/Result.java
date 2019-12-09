@@ -16,7 +16,19 @@ public class Result implements RatingSystem {
     private String nameForResults;
     private int despondencyValue;
     private String despondencyText;
+    private String despondencyResultText;
 
+    public int getDespondencyValue() {
+        return despondencyValue;
+    }
+
+    public String getDespondencyText() {
+        return despondencyText;
+    }
+
+    public String getDespondencyResultText() {
+        return despondencyResultText;
+    }
 
     private float meanScoreForSection;
 
@@ -27,6 +39,10 @@ public class Result implements RatingSystem {
             resultValueActual = calculateActualResultsValue((Domain) item);
             resultText = generateResultText((Domain) item);
             nameForResults = createNameForResults((Domain) item);
+            despondencyValue = calculateDespondencyValue((Domain)item);
+            despondencyText = "Despondency";
+            despondencyResultText = calculateDespondencyResultText(despondencyValue);
+
 
         } else if (item instanceof SubModule) {
             if (((SubModule) item).hasDomains()) {
@@ -40,6 +56,19 @@ public class Result implements RatingSystem {
             }
 
         }
+    }
+
+    private String calculateDespondencyResultText(int despondencyValue){
+
+       String despondencyResultText;
+        if (despondencyValue >= 0 && despondencyValue <= 5) {
+            despondencyResultText = RatingSystem.RESULT_SATISFACTORY;
+        } else if (despondencyValue >= 6 && despondencyValue <= 13) {
+            despondencyResultText = RatingSystem.RESULT_MILD_DESPONDENCY;
+        } else {
+            despondencyResultText = RatingSystem.RESULT_SEVERE_DESPONDENCY;
+        }
+        return despondencyResultText ;
     }
 
 
@@ -143,13 +172,7 @@ public class Result implements RatingSystem {
                 }
             case "Assessing Responsiveness":
 
-                if (despondencyValue >= 0 && despondencyValue <= 5) {
-                    despondencyText = RatingSystem.RESULT_SATISFACTORY;
-                } else if (despondencyValue >= 6 && despondencyValue <= 13) {
-                    despondencyText = RatingSystem.RESULT_MILD_DESPONDENCY;
-                } else {
-                    despondencyText = RatingSystem.RESULT_SEVERE_DESPONDENCY;
-                }
+
                 if (resultValueActual >= 0 && resultValueActual <= 8) {
                     return RatingSystem.RESULT_NO_RESPONSE;
                 } else if (resultValueActual >= 9 && resultValueActual <= 20) {
@@ -167,7 +190,7 @@ public class Result implements RatingSystem {
 
         float mean = calculateMean(subModule);
         if (subModule.hasDomains()) {
-            return getResults(mean, subModule);
+            return generateResultText(mean, subModule);
         } else {
             return "";
         }
@@ -185,7 +208,7 @@ public class Result implements RatingSystem {
     }
 
 
-    private String getResults(float meanSectionScore, SubModule subModule) {
+    private String generateResultText(float meanSectionScore, SubModule subModule) {
 
         switch (subModule.getName()) {
 
@@ -206,26 +229,26 @@ public class Result implements RatingSystem {
             }
             case "Questionnaire E": {
                 if (meanSectionScore > 0 && meanSectionScore <= 6) {
-                    return RatingSystem.RESULT_NO_INTERVENTION_REQUIRED;
+                    return RatingSystem.RESULT_NORMAL;
                 } else if (meanSectionScore > 6 && meanSectionScore <= 9) {
-                    return RatingSystem.RESULT_INTERVENTION_REQUIRED;
+                    return RatingSystem.RESULT_PERSONALITY_SLIGHTLY_ANTISOCIAL;
                 } else {
-                    return RatingSystem.RESULT_INTERVETION_REQUIRED_WITH_FOLLOW_UP;
+                    return RatingSystem.RESULT_PERSONALITY_PROMINENT_ANTISOCIAL;
                 }
             }
 
             case "Questionnaire F": {
 
-                return ""; //TODO: mean score? despondency as another domain or just a value?
-               /* if (getName().equals("Checking Responsiveness")) {
+               /* return "";*/ //TODO: mean score? despondency as another domain or just a value?
+              /*  if (getName().equals("Checking Responsiveness")) {*/
                     if (meanSectionScore > 0 && meanSectionScore <= 8) {
-                        return RatingSystem.RESULT_NORMAL;
-                    } else if (meanSectionScore > 6 && meanSectionScore <= 9) {
-                        return RatingSystem.RESULT_PERSONALITY_SLIGHTLY_ANTISOCIAL;
+                        return RatingSystem.RESULT_NO_RESPONSE;
+                    } else if (meanSectionScore > 8 && meanSectionScore <= 20) {
+                        return RatingSystem.RESULT_NORMAL_RESPONSE;
                     } else {
-                        return RatingSystem.RESULT_PERSONALITY_PROMINENT_ANTISOCIAL;
+                        return RatingSystem.RESULT_OVER_EXPRESSIVE;
                     }
-                } else if (getName().equals("Checking despondency")) {
+                }/* else if (getName().equals("Checking despondency")) {
                     if (meanSectionScore > 0 && meanSectionScore <= 5) {
                         return RatingSystem.RESULT_SATISFACTORY;
                     } else if (meanSectionScore > 5 && meanSectionScore <= 13) {
@@ -234,7 +257,7 @@ public class Result implements RatingSystem {
                         return RatingSystem.RESULT_NEED_REFERRAL;
                     }
                 }*/
-            }
+
             default:
                 return "";
         }

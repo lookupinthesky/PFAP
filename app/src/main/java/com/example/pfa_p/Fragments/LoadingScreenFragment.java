@@ -50,7 +50,7 @@ public class LoadingScreenFragment extends Fragment {
             @Override
             public void onProgressChange(int current, int max) {
                 if(current==max || current>max){
-                    mListener.onStartClick();
+                    mListener.onLoaderFinished();
                     Log.d(LOG_TAG, "onProgressChanged Called with current = " + current + " and max = " + max);
                 }
                 Log.d(LOG_TAG, "onProgressChanged Called with current = " + current + " and max = " + max);
@@ -61,7 +61,7 @@ public class LoadingScreenFragment extends Fragment {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onStartClick();
+                mListener.onLoaderFinished();
             }
         });*/
         return view;
@@ -74,14 +74,14 @@ public class LoadingScreenFragment extends Fragment {
        //     elapsedSeconds = elapsedMilliSeconds / 1000.0;
             if(elapsedMilliSeconds>5000) {
                 progressView.stop();
-                mListener.onStartClick();
+                mListener.onLoaderFinished();
             } else{
            final Handler  handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         progressView.stop();
-                        mListener.onStartClick();
+                        mListener.onLoaderFinished();
                     }
                 }, 5000-elapsedMilliSeconds);
             }
@@ -131,6 +131,6 @@ public class LoadingScreenFragment extends Fragment {
 
     public interface StartSurveyListener {
 
-        void onStartClick();
+        void onLoaderFinished();
     }
 }

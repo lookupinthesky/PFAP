@@ -29,4 +29,5 @@ public  class ResultAbstractModel {
 
     float score;
     String result;
+
 }

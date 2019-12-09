@@ -24,6 +24,7 @@ import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Database.SurveyTaskLoader;
 import com.example.pfa_p.Fragments.LoadingScreenFragment;
 import com.example.pfa_p.Fragments.LoginScreenFragment;
+import com.example.pfa_p.Fragments.SearchResultsFragment;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
 import com.example.pfa_p.Model.User;
@@ -32,7 +33,7 @@ import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.List;
 
-public class LoginActivity extends FragmentActivity {
+public class LoginActivity extends FragmentActivity implements SearchResultsFragment.SearchResultsListener {
     FragmentManager fm;
     FragmentTransaction ft;
     LoadingScreenFragment loadingScreenFragment;
@@ -63,7 +64,7 @@ public class LoginActivity extends FragmentActivity {
                     @Nullable
                     @Override
                     public String loadInBackground() {
-                        startSurvey(prisonerIdText);
+                        prepareSurvey(prisonerIdText);
                         return null;
                     }
 
@@ -99,12 +100,11 @@ public class LoginActivity extends FragmentActivity {
 
         loadingScreenFragment = LoadingScreenFragment.getInstance(new LoadingScreenFragment.StartSurveyListener() {
             @Override
-            public void onStartClick() {
-                Intent intent = new Intent(LoginActivity.this, SurveyActivity.class);
-                intent.putExtra("current_module_index", mCurrentModuleIndex);
-                intent.putExtra("current_section_index", mCurrentSectionIndex);
-                intent.putExtra("current_domain_index", mCurrentDomainIndex);
-                LoginActivity.this.startActivity(intent);
+            public void onLoaderFinished() {
+
+                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchResultsFragment).addToBackStack(null).commit();
+
+
             }
         });
         dialogFragment = LoginScreenFragment.getInstance(new LoginScreenFragment.NextButtonListener() {
@@ -168,6 +168,7 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * inserts prisoner information to the TABLE_USER in db
+     *
      * @param prisonerId the official inmate id
      */
     private void insertNewUser(String prisonerId) {
@@ -195,8 +196,9 @@ public class LoginActivity extends FragmentActivity {
 
     /**
      * User information is tied to the global runtime metadata produced through json parsing. So currently, you can only fill out one user at a time
+     *
      * @param prisonerId the inmate id
-     * @param idInDb the PRIMARY KEY corresponding to the inmate id
+     * @param idInDb     the PRIMARY KEY corresponding to the inmate id
      */
     private void setUserToModules(String prisonerId, long idInDb) {
         User user = new User();
@@ -215,12 +217,14 @@ public class LoginActivity extends FragmentActivity {
         getContentResolver().delete(SurveyEntry.TABLE_USERS_CONTENT_URI, SurveyEntry.USERS_ID, new String[]{String.valueOf(userId)});
     }
 
-    private void incrementVisitCounter() {
+    private void incrementVisitCounter() { //TODO: retrieve visit number
         visitNumber++;
         ContentValues cv = new ContentValues();
         cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, visitNumber);
         getContentResolver().insert(SurveyEntry.TABLE_USERS_CONTENT_URI, cv);
     }
+
+    LoginActivity.SurveyHelperForUser helper;
 
     /**
      * Method which checks the user history to see if the survey needs to be started from the start or from somewhere in the middle, sets the current state
@@ -229,30 +233,73 @@ public class LoginActivity extends FragmentActivity {
      *
      * @param prisonerId
      */
-    private void startSurvey(String prisonerId) {
-        LoginActivity.SurveyHelperForUser helper = new LoginActivity.SurveyHelperForUser();
-        long user_Id = helper.fetchUserData(prisonerId, this);
-        if (user_Id == -1) {
+    private void prepareSurvey(String prisonerId) {
+        helper = new LoginActivity.SurveyHelperForUser();
+        long idInDb = helper.fetchUserData(prisonerId, this);
+        if (idInDb == -1) {
+            prepareSearchResultsFragment(-1, prisonerId);
             insertNewUser(prisonerId);
             setCurrentState(0, 0, -1);
             //     loadingScreenFragment.receiveProgressUpdate(30);
             Log.d(LOG_TAG, "Method: StartSurvey, user not found, inserting a new user");
+
+            searchResultsFragment.setDemographicStatus("To be Started");
+            searchResultsFragment.setAssessmentStatus("To be Started");
+
         } else {
-            setUserToModules(prisonerId, user_Id);
+            prepareSearchResultsFragment(idInDb, prisonerId);
+            setUserToModules(prisonerId, idInDb);
             if (helper.isHistoryCompleted) {
                 if (helper.isAssessmentCompleted) {
                     incrementVisitCounter();
                     setCurrentState(0, 0, 0);
+                    searchResultsFragment.setAssessmentStatus("To be Started");
+                    searchResultsFragment.setDemographicStatus("To be started");
+                    searchResultsFragment.setVisitNumber(visitNumber);
                 } else {
-                    helper.fetchAssessmentTableDataForUser(user_Id, 1/*helper.totalVisits*/, this); //TODO: verify visit numbers
+                    helper.fetchAssessmentTableDataForUser(idInDb, 1/*helper.totalVisits*/, this); //TODO: verify visit numbers
+                    searchResultsFragment.setDemographicStatus("Completed");
+                    searchResultsFragment.setAssessmentStatus("To be resumed");
+                    searchResultsFragment.setVisitNumber(visitNumber);
                 }
             } else {
-                helper.fetchHistoryTableDataForUser(user_Id, this);
+                helper.fetchHistoryTableDataForUser(idInDb, this);
             }
+
+
         }
     }
 
+    SearchResultsFragment searchResultsFragment;
+
+    private void prepareSearchResultsFragment(long idInDb, String prisonerId) {
+        searchResultsFragment = SearchResultsFragment.newInstance();
+        searchResultsFragment.setId(idInDb);
+        searchResultsFragment.setPrisonerId(prisonerId);
+        //
+    }
+
+
     String prisonerIdText = "prisonerId";
+
+    @Override
+    public void prepareAndStartSurvey(boolean newUser, String prisonerId, long idInDb, boolean resume) {
+      /*  if (newUser) {
+
+        } else {
+            //     if(resume){
+
+
+            //   }
+
+        }*/
+//TODO: calculate status based on current states
+        Intent intent = new Intent(LoginActivity.this, SurveyActivity.class);
+        intent.putExtra("current_module_index", mCurrentModuleIndex);
+        intent.putExtra("current_section_index", mCurrentSectionIndex);
+        intent.putExtra("current_domain_index", mCurrentDomainIndex);
+        LoginActivity.this.startActivity(intent);
+    }
 
 
     /**
@@ -305,7 +352,7 @@ public class LoginActivity extends FragmentActivity {
         /**
          * History table data is fetched when app is closed while history data is still not filled completely, so it restores from the last point
          *
-         * @param userId - inmate id for which the data is to be fetched
+         * @param userId  - inmate id for which the data is to be fetched
          * @param context context
          */
         void fetchHistoryTableDataForUser(long userId, Context context) {
@@ -383,7 +430,7 @@ public class LoginActivity extends FragmentActivity {
             List<Question> questions = SurveyDataSingleton.getInstance(context).getQuestions();
             List<Module> modules = SurveyDataSingleton.getInstance(context).getModules();
             int questionSerialNumber = modules.get(1).getSections().get(0).getQuestions().get(0).getSerialNumber();
-            int lastSerialNumber = questions.size() ;
+            int lastSerialNumber = questions.size();
             long questionId;
             String response;
             int count = 0;
@@ -412,8 +459,8 @@ public class LoginActivity extends FragmentActivity {
                         Log.d(LOG_TAG, "In loginActivity when user exists: mCurrentSectionIndex = " + mCurrentSectionIndex);
                         setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
                         break;
-                    }else if (i == lastSerialNumber -1){
-                        setCurrentState(3,-1,-1);
+                    } else if (i == lastSerialNumber - 1) {
+                        setCurrentState(3, -1, -1);
                     }
                     if (!cursor.isAfterLast()) cursor.moveToNext();
                 }

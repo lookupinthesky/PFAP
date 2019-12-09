@@ -38,8 +38,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     private List<RightPane> rightPaneList;
     String[] answersArray;
     RecyclerView.LayoutManager layoutManager;
-    private  mInterface;
+  //  private  mInterface;
+  FragmentAdapterInterface mInterface;
 
+    public void setFragmentAdapterInterface(FragmentAdapterInterface mInterface){
+        this.mInterface = mInterface;
+    }
     public QuestionsAdapter(List<RightPane> data) {
 
         //TODO: call to super????????????
@@ -48,9 +52,9 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         answersArray = new String[rightPaneList.size()];
     }
 
-    public void setQuestionRuleInterface( questionRuleInterface) {
+   /* public void setQuestionRuleInterface( questionRuleInterface) {
         this.mInterface = questionRuleInterface;
-    }
+    }*/
 
     public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
         this.layoutManager = layoutManager;
@@ -152,9 +156,14 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             editText.removeTextChangedListener(mTextWatcher); // for view recycling
             mTextWatcher = new CustomEditTextListener(question);
             editText.addTextChangedListener(mTextWatcher);
-            editText.setText(answersArray[rightPaneList.indexOf(question)]);
+
             editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             editText.setInputType(question.getOptions().getInputType());
+            itemView.setEnabled(question.isEnabled());
+            if(!question.isEnabled()){
+                answersArray[rightPaneList.indexOf(question)] = "N/A" ;
+            }
+            editText.setText(answersArray[rightPaneList.indexOf(question)]);
             //    views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
             //    editText = (EditText) views.get(0);
            /* TextWatcher mTextWatcher = new TextWatcher() {
@@ -252,9 +261,10 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         @Override
         void bind(RightPane item) {
             this.question = (Question) item;
-            question.setQuestionView(itemView);
+         //   question.setQuestionView(itemView);
             questionText.setText(question.getQuestionName());
             Question question = (Question) item;
+
             views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
             for (int i = 0; i < views.size(); i++) {
                 RadioButton rb = (RadioButton) views.get(i);
@@ -291,7 +301,13 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             };*/
             options.setOnCheckedChangeListener(this);
 
+
+                itemView.setEnabled(question.isEnabled());
+
+
         }
+
+
 
         @Override
         public void onCheckedChanged(RadioGridGroup group, int checkedId) {
@@ -304,7 +320,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             // boolean isAssessment = question.getSubModule().getModule();
             boolean isRuleApplicable = question.setAnswer(button.getText().toString(), question.getSubModule().getModule().getIndex() != 0);
             if (isRuleApplicable) {
-                applyRule();
+                mInterface.performAction(question.getQuestionRule());
                 notifyDataSetChanged();
          //       mInterface.disableViews();
 
@@ -329,12 +345,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
 
 
-    private void applyRule(Question question){
+    /*private void applyRule(Question question){
 
         mInterface.
 
 
-    }
+    }*/
 
     private List<View> bindViewsToId(View parent, int numberOfOptions) {
 

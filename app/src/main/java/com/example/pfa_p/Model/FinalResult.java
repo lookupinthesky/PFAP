@@ -15,15 +15,15 @@ public class FinalResult  {
         this.sectionResult = sectionResult;
     }
 
-    public List<ResultAbstractModel> getDomainResult() {
+    public List<DomainResultModel> getDomainResult() {
         return domainResult;
     }
 
-    public void setDomainResult(List<ResultAbstractModel> domainResult) {
+    public void setDomainResult(List<DomainResultModel> domainResult) {
         this.domainResult = domainResult;
     }
 
-    List<ResultAbstractModel> domainResult ;
+    List<DomainResultModel> domainResult ;
 
     public FinalResult(){
         domainResult = new ArrayList<>();
