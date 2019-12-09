@@ -16,7 +16,7 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_TABLE_SECTIONS = "CREATE TABLE " +
             SurveyContract.SurveyEntry.TABLE_SECTIONS + "(" +
             SurveyContract.SurveyEntry.SECTIONS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            SurveyContract.SurveyEntry.SECTIONS_COLUMN_SURVEY_ID + " INTEGER NOT NULL, " +
+            SurveyContract.SurveyEntry.SECTIONS_COLUMN_SURVEY_ID + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.SECTIONS_COLUMN_NAME + " TEXT NOT NULL, " +
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.SECTIONS_COLUMN_SURVEY_ID + ") REFERENCES " +
             SurveyContract.SurveyEntry.TABLE_SURVEYS + " (" + SurveyContract.SurveyEntry.SURVEY_COLUMN_SURVEY_ID + "));" ;

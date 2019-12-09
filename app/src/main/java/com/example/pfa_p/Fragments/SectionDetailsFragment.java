@@ -17,14 +17,16 @@ import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.LeftPane;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
+import com.example.pfa_p.Model.QuestionRule;
 import com.example.pfa_p.Model.RightPane;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
+import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SectionDetailsFragment extends Fragment {
+public class SectionDetailsFragment extends Fragment implements QuestionsAdapter.FragmentAdapterInterface {
 
 
     List<Module> modules;
@@ -35,6 +37,7 @@ public class SectionDetailsFragment extends Fragment {
     LeftPane item;
     QuestionsAdapter adapter;
     Context context;
+    QuestionsAdapter.FragmentAdapterInterface mInterface;
 
 
     @Override
@@ -151,6 +154,40 @@ public class SectionDetailsFragment extends Fragment {
 
     }
 
+    @Override
+    public void performAction(QuestionRule rule) {
+     //   QuestionRule rule = question.getQuestionRule();
+
+        int[] questionList = rule.getDependentQuestions();
+
+        boolean disables = rule.isDisables();
+
+        String answer = rule.getNecessaryAnswer();
+
+
+        /*RecyclerView.ViewHolder holder = (QuestionsAdapter.TwoOptionsViewHolder) parent.findViewHolderForAdapterPosition(questionList[i]);
+        holder.itemView.setEnabled(!disables);*/
+
+        List<Question> allQuestions = SurveyDataSingleton.getInstance(getContext()).getQuestions();
+
+        for (int i : questionList) {
+
+        Question question =  allQuestions.get(questionList[i] - 1);
+
+        question.setEnabled(!rule.isDisables());
+
+        if(rule.isDisables()){
+            question.setAnswer("N/A", false);
+        }
+
+
+      //  question.applyRule(rule);
+
+        }
+
+
+    }
+
 
     public interface OnNextClickListener {
 
@@ -243,6 +280,8 @@ public class SectionDetailsFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
     //    layoutManager.setAutoMeasureEnabled(false);
         parent.setLayoutManager(layoutManager);
+        adapter.setLayoutManager(layoutManager);
+        adapter.setFragmentAdapterInterface(mInterface);
      //   createLayout();
 
         //     createLayout(0, 0);
@@ -252,6 +291,12 @@ public class SectionDetailsFragment extends Fragment {
 
     public SectionDetailsFragment() {
     }
+
+
+
+
+
+
 
 
 }

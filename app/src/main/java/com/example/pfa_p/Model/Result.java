@@ -26,9 +26,9 @@ public class Result implements RatingSystem {
             maxResultValue = calculateMaxResultValue((Domain) item);
             resultValueActual = calculateActualResultsValue((Domain) item);
             resultText = generateResultText((Domain) item);
-            nameForResults = createNameForResults((Domain)item);
+            nameForResults = createNameForResults((Domain) item);
 
-        } else if(item instanceof SubModule) {
+        } else if (item instanceof SubModule) {
             if (((SubModule) item).hasDomains()) {
                 List<Domain> domains = ((SubModule) item).getDomains();
                 for (Domain domain : domains) {
@@ -43,7 +43,7 @@ public class Result implements RatingSystem {
     }
 
 
-    private String createNameForResults(Domain domain){
+    private String createNameForResults(Domain domain) {
         String name = domain.getName();
 
         String assessing = "Assessing ";
@@ -51,11 +51,11 @@ public class Result implements RatingSystem {
         String finalString = "";
 
 
-        if(name.contains(assessing)){
-         finalString =   name.replaceAll(assessing,"");
+        if (name.contains(assessing)) {
+            finalString = name.replaceAll(assessing, "");
         }
-        if(finalString.contains(checking)){
-            finalString = finalString.replaceAll(checking,"");
+        if (finalString.contains(checking)) {
+            finalString = finalString.replaceAll(checking, "");
         }
         return finalString;
 
@@ -190,13 +190,13 @@ public class Result implements RatingSystem {
         switch (subModule.getName()) {
 
             case "Questionnaire A": {
-            return    getResultForSectionWiseLimits(5, 10, 15, meanSectionScore);
+                return getResultForSectionWiseLimits(5, 10, 15, meanSectionScore);
             }
             case "Questionnaire B": {
-             return   getResultForSectionWiseLimits(5, 10, 13, meanSectionScore);
+                return getResultForSectionWiseLimits(5, 10, 13, meanSectionScore);
             }
             case "Questionnaire C": {
-              return  getResultForSectionWiseLimits(0, 3, 6, meanSectionScore);
+                return getResultForSectionWiseLimits(0, 3, 6, meanSectionScore);
             }
             case "Questionnaire D": {
                 if (meanSectionScore > 1) {
@@ -266,6 +266,20 @@ public class Result implements RatingSystem {
 
         }
         return maxValue;
+    }
+
+    private int calculateDespondencyValue(Domain domain) {
+        int despondency = 0;
+        if (!domain.getName().equals("Assessing Responsiveness")) {
+            despondency = -1;
+
+        } else {
+            List<Question> questions = domain.getQuestions();
+            for (Question question : questions) {
+                despondency += question.getDespondency();
+            }
+        }
+        return despondency;
     }
 
     private int calculateActualResultsValue(Domain domain) {

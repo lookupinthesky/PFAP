@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Model.Question;
 import com.example.pfa_p.Model.QuestionHeader;
+import com.example.pfa_p.Model.QuestionRule;
 import com.example.pfa_p.Model.RightPane;
 import com.example.pfa_p.R;
+import com.example.pfa_p.SurveyDataSingleton;
 import com.example.pfa_p.Utils.RadioGridGroup;
 
 import java.util.ArrayList;
@@ -35,6 +37,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     private int sectionIndex;
     private List<RightPane> rightPaneList;
     String[] answersArray;
+    RecyclerView.LayoutManager layoutManager;
+    private  mInterface;
 
     public QuestionsAdapter(List<RightPane> data) {
 
@@ -42,6 +46,14 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         super();
         this.rightPaneList = data;
         answersArray = new String[rightPaneList.size()];
+    }
+
+    public void setQuestionRuleInterface( questionRuleInterface) {
+        this.mInterface = questionRuleInterface;
+    }
+
+    public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        this.layoutManager = layoutManager;
     }
 
     public void setData(List<RightPane> data) {
@@ -240,6 +252,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         @Override
         void bind(RightPane item) {
             this.question = (Question) item;
+            question.setQuestionView(itemView);
             questionText.setText(question.getQuestionName());
             Question question = (Question) item;
             views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
@@ -289,7 +302,14 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             button.setChecked(true);
             int index = group.indexOfChild(button);
             // boolean isAssessment = question.getSubModule().getModule();
-            question.setAnswer(button.getText().toString(), question.getSubModule().getModule().getIndex() != 0);
+            boolean isRuleApplicable = question.setAnswer(button.getText().toString(), question.getSubModule().getModule().getIndex() != 0);
+            if (isRuleApplicable) {
+                applyRule();
+                notifyDataSetChanged();
+         //       mInterface.disableViews();
+
+
+            }
 
             if (question.hasDespondency()) {
                 despondencyParent.setVisibility(View.VISIBLE);
@@ -305,6 +325,15 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
 
         }
+    }
+
+
+
+    private void applyRule(Question question){
+
+        mInterface.
+
+
     }
 
     private List<View> bindViewsToId(View parent, int numberOfOptions) {
@@ -518,6 +547,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             }
         }
         return -1;
+    }
+
+    public interface FragmentAdapterInterface {
+
+        void performAction(QuestionRule rule);
+
     }
 
 

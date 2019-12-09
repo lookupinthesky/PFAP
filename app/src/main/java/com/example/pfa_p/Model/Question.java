@@ -2,7 +2,9 @@ package com.example.pfa_p.Model;
 
 import android.content.ContentValues;
 import android.util.Log;
+import android.view.View;
 
+import com.example.pfa_p.Adapter.QuestionsAdapter;
 import com.example.pfa_p.Database.SurveyContract;
 
 public class Question extends RightPane {
@@ -52,8 +54,22 @@ public class Question extends RightPane {
      */
     private long answerIdInDb;
 
+    private String rules;
+
+    public void setQuestionView(View questionView) {
+        this.questionView = questionView;
+    }
+
+    private View questionView;
+
 
     private int despondency;
+
+    private QuestionsAdapter adapter;
+
+    public void setAdapter(QuestionsAdapter adapter) {
+        this.adapter = adapter;
+    }
 
     public boolean hasDespondency() {
         if (getDomain() != null)
@@ -68,7 +84,6 @@ public class Question extends RightPane {
     public int getDespondency() {
         return despondency;
     }
-
 
     public long getId() {
         return questionIdInDb;
@@ -145,6 +160,16 @@ public class Question extends RightPane {
         return answerIndex;
     }
 
+    boolean enabled;
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+        if (!enabled) {
+            if(questionView!=null)
+            questionView.setEnabled(false);
+        }/**/
+    }
+
     /**
      * Returns the answer index of the question based on answer text, not applicable to input type text.
      *
@@ -166,17 +191,27 @@ public class Question extends RightPane {
 
     }
 
+    public QuestionRule getQuestionRule() {
+        return questionRule;
+    }
+
     public void setAnswerIndex(int answerIndex) {
         this.answerIndex = answerIndex;
     }
 
-    public void setAnswer(String response, boolean isAssessment) {
+    public boolean setAnswer(String response, boolean isAssessment) { //TODO: why doesn't question already know it is assessment?
 
         Log.d("Questions", "Set Answer called inside questions class for question " + questionName + " answer is " + response);
 
         this.answer = response;
         this.isAssessment = isAssessment;
         this.answerIndex = getAnswerIndex(response);
+
+        if (!rules.equals("")) {
+            parseRule();
+            return true;
+        }
+        return false;
 
     }
 
@@ -240,14 +275,70 @@ public class Question extends RightPane {
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_FLAG, "dirty");
         if (isAssessment) {
             answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER, getVisitNumber());
-            answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_DESPONDENCY,getDespondency()); //TODO: by default "nil"
+            answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_DESPONDENCY, getDespondency()); //TODO: by default "nil"
         }
         return answerValues;
 
 
     }
 
+    public static int[] strArrayToIntArray(String[] a) {
+        int[] b = new int[a.length];
+        for (int i = 0; i < a.length; i++) {
+            b[i] = Integer.parseInt(a[i]);
+        }
+
+        return b;
+    }
+
+    QuestionRule questionRule;
+
+    private void setQuestionRule(QuestionRule rule) {
+        this.questionRule = rule;
+    }
+
+    private void parseRule() {
+
+        QuestionRule questionRule = new QuestionRule();
+
+        boolean disables;
+        int[] dependentQuestions;
+        String necessaryAnswer;
+        String temp;
+
+        temp = (rules.replaceAll("[^0-9]", ""));
+        dependentQuestions = strArrayToIntArray(temp.trim().split(" "));
+        String isDependentOnAnswer;
+        String answerToBeSetIfNotApplicable;
+
+        String[] splitString = rules.split(" ");
+        int size = splitString.length;
+        necessaryAnswer = splitString[size - 1];
+        disables = splitString[0].equals("Disables");
+        answerToBeSetIfNotApplicable = "N/A";
+
+        questionRule.setDependentQuestions(dependentQuestions);
+        questionRule.setNecessaryAnswer(necessaryAnswer);
+        questionRule.setAnswerIfNotApplicable("N/A");
+        questionRule.setDisables(disables);
+        setQuestionRule(questionRule);
+
+
+    }
+
+    /*public void applyRule(QuestionRule rule){
+
+        setEnabled(rule.getEnabled());
+
+
+    }*/
+
+
+
     /*private byte[] getSurveyId() {
+
+
+
     }*/
 
 }
