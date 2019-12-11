@@ -37,8 +37,8 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_TABLE_USERS = "CREATE TABLE " +
             SurveyContract.SurveyEntry.TABLE_USERS + "(" +
             SurveyContract.SurveyEntry.USERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            SurveyContract.SurveyEntry.USERS_COLUMN_NAME + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_INMATE_ID + " TEXT NOT NULL, " +
+            SurveyContract.SurveyEntry.USERS_COLUMN_VOLUNTEER_ID + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_TOTAL_VISITS + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_HISTORY_FLAG + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG + " TEXT NOT NULL, " +

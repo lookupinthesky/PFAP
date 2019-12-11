@@ -63,6 +63,10 @@ public class SearchResultsFragment extends Fragment {
         return new SearchResultsFragment();
     }
 
+    public void setSearchResultsListener(SearchResultsListener listener){
+        this.mListener = listener;
+    }
+
 
     @Nullable
     @Override
@@ -88,7 +92,7 @@ public class SearchResultsFragment extends Fragment {
             startNewPrisoner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-mListener.prepareAndStartSurvey(true,prisonerId,idInDb,false);
+                    mListener.prepareAndStartSurvey(true, prisonerId, idInDb, false);
                 }
             });
             startAssessment.setText(getString(R.string.start_survey_assessment));
@@ -103,7 +107,7 @@ mListener.prepareAndStartSurvey(true,prisonerId,idInDb,false);
             resumeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   mListener.prepareAndStartSurvey(false,prisonerId,idInDb,true);
+                    mListener.prepareAndStartSurvey(false, prisonerId, idInDb, true);
                 }
             });
         }
@@ -112,9 +116,9 @@ mListener.prepareAndStartSurvey(true,prisonerId,idInDb,false);
     }
 
 
-    public interface SearchResultsListener{
+    public interface SearchResultsListener {
 
-        void prepareAndStartSurvey(boolean newUser, String prisonerId, long idInDb, boolean resume) ;
+        void prepareAndStartSurvey(boolean newUser, String prisonerId, long idInDb, boolean resume);
 
     }
 }

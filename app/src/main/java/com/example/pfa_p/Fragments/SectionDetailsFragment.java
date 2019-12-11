@@ -2,6 +2,7 @@ package com.example.pfa_p.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SectionDetailsFragment extends Fragment implements QuestionsAdapter.FragmentAdapterInterface {
@@ -47,7 +49,6 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
     }
 
 
-
     public static SectionDetailsFragment newInstance(/*int sectionNumber*/) {
        /* Bundle bundle = new Bundle();
         bundle.putInt("section_number", sectionNumber);*/
@@ -64,7 +65,7 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       // setHasOptionsMenu(true);
+        // setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_right_pane, container, false);
     }
 
@@ -72,7 +73,6 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
     private boolean ifEmptyFields() {
         return false;
     }
-
 
 
     public void createLayout() {
@@ -83,7 +83,7 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
             Module module = modules.get(moduleNumber);
             SubModule subModule = module.getSections().get(sectionNumber);
             List<Question> questions = subModule.getQuestions();*/
-      //      adapter = new QuestionsAdapter(rightPaneList);
+            //      adapter = new QuestionsAdapter(rightPaneList);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
             parent.setLayoutManager(layoutManager);
@@ -97,7 +97,7 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
         createRightPaneList();
         adapter = new QuestionsAdapter(rightPaneList);
         parent.setAdapter(adapter);
-        adapter.setFragmentAdapterInterface(mInterface);
+        adapter.setFragmentAdapterInterface(this);
        /* if (adapter == null) {
 
         } else {
@@ -110,8 +110,10 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
 
 
     }
+
     public boolean setEditableAnswers() {
         String[] array = adapter.getEditableAnswers();
+
 
         /*boolean isUpdate = getIsUpdate();
 
@@ -125,14 +127,19 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
 
         //set array
         for (int i = 0; i < rightPaneList.size(); i++) {
+            Question question = (Question) rightPaneList.get(i);
             if (array[i] == null)
                 continue;
-            ((Question) rightPaneList.get(i)).setAnswer(array[i], false);
+            if (!question.isEnabled()) {
+                question.setAnswer("N/A", false);
+            } else {
+                ((Question) rightPaneList.get(i)).setAnswer(array[i], false);
+            }
         }
-        return  true; //isUpdate false
+        return true; //isUpdate false
     }
 
-     // return   adapter.getEditableAnswers();
+    // return   adapter.getEditableAnswers();
 
 
     public void setDataWithAnswers(LeftPane item) {
@@ -146,7 +153,7 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
             adapter.setData(rightPaneList);
         }*/
         setAnswersTwo();
-     //  setIsUpdate(true);
+        //  setIsUpdate(true);
 
     }
 
@@ -156,8 +163,9 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
     }
 
     @Override
-    public void performAction(QuestionRule rule) {
-     //   QuestionRule rule = question.getQuestionRule();
+    public void performAction(Question parentQuestion) {
+        QuestionRule rule = parentQuestion.getQuestionRule();
+
 
         int[] questionList = rule.getDependentQuestions();
 
@@ -170,19 +178,21 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
         holder.itemView.setEnabled(!disables);*/
 
         List<Question> allQuestions = SurveyDataSingleton.getInstance(getContext()).getQuestions();
-
+        Log.d(SectionDetailsFragment.class.getName(), Arrays.toString(questionList));
         for (int i : questionList) {
 
-        Question question =  allQuestions.get(questionList[i] - 1);
+            Question question = allQuestions.get(i - 1);
 
-        question.setEnabled(!rule.isDisables());
+            boolean isEnabled = !rule.isDisables() || ((parentQuestion.getAnswer()).equals(rule.getNecessaryAnswer()));
+            question.setEnabled(isEnabled);
+            Log.d(SectionDetailsFragment.class.getName(), "question is enabled = " + isEnabled);
 
-        if(rule.isDisables()){
-            question.setAnswer("N/A", false);
-        }
+            if (!isEnabled) {
+                question.setAnswer("N/A", false);
+            }
 
 
-      //  question.applyRule(rule);
+            //  question.applyRule(rule);
 
         }
 
@@ -240,9 +250,9 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
 
     }
 
-    private String[] getOriginalArray(){
+    private String[] getOriginalArray() {
 
-        String [] originalArray = new String[questions.size()];
+        String[] originalArray = new String[questions.size()];
         for (int i = 0; i < questions.size(); i++) {
             originalArray[i] = questions.get(i).getAnswer();
         }
@@ -277,13 +287,13 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
 
 
         parent = view.findViewById(R.id.parent_list_section_details);
-      //  parent.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        //  parent.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
-    //    layoutManager.setAutoMeasureEnabled(false);
+        //    layoutManager.setAutoMeasureEnabled(false);
         parent.setLayoutManager(layoutManager);
-       // adapter.setLayoutManager(layoutManager);
+        // adapter.setLayoutManager(layoutManager);
 
-     //   createLayout();
+        //   createLayout();
 
         //     createLayout(0, 0);
 
@@ -292,12 +302,6 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
 
     public SectionDetailsFragment() {
     }
-
-
-
-
-
-
 
 
 }

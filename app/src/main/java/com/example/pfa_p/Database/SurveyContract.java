@@ -101,9 +101,9 @@ public class SurveyContract {
 
         public static final String USERS_ID = "_id";
 
-        public static final String USERS_COLUMN_NAME = "name";
-
         public static final String USERS_COLUMN_INMATE_ID = "inmate_id";
+
+        public static final String USERS_COLUMN_VOLUNTEER_ID = "volunteer_id";
 
         public static final String USERS_COLUMN_HISTORY_FLAG = "history_flag";
 
@@ -139,6 +139,8 @@ public class SurveyContract {
 
         public static final String ANSWERS_COLUMN_USER_ID = "user_id";
 
+        public static final String ANSWERS_COLUMN_VOLUNTEER_ID = "volunteer_id";
+
         public static final String ANSWERS_COLUMN_QUESTION_ID = "question_id";
 
         public static final String ANSWERS_COLUMN_RESPONSE = "response";
@@ -162,11 +164,26 @@ public class SurveyContract {
 
         public static final String RESULTS_COLUMN_VISIT_NUMBER = "visit_number";
 
-     //   public static final String RESULTS_DOMAIN_ID = "domain_id";
+        public static final String RESULTS_SURVEY_ID = "survey_id";
+
+        public static final String RESULTS_VOLUNTEER_ID ="volunteer_id";
+
+        public static final String RESULTS_VISIT_NUMBER = "visit_number";
+
+        public static final String RESULTS_TIME_STAMP = "time_stamp";
+
+        public static final String RESULTS_COLUMN_HISTORY_FLAG = "history_flag";
+
+        public static final String RESULTS_COLUMN_ASSESSMENT_FLAG = "assessment_flag";
 
         public static final String RESULTS_JSON = "result";
 
         public static final String RESULTS_COLUMN_FLAG = "flag";
+
+
+        //   public static final String RESULTS_DOMAIN_ID = "domain_id";
+
+
 
         /**
          * TABLE_RESULTS_TYPES

@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Model.Domain;
@@ -18,8 +17,6 @@ import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.Utils.JSONHelper;
 import com.google.gson.Gson;
-
-import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -104,7 +101,7 @@ public class SurveyDataSingleton {
     List<SubModule> sections;
 
     private void createSurveyData(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.surveydatav2);
+        InputStream inputStream = context.getResources().openRawResource(R.raw.surveydata3);
         String jsonString = new Scanner(inputStream).useDelimiter("\\A").next();
         JSONHelper helper = new JSONHelper(jsonString);
         //       CSVHelper helper = new CSVHelper(inputStream);
@@ -251,7 +248,7 @@ public class SurveyDataSingleton {
                 do {
                     User user = new User();
                     user.setPrisonerId(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_INMATE_ID)));
-                    user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
+       //             user.setName(cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_NAME)));
                     user.setIdInDb(cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID)));
                     String flag = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_FLAG));
                     user.setSynced(flag);

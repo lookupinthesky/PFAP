@@ -2,10 +2,14 @@ package com.example.pfa_p.Model;
 
 import android.content.ContentValues;
 import android.util.Log;
-import android.view.View;
 
 import com.example.pfa_p.Adapter.QuestionsAdapter;
 import com.example.pfa_p.Database.SurveyContract;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Question extends RightPane {
 
@@ -56,11 +60,11 @@ public class Question extends RightPane {
 
     private String rules;
 
-    public void setQuestionView(View questionView) {
+    /*public void setQuestionView(View questionView) {
         this.questionView = questionView;
-    }
+    }*/
 
-    private View questionView;
+  //  private View questionView;
 
 
     private int despondency;
@@ -160,14 +164,14 @@ public class Question extends RightPane {
         return answerIndex;
     }
 
-    boolean isEnabled;
+    private boolean isEnabled = true;
 
     public void setEnabled(boolean enabled) {
         this.isEnabled = enabled;
-        if (!enabled) {
+        /*if (!enabled) {
             if(questionView!=null)
             questionView.setEnabled(false);
-        }/**/
+        }*//**/
     }
 
     /**
@@ -181,7 +185,7 @@ public class Question extends RightPane {
     public int getAnswerIndex(String answer) {
         if (getOptions().getNumberOfOptions() > 0) {
             answerIndex = getOptions().getOptions().indexOf(answer);
-            if (answerIndex == -1) {
+            if (answerIndex == -1 && !answer.equals("N/A")) {
                 Log.d("Questions", "Set answer is " + answer + " stored answers = " + getOptions().getOptions().toString());
                 throw new IllegalArgumentException("set answer doesn't match stored answer");
             }
@@ -302,24 +306,40 @@ public class Question extends RightPane {
         this.questionRule = rule;
     }
 
+    public void setRules(String rules) {
+        this.rules = rules;
+    }
+
     private void parseRule() {
 
         QuestionRule questionRule = new QuestionRule();
 
-        boolean disables;
+        boolean disables = false;
         int[] dependentQuestions;
         String necessaryAnswer;
         String temp;
+        List<Integer> depQues = new ArrayList<>();
 
-        temp = (rules.replaceAll("[^0-9]", ""));
-        dependentQuestions = strArrayToIntArray(temp.trim().split(" "));
+
+        Matcher matcher = Pattern.compile("\\d+").matcher(rules);
+
+        while (matcher.find()) {
+            depQues.add(Integer.valueOf(matcher.group()));
+        }
+        dependentQuestions = (new int[depQues.size()]);
+        for(int i = 0; i< depQues.size(); i++){
+            dependentQuestions[i] = depQues.get(i);
+        }
+        /*temp = (rules.replaceAll("[^0-9]", " "));
+        dependentQuestions = strArrayToIntArray(temp.trim().split(" "));*/
         String isDependentOnAnswer;
         String answerToBeSetIfNotApplicable;
 
         String[] splitString = rules.split(" ");
         int size = splitString.length;
         necessaryAnswer = splitString[size - 1];
-        disables = splitString[0].equals("Disables");
+        disables = splitString[0].trim().equals("Disable");
+        Log.d("Questions", "Is question disabled " + disables);
         answerToBeSetIfNotApplicable = "N/A";
 
         questionRule.setDependentQuestions(dependentQuestions);

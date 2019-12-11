@@ -47,6 +47,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
     int mCurrentDomainIndex;
     int mCurrentModuleIndex;
     int visitNumber = 0;
+    SearchResultsFragment.SearchResultsListener mListener;
 
 
     @Override
@@ -177,7 +178,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             prisonerId = "prisonerId";
         }
         cv.put(SurveyEntry.USERS_COLUMN_INMATE_ID, prisonerId);
-        cv.put(SurveyEntry.USERS_COLUMN_NAME, "prisonerName");
+       // cv.put(SurveyEntry.USERS_COLUMN_NAME, "prisonerName");
         cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, 1);
         cv.put(SurveyEntry.USERS_COLUMN_FLAG, "dirty");
         cv.put(SurveyEntry.USERS_COLUMN_HISTORY_FLAG, "INCOMPLETE");
@@ -276,6 +277,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         searchResultsFragment = SearchResultsFragment.newInstance();
         searchResultsFragment.setId(idInDb);
         searchResultsFragment.setPrisonerId(prisonerId);
+        searchResultsFragment.setSearchResultsListener(this);
         //
     }
 

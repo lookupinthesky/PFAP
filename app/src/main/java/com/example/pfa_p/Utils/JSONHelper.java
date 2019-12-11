@@ -174,8 +174,10 @@ public class JSONHelper {
             question.setOptions(getAnswerOptionsForQuestion(object));
             question.setSerialNumber(object.getInt("serial_number"));
             questions.add(question);
+            question.setRules(object.getString("rules"));
         }
     }
+
 
     private void setQuestionsToDomains(List<Domain> domains, List<Question> questions) {
         for (Domain domain : domains) {

@@ -194,7 +194,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
             } else {
-                saveResultsToDb(prisonerId,visitNumber);
+                saveResultsToDb();
                 Intent intent = new Intent(SurveyActivity.this, ResultsActivity.class);
                 startActivity(intent);
 
@@ -203,6 +203,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
         }
     }
+
+    String userId;
 
     /**
      *
@@ -219,7 +221,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         } else if (item instanceof SubModule) {
             if (!((SubModule) item).hasDomains()) {
                 questions = ((SubModule) item).getQuestions();
-                String userId = String.valueOf(((SubModule) item).getModule().getUser().getIdInDb());
+                 userId = String.valueOf(((SubModule) item).getModule().getUser().getIdInDb());
                 if (((SubModule) item).getName().equals("Basic Questionnaire")) {
                     insertAnswers(questions, true, isUpdate);
                 } else {
@@ -268,6 +270,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         snackBar.show();
     }
 
+    String visitNumber ;
+
     /**
      * Inserts the data filled by the user into local database
      * @param questionList List of questions which needs to be saved to database
@@ -281,7 +285,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
         for (Question question : questionList) {
             String userId = String.valueOf(question.getSubModule().getModule().getUser().getIdInDb());
-            String visitNumber = String.valueOf(question.getVisitNumber());
+            visitNumber = String.valueOf(question.getVisitNumber());
             ContentValues cv = question.getAnswerContentValues();
             if (!isUpdate) {
                 if (isAssessment)
@@ -305,11 +309,11 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
-    private void saveResultsToDb(String prisonerId, int visitNumber){
+    private void saveResultsToDb(){
 
-        String results = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON(prisonerId);
+        String results = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON(userId);
         ContentValues cv = new ContentValues();
-        cv.put(SurveyEntry.RESULTS_PRISONER_ID, prisonerId);
+        cv.put(SurveyEntry.RESULTS_PRISONER_ID, userId);
         cv.put(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER, visitNumber);
         cv.put(SurveyEntry.RESULTS_JSON, results);
         cv.put(SurveyEntry.RESULTS_COLUMN_FLAG,"dirty");
