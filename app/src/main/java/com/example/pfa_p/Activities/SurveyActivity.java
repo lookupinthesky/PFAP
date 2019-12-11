@@ -51,11 +51,16 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     int mCurrentDomainIndex;
     int mCurrentModuleIndex;
     private boolean isModuleChanged = false;
+    LoaderManager.LoaderCallbacks<String> mCallbacks;
+    Bundle loaderArgs;
+    private static final int LOADER_ANSWERS = 100;
+    private static final int LOADER_RESULTS = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey);
+        loaderArgs = new Bundle();
 
         android.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
@@ -93,6 +98,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             Intent intent1 = new Intent(SurveyActivity.this, ResultsActivity.class);
             startActivity(intent1);
         }
+        mCallbacks = this;
     }
 
     @Override
@@ -166,11 +172,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     /**
      * method called by ClickListener for the next button on the the toolbar.
-     *
      */
     public void onNextClick() {
-        String prisonerId = ""; //TODO:
-        int visitNumber = 1;
+       /* String prisonerId = ""; //TODO:
+        int visitNumber = 1;*/
         boolean isUpdate;
         Module mCurrentModule = modules.get(mCurrentModuleIndex);
         item = sectionsListFragment.getCurrentItem();
@@ -179,7 +184,11 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             showSnackBar("Please complete all the fields!");
             return;
         }
-        saveToDb(item, isUpdate); //TODO: push on background thread
+    //    saveToDb(item, isUpdate); //TODO: push on background thread
+        loaderArgs.putBoolean("isUpdate", isUpdate);
+        loaderArgs.putBoolean("isResults", false);
+        LoaderManager.getInstance(SurveyActivity.this).initLoader(LOADER_ANSWERS, loaderArgs, mCallbacks);
+
         calculateNext(modules);
         if (!isModuleChanged) {
             sectionsListFragment.onStateChanged(false);
@@ -189,12 +198,14 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             }
 
             if (mCurrentModuleIndex < 3) {
-                int domainIndex = mCurrentModuleIndex==1?-1:0;
+                int domainIndex = mCurrentModuleIndex == 1 ? -1 : 0;
                 sectionsListFragment.setCurrentState(0, domainIndex);
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
             } else {
-                saveResultsToDb();
+                loaderArgs.putBoolean("isResults", true);
+                LoaderManager.getInstance(SurveyActivity.this).initLoader(LOADER_RESULTS, loaderArgs, mCallbacks);
+              //  saveResultsToDb();
                 Intent intent = new Intent(SurveyActivity.this, ResultsActivity.class);
                 startActivity(intent);
 
@@ -207,8 +218,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     String userId;
 
     /**
-     *
-     * @param item the clicked left pane item i.e. the submodule or subdomain for which the questions are being answered
+     * @param item     the clicked left pane item i.e. the submodule or subdomain for which the questions are being answered
      * @param isUpdate true if entered data is being updated for example after an unexpected shutdown
      * @return true if values were inserted in database, else false
      */
@@ -221,14 +231,14 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         } else if (item instanceof SubModule) {
             if (!((SubModule) item).hasDomains()) {
                 questions = ((SubModule) item).getQuestions();
-                 userId = String.valueOf(((SubModule) item).getModule().getUser().getIdInDb());
+                userId = String.valueOf(((SubModule) item).getModule().getUser().getIdInDb());
                 if (((SubModule) item).getName().equals("Basic Questionnaire")) {
                     insertAnswers(questions, true, isUpdate);
                 } else {
                     insertAnswers(questions, false, isUpdate);
                     if (((SubModule) item).getIndex() == ((SubModule) item).getModule().getSections().size() - 1)
 
-                        updateHistoryFlagInUserTable(userId);
+                        updateHistoryFlagInResultsTable(userId);
                 }
                 return true;
 
@@ -243,18 +253,20 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     /**
      * History flag is by default incomplete and would remain incomplete until all the sections are completed.
      * When Module is changed and entries are saved to database it must be marked completed in the user table
-     * @see com.example.pfa_p.Database.SurveyContract
+     *
      * @param userId
+     * @see com.example.pfa_p.Database.SurveyContract
      */
-    private void updateHistoryFlagInUserTable(String userId) {
+    private void updateHistoryFlagInResultsTable(String userId) { //TODO
 
         ContentValues cv = new ContentValues();
         cv.put(SurveyEntry.USERS_COLUMN_HISTORY_FLAG, "COMPLETED");
-        getContentResolver().update(SurveyEntry.TABLE_USERS_CONTENT_URI, cv, SurveyEntry.USERS_ID + " =?", new String[]{userId});
+        getContentResolver().update(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, SurveyEntry.RESULTS_PRISONER_ID + " =?", new String[]{userId});
     }
 
     /**
      * Shows snackbar at the bottom when user clicks next button without completing the form
+     *
      * @param display
      */
     private void showSnackBar(String display) {
@@ -270,15 +282,16 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         snackBar.show();
     }
 
-    String visitNumber ;
+    String visitNumber;
 
     /**
      * Inserts the data filled by the user into local database
+     *
      * @param questionList List of questions which needs to be saved to database
      * @param isAssessment if the list is for assessment table as history and assessment tables are different
      *                     needs to marked true for basic questionnaire
+     * @param isUpdate     if the method is called for changing already saved values or an incomplete form
      * @see com.example.pfa_p.Database.SurveyContract
-     * @param isUpdate if the method is called for changing already saved values or an incomplete form
      */
     private void insertAnswers(List<Question> questionList, boolean isAssessment, boolean isUpdate) {
         Uri uri;
@@ -293,8 +306,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                 else
                     uri = getContentResolver().insert(SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, cv);
                 long _id = ContentUris.parseId(uri);
-                if (_id != -1)
+                if (_id != -1) {
                     question.setAnswerIdInDb(_id);
+
+                }
             } else {
                 if (isAssessment)
                     getContentResolver().update(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv,
@@ -309,15 +324,24 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
-    private void saveResultsToDb(){
+    private boolean saveResultsToDb() { //TODO: mark assessment as complete.
 
         String results = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON(userId);
+        String selection = SurveyEntry.RESULTS_PRISONER_ID + " = ?";
+        String[] selectionArgs = new String[]{userId};
+
+
         ContentValues cv = new ContentValues();
-        cv.put(SurveyEntry.RESULTS_PRISONER_ID, userId);
+        //  cv.put(SurveyEntry.RESULTS_PRISONER_ID, userId);
         cv.put(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER, visitNumber);
         cv.put(SurveyEntry.RESULTS_JSON, results);
-        cv.put(SurveyEntry.RESULTS_COLUMN_FLAG,"dirty");
-        getContentResolver().insert(SurveyEntry.TABLE_RESULTS_CONTENT_URI,cv);
+        cv.put(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG, "COMPLETED");
+        cv.put(SurveyEntry.RESULTS_COLUMN_FLAG, "dirty");
+        getContentResolver().insert(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv);
+        getContentResolver().update(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, selection, selectionArgs);
+        return true;
+
+
     }
 
 
@@ -326,13 +350,22 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-        return new SurveyTaskLoader<String>(this/*, prisonerId*/) {
+        return new SurveyTaskLoader<String>(this/*, prisonerId*/, args) {
             @Nullable
             @Override
             public String loadInBackground() {
-                if (saveToDb(item, false))
-                    return new String("Saved to Database");
-                return "Could Not Save values to Database";
+                boolean isResults = args.getBoolean("isResults");
+                boolean isUpdate = args.getBoolean("isUpdate");
+                if (!isResults) {
+                    if (saveToDb(item, isUpdate))
+                        return new String("Saved to Database");
+                    return "Could Not Save values to Database";
+                } else {
+                    if (saveResultsToDb()) {
+                        return new String("Saved Results to Database");
+                    } else
+                        return "Could Not save Results to Database";
+                }
             }
 
             @Override

@@ -9,6 +9,8 @@ public class User {
     private boolean ifHistoryTaken; // status of history
     private boolean ifAssessmentTaken; // status of assessment in the current visit number
     private boolean isSynced; // is synced to server
+    private String volunteerId;
+
 
     public boolean isSynced() {
         return isSynced;
@@ -21,6 +23,14 @@ public class User {
 
     public String getPrisonerId() {
         return prisonerId;
+    }
+
+    public String getVolunteerId() {
+        return volunteerId;
+    }
+
+    public void setVolunteerId(String volunteerId) {
+        this.volunteerId = volunteerId;
     }
 
     public void setPrisonerId(String prisonerId) {

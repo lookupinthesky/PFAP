@@ -60,12 +60,12 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             @NonNull
             @Override
             public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-                return new SurveyTaskLoader<String>(LoginActivity.this/*, prisonerId*/) {
+                return new SurveyTaskLoader<String>(LoginActivity.this/*, prisonerId*/, args) {
 
                     @Nullable
                     @Override
                     public String loadInBackground() {
-                        prepareSurvey(prisonerIdText);
+                        prepareSurvey(prisonerIdText, volunteerIdText);
                         return null;
                     }
 
@@ -113,6 +113,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             public void onNextButtonClick(String prisonerId, String volunteerId) {
 
                 prisonerIdText = prisonerId;
+                volunteerIdText = volunteerId;
 
 
                 LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, loadingScreenFragment).addToBackStack(null).commit();
@@ -172,20 +173,21 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
      *
      * @param prisonerId the official inmate id
      */
-    private void insertNewUser(String prisonerId) {
+    private void insertNewUser(String prisonerId, String volunteerId) {
         ContentValues cv = new ContentValues();
         if (prisonerId.equals("")) {
             prisonerId = "prisonerId";
         }
-        cv.put(SurveyEntry.USERS_COLUMN_INMATE_ID, prisonerId);
-       // cv.put(SurveyEntry.USERS_COLUMN_NAME, "prisonerName");
+      cv.put(SurveyEntry.USERS_COLUMN_INMATE_ID, prisonerId);
+        // cv.put(SurveyEntry.USERS_COLUMN_NAME, "prisonerName");
         cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, 1);
         cv.put(SurveyEntry.USERS_COLUMN_FLAG, "dirty");
-        cv.put(SurveyEntry.USERS_COLUMN_HISTORY_FLAG, "INCOMPLETE");
-        cv.put(SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG, "INCOMPLETE");
+       /* cv.put(SurveyEntry.USERS_COLUMN_HISTORY_FLAG, "INCOMPLETE");
+        cv.put(SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG, "INCOMPLETE");*/
         Uri uri = getContentResolver().insert(SurveyEntry.TABLE_USERS_CONTENT_URI, cv);
         long _id = ContentUris.parseId(uri);
-        setUserToModules(prisonerId, _id);
+        Log.d(LoginActivity.class.getName(), "inserted new user into db with id =" + _id);
+        setUserToModules(prisonerId, _id, volunteerId);
        /* User user = new User();
         user.setPrisonerId(prisonerId);
         user.setIdInDb(_id);
@@ -201,9 +203,10 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
      * @param prisonerId the inmate id
      * @param idInDb     the PRIMARY KEY corresponding to the inmate id
      */
-    private void setUserToModules(String prisonerId, long idInDb) {
+    private void setUserToModules(String prisonerId, long idInDb, String volunteerId) {
         User user = new User();
         user.setPrisonerId(prisonerId);
+        user.setVolunteerId(volunteerId);
         user.setIdInDb(idInDb);
         List<Module> modules = SurveyDataSingleton.getInstance(this).getModules();
         for (Module module : modules) {
@@ -219,9 +222,9 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
     }
 
     private void incrementVisitCounter() { //TODO: retrieve visit number
-        visitNumber++;
+        int totalVisits = helper.totalVisits++;
         ContentValues cv = new ContentValues();
-        cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, visitNumber);
+        cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, totalVisits);
         getContentResolver().insert(SurveyEntry.TABLE_USERS_CONTENT_URI, cv);
     }
 
@@ -234,13 +237,16 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
      *
      * @param prisonerId
      */
-    private void prepareSurvey(String prisonerId) {
+    private void prepareSurvey(String prisonerId, String volunteerId) {
         helper = new LoginActivity.SurveyHelperForUser();
         long idInDb = helper.fetchUserData(prisonerId, this);
+
         if (idInDb == -1) {
             prepareSearchResultsFragment(-1, prisonerId);
-            insertNewUser(prisonerId);
+            insertNewUser(prisonerId, volunteerId);
             setCurrentState(0, 0, -1);
+            initializeResultsTableInDb(this, idInDb);
+            setUserToModules(prisonerId, idInDb, volunteerId);
             //     loadingScreenFragment.receiveProgressUpdate(30);
             Log.d(LOG_TAG, "Method: StartSurvey, user not found, inserting a new user");
 
@@ -248,20 +254,22 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             searchResultsFragment.setAssessmentStatus("To be Started");
 
         } else {
+            //TODO: initializeresultstable????
+            helper.fetchResultsDataForUser(idInDb, this);
             prepareSearchResultsFragment(idInDb, prisonerId);
-            setUserToModules(prisonerId, idInDb);
+            setUserToModules(prisonerId, idInDb, volunteerId);
             if (helper.isHistoryCompleted) {
                 if (helper.isAssessmentCompleted) {
                     incrementVisitCounter();
                     setCurrentState(0, 0, 0);
                     searchResultsFragment.setAssessmentStatus("To be Started");
                     searchResultsFragment.setDemographicStatus("To be started");
-                    searchResultsFragment.setVisitNumber(visitNumber);
+                    searchResultsFragment.setVisitNumber(helper.totalVisits);
                 } else {
                     helper.fetchAssessmentTableDataForUser(idInDb, 1/*helper.totalVisits*/, this); //TODO: verify visit numbers
                     searchResultsFragment.setDemographicStatus("Completed");
                     searchResultsFragment.setAssessmentStatus("To be resumed");
-                    searchResultsFragment.setVisitNumber(visitNumber);
+                    searchResultsFragment.setVisitNumber(helper.totalVisits);
                 }
             } else {
                 helper.fetchHistoryTableDataForUser(idInDb, this);
@@ -273,6 +281,22 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
     SearchResultsFragment searchResultsFragment;
 
+
+    private void initializeResultsTableInDb(Context context, long idInDb) {
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(SurveyEntry.RESULTS_COLUMN_FLAG, "dirty");
+        cv.put(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG, "INCOMPLETE");
+        cv.put(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG, "INCOMPLETE");
+        cv.put(SurveyEntry.RESULTS_VOLUNTEER_ID, helper.volunteerId);
+        cv.put(SurveyEntry.RESULTS_PRISONER_ID, idInDb);
+        cv.put(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER, 1);
+        cv.put(SurveyEntry.RESULTS_COLUMN_FLAG, "dirty"); //TODO: data type
+
+
+    }
+
     private void prepareSearchResultsFragment(long idInDb, String prisonerId) {
         searchResultsFragment = SearchResultsFragment.newInstance();
         searchResultsFragment.setId(idInDb);
@@ -282,7 +306,8 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
     }
 
 
-    String prisonerIdText = "prisonerId";
+    String prisonerIdText;
+    String volunteerIdText;
 
     @Override
     public void prepareAndStartSurvey(boolean newUser, String prisonerId, long idInDb, boolean resume) {
@@ -295,7 +320,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             //   }
 
         }*/
-//TODO: calculate status based on current states
+        //TODO: calculate status based on current states
         Intent intent = new Intent(LoginActivity.this, SurveyActivity.class);
         intent.putExtra("current_module_index", mCurrentModuleIndex);
         intent.putExtra("current_section_index", mCurrentSectionIndex);
@@ -311,10 +336,15 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
         boolean isHistoryCompleted = false;
         boolean isAssessmentCompleted = false;
+        String volunteerId = "";
+        String result = "";
+        String timeStamp = "";
         int totalVisits = 0;
         int currentModuleIndex;
         int currentSectionIndex;
         int currentDomainIndex = -1;
+       // int visitNumber = 0;
+        boolean isSynced;
 
         String[] projection_history = new String[]{SurveyEntry.ANSWERS_COLUMN_QUESTION_ID,
                 /*SurveyEntry.ANSWERS_COLUMN_SURVEY_ID,*/
@@ -334,22 +364,47 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
          */
         long fetchUserData(String prisonerId, Context context) {
             String selection_users = SurveyEntry.USERS_COLUMN_INMATE_ID + " = ?";
-            String[] projection_users = new String[]{SurveyEntry.USERS_ID, SurveyEntry.USERS_COLUMN_INMATE_ID, SurveyEntry.USERS_COLUMN_TOTAL_VISITS, SurveyEntry.USERS_COLUMN_HISTORY_FLAG, SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG};
+            String[] projection_users = new String[]{SurveyEntry.USERS_ID, SurveyEntry.USERS_COLUMN_INMATE_ID, SurveyEntry.USERS_COLUMN_TOTAL_VISITS, /*SurveyEntry.USERS_COLUMN_HISTORY_FLAG,*/ /*SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG*/};
             String[] selectionArgs_users = new String[]{prisonerId};
             long _id = -1;
             Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, selection_users, selectionArgs_users, null);
 
             if (cursor.moveToFirst()) {
                 _id = cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID));
-                isHistoryCompleted = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_HISTORY_FLAG)).equals("COMPLETED");
+                /*isHistoryCompleted = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_HISTORY_FLAG)).equals("COMPLETED");
                 isAssessmentCompleted = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG)).equals("COMPLETED");
-                totalVisits = cursor.getInt(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_TOTAL_VISITS));
+               */ totalVisits = cursor.getInt(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_TOTAL_VISITS));
 
                 cursor.close();
                 return _id;
             }
             return _id;
         }
+
+
+        void fetchResultsDataForUser(long idInDb, Context context) {
+
+
+            String selection = SurveyEntry.RESULTS_PRISONER_ID + " = ?";
+            String[] projection = null;
+            String[] selectionArgs = new String[]{String.valueOf(idInDb)};
+
+            Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_RESULTS_CONTENT_URI, projection, selection, selectionArgs, null);
+
+            if (cursor.moveToFirst()) {
+                isHistoryCompleted = cursor.getString(cursor.getColumnIndex(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG)).equals("COMPLETED");
+                isAssessmentCompleted = cursor.getString(cursor.getColumnIndex(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG)).equals("COMPLETED");
+                result = cursor.getString((cursor.getColumnIndex(SurveyEntry.RESULTS_JSON)));
+                volunteerId = cursor.getString(cursor.getColumnIndex(SurveyEntry.RESULTS_VOLUNTEER_ID));
+                timeStamp = cursor.getString(cursor.getColumnIndex(SurveyEntry.RESULTS_TIME_STAMP));
+          //      visitNumber = cursor.getInt(cursor.getColumnIndex(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER));
+                isSynced = !cursor.getString(cursor.getColumnIndex(SurveyEntry.RESULTS_COLUMN_FLAG)).equals("dirty");
+                cursor.close();
+            }
+
+
+        }
+
 
         /**
          * History table data is fetched when app is closed while history data is still not filled completely, so it restores from the last point

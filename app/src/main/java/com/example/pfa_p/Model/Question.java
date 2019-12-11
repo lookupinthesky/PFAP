@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.pfa_p.Adapter.QuestionsAdapter;
 import com.example.pfa_p.Database.SurveyContract;
+import com.example.pfa_p.Utils.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -277,6 +278,8 @@ public class Question extends RightPane {
      */
     public ContentValues getAnswerContentValues(/*boolean isAssessment*/) {
         ContentValues answerValues = new ContentValues();
+        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_VOLUNTEER_ID, getSubModule().getModule().getUser().getVolunteerId());
+        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_TIME_STAMP, JavaUtils.getCurrentDateTime());
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID, questionIdInDb);
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_USER_ID, /*user.getIdInDb()*/getSubModule().getModule().getUser().getIdInDb());
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_RESPONSE, getAnswer());

@@ -61,7 +61,7 @@ public class SurveyDataSingleton {
     }
 
     // private Context mContext;
-    String[] projection_users = new String[]{SurveyEntry.USERS_ID, SurveyEntry.USERS_COLUMN_INMATE_ID, SurveyEntry.USERS_COLUMN_NAME, SurveyEntry.USERS_COLUMN_FLAG};
+    String[] projection_users = new String[]{SurveyEntry.USERS_ID, SurveyEntry.USERS_COLUMN_INMATE_ID,/* SurveyEntry.USERS_COLUMN_NAME,*/ SurveyEntry.USERS_COLUMN_FLAG};
 
 
     //private constructor.
@@ -142,7 +142,9 @@ public class SurveyDataSingleton {
         } else {
             ContentValues cv = new ContentValues();
             cv.put(SurveyEntry.SURVEY_COLUMN_SURVEY_ID, surveyId);
-            context.getContentResolver().insert(SurveyEntry.TABLE_SURVEYS_CONTENT_URI, cv);
+         Uri uri =  context.getContentResolver().insert(SurveyEntry.TABLE_SURVEYS_CONTENT_URI, cv);
+         long _id = ContentUris.parseId(uri);
+         JSONHelper.setSurveyId(_id);
         }
 
 
@@ -158,7 +160,6 @@ public class SurveyDataSingleton {
                 Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_SECTIONS_CONTENT_URI, sectionContentValues); //TODO: assign section ids to corresponding sections
                 long _id = ContentUris.parseId(uri);
                 subModule.setId(_id);
-
             }
         } else {
             Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_SECTIONS_CONTENT_URI, section_projection, null, null, SurveyEntry.SECTIONS_ID + " ASC");

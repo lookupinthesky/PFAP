@@ -12,6 +12,8 @@ import com.example.pfa_p.R;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -79,14 +81,14 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
        /* holder.deleteButton.setOnClickListener(this);
         holder.resultsButton.setOnClickListener(this);
         holder.editButton.setOnClickListener(this);*/
-       holder.action.setOnClickListener(this);
+    //   holder.action.setOnClickListener(this);
 
-   String actionText = holder.status.equals("Completed") ? "View Results": "Resume" ;
+ //  String actionText = holder.status.equals("Completed") ? "View Results": "Resume" ;
         User user = getItem(position);
-        holder.prisonerId.setText(user.getPrisonerId());
+    //    holder.prisonerId.setText(user.getPrisonerId());
        // holder.status.setText(user.getStatus());
     //    holder.volunteerId.setText(user.getVolunteerId());
-        holder.action.setText("View Results");
+ //       holder.action.setText("View Results");
         //TODO: set user values to fields.
         return convertView;
     }
@@ -129,8 +131,10 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
 
         /*  @BindView(R.id.serial_num)
           TextView serialNumber;*/
+        @Nullable
         @BindView(R.id.prisonerId)
         TextView prisonerId;
+        @Nullable
         @BindView(R.id.volunteer_id)
         TextView volunteerId;
         /* @BindView(R.id.numberOfVisits)
@@ -145,10 +149,12 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
          ImageView resultsButton;
          @BindView(R.id.action_edit)
          ImageView editButton;*/
-        @BindView(R.id.time_stamp)
-        TextView timeStamp;
-        @BindView(R.id.status)
+        /*@BindView(R.id.time_stamp)
+        TextView timeStamp;*/
+       @Nullable
+       @BindView(R.id.status)
         TextView status;
+       @Nullable
         @BindView(R.id.action)
         TextView action;
 

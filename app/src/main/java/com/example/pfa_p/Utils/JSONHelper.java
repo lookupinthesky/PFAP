@@ -28,11 +28,16 @@ public class JSONHelper {
             Log.d(DashboardActivity.class.getName(), "Problem in JSON Parsing, Cannot create JSONHelper Object");
         }
     }
-
+static long survey_id;
 
     public static String getSurveyId(){
 
-        return "survey_id";
+        return String.valueOf(survey_id);
+    }
+
+    public static void setSurveyId(long _id){
+
+        survey_id = (_id) ;
     }
 
 

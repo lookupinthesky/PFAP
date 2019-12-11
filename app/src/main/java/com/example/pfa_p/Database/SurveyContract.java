@@ -141,6 +141,8 @@ public class SurveyContract {
 
         public static final String ANSWERS_COLUMN_VOLUNTEER_ID = "volunteer_id";
 
+        public static final String ANSWERS_COLUMN_TIME_STAMP = "time_stamp";
+
         public static final String ANSWERS_COLUMN_QUESTION_ID = "question_id";
 
         public static final String ANSWERS_COLUMN_RESPONSE = "response";
@@ -167,8 +169,6 @@ public class SurveyContract {
         public static final String RESULTS_SURVEY_ID = "survey_id";
 
         public static final String RESULTS_VOLUNTEER_ID ="volunteer_id";
-
-        public static final String RESULTS_VISIT_NUMBER = "visit_number";
 
         public static final String RESULTS_TIME_STAMP = "time_stamp";
 

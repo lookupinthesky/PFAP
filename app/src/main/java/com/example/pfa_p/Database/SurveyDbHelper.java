@@ -17,9 +17,9 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
             SurveyContract.SurveyEntry.TABLE_SECTIONS + "(" +
             SurveyContract.SurveyEntry.SECTIONS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SurveyContract.SurveyEntry.SECTIONS_COLUMN_SURVEY_ID + " TEXT NOT NULL, " +
-            SurveyContract.SurveyEntry.SECTIONS_COLUMN_NAME + " TEXT NOT NULL, " +
-            " FOREIGN KEY (" + SurveyContract.SurveyEntry.SECTIONS_COLUMN_SURVEY_ID + ") REFERENCES " +
-            SurveyContract.SurveyEntry.TABLE_SURVEYS + " (" + SurveyContract.SurveyEntry.SURVEY_COLUMN_SURVEY_ID + "));" ;
+            SurveyContract.SurveyEntry.SECTIONS_COLUMN_NAME + " TEXT NOT NULL " + ");" ;
+           /* " FOREIGN KEY (" + SurveyContract.SurveyEntry.SECTIONS_COLUMN_SURVEY_ID + ") REFERENCES " +
+            SurveyContract.SurveyEntry.TABLE_SURVEYS + " (" + SurveyContract.SurveyEntry.SURVEY_COLUMN_SURVEY_ID + "));" */;
 
 
     private static final String SQL_CREATE_TABLE_QUESTIONS = "CREATE TABLE " +
@@ -30,7 +30,7 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
             SurveyContract.SurveyEntry.QUESTIONS_COLUMN_DOMAIN_ID + " INTEGER, " +
             SurveyContract.SurveyEntry.QUESTIONS_COLUMN_TYPE + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.QUESTIONS_COLUMN_NAME + " TEXT NOT NULL, " +
-            SurveyContract.SurveyEntry.QUESTIONS_COLUMN_FLAG + " INTEGER NOT NULL, " +
+            SurveyContract.SurveyEntry.QUESTIONS_COLUMN_FLAG + " TEXT NOT NULL, " +
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.QUESTIONS_COLUMN_SECTION_ID + ") REFERENCES " +
             SurveyContract.SurveyEntry.TABLE_SECTIONS + " (" + SurveyContract.SurveyEntry.SECTIONS_ID + "));" ;
 
@@ -38,21 +38,23 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
             SurveyContract.SurveyEntry.TABLE_USERS + "(" +
             SurveyContract.SurveyEntry.USERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_INMATE_ID + " TEXT NOT NULL, " +
-            SurveyContract.SurveyEntry.USERS_COLUMN_VOLUNTEER_ID + " TEXT NOT NULL, " +
+       //     SurveyContract.SurveyEntry.USERS_COLUMN_VOLUNTEER_ID + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.USERS_COLUMN_TOTAL_VISITS + " INTEGER NOT NULL, " +
-            SurveyContract.SurveyEntry.USERS_COLUMN_HISTORY_FLAG + " TEXT NOT NULL, " +
-            SurveyContract.SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG + " TEXT NOT NULL, " +
-            SurveyContract.SurveyEntry.USERS_COLUMN_FLAG + " INTEGER NOT NULL);";
+      //      SurveyContract.SurveyEntry.USERS_COLUMN_HISTORY_FLAG + " TEXT NOT NULL, " +
+      //      SurveyContract.SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG + " TEXT NOT NULL, " +
+            SurveyContract.SurveyEntry.USERS_COLUMN_FLAG + " TEXT NOT NULL);";
 
     private static final String SQL_CREATE_TABLE_ASSESSMENT_ANSWERS = "CREATE TABLE " +
             SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS + "(" +
             SurveyContract.SurveyEntry.ANSWERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             /*  SurveyContract.SurveyEntry.ANSWERS_COLUMN_SURVEY_ID + " INTEGER NOT NULL, " +*/
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_USER_ID + " INTEGER NOT NULL, " +
+            SurveyContract.SurveyEntry.ANSWERS_COLUMN_VOLUNTEER_ID + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_RESPONSE + " TEXT, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_DESPONDENCY + " INTEGER, " +
+            SurveyContract.SurveyEntry.ANSWERS_COLUMN_TIME_STAMP + " TEXT, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_FLAG + " INTEGER NOT NULL, " +
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID + ") REFERENCES " +
             SurveyContract.SurveyEntry.TABLE_QUESTIONS + " (" + SurveyContract.SurveyEntry.QUESTIONS_ID + ")," +
@@ -63,10 +65,12 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
             SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS + "(" +
             SurveyContract.SurveyEntry.ANSWERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             /* SurveyContract.SurveyEntry.ANSWERS_COLUMN_SURVEY_ID + " INTEGER NOT NULL, " +*/
+            SurveyContract.SurveyEntry.ANSWERS_COLUMN_VOLUNTEER_ID + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_USER_ID + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID + " INTEGER NOT NULL, " +
             SurveyContract.SurveyEntry.ANSWERS_COLUMN_RESPONSE + " TEXT NOT NULL, " +
-            SurveyContract.SurveyEntry.ANSWERS_COLUMN_FLAG + " INTEGER NOT NULL, " +
+            SurveyContract.SurveyEntry.ANSWERS_COLUMN_TIME_STAMP + " TEXT, " +
+            SurveyContract.SurveyEntry.ANSWERS_COLUMN_FLAG + " TEXT NOT NULL, " +
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID + ") REFERENCES " +
             SurveyContract.SurveyEntry.TABLE_QUESTIONS + " (" + SurveyContract.SurveyEntry.QUESTIONS_ID + ")," +
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.ANSWERS_COLUMN_USER_ID + ") REFERENCES " +
@@ -89,8 +93,13 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_TABLE_RESULTS = "CREATE TABLE " +
             SurveyContract.SurveyEntry.TABLE_RESULTS + "(" +
             SurveyContract.SurveyEntry.RESULTS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            SurveyContract.SurveyEntry.RESULTS_PRISONER_ID + " INTEGER NOT NULL, " +
+            SurveyContract.SurveyEntry.RESULTS_PRISONER_ID + " TEXT NOT NULL, " +
+            SurveyContract.SurveyEntry.RESULTS_VOLUNTEER_ID + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER + " INTEGER NOT NULL, " +
+            SurveyContract.SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG + " TEXT NOT NULL, " +
+            SurveyContract.SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG + " TEXT NOT NULL, " +
+            SurveyContract.SurveyEntry.RESULTS_SURVEY_ID + " TEXT NOT NULL, " +
+            SurveyContract.SurveyEntry.RESULTS_TIME_STAMP + " TEXT NOT NULL, " +
      /*       SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + " INTEGER NOT NULL, " +*/
             SurveyContract.SurveyEntry.RESULTS_JSON + " TEXT NOT NULL, " +
             SurveyContract.SurveyEntry.RESULTS_COLUMN_FLAG + " TEXT NOT NULL, " +

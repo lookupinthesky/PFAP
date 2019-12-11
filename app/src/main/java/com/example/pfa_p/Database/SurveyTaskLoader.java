@@ -1,6 +1,7 @@
 package com.example.pfa_p.Database;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,6 +11,7 @@ import androidx.loader.content.AsyncTaskLoader;
 public class SurveyTaskLoader<String> extends AsyncTaskLoader<String> {
 
     String prisonerId;
+    Bundle args;
 
     @Override
     protected void onStopLoading() {
@@ -23,8 +25,9 @@ public class SurveyTaskLoader<String> extends AsyncTaskLoader<String> {
         forceLoad();
     }
 
-    public SurveyTaskLoader(@NonNull Context context/*, String prisonerId*/) {
+    public SurveyTaskLoader(@NonNull Context context/*, String prisonerId*/, Bundle args) {
         super(context);
+        this.args = args;
     //    this.prisonerId = prisonerId;
     }
 
