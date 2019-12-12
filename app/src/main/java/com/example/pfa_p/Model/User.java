@@ -1,5 +1,7 @@
 package com.example.pfa_p.Model;
 
+import android.util.Log;
+
 public class User {
 
     private String prisonerId; // the inmate_id as filled at the login screen
@@ -10,6 +12,36 @@ public class User {
     private boolean ifAssessmentTaken; // status of assessment in the current visit number
     private boolean isSynced; // is synced to server
     private String volunteerId;
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    private String timeStamp;
+    private String status;
+    private String action;
+
+
 
 
     public boolean isSynced() {
@@ -42,6 +74,10 @@ public class User {
     }
 
     public void setIdInDb(long idInDb) {
+        if(idInDb==-1){
+            throw new IllegalArgumentException();
+        }
+       Log.d("POJO : USERS",  "setIdInDb called - idInDb = " + idInDb);
         this.idInDb = idInDb;
     }
 

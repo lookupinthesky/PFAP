@@ -81,14 +81,14 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
        /* holder.deleteButton.setOnClickListener(this);
         holder.resultsButton.setOnClickListener(this);
         holder.editButton.setOnClickListener(this);*/
-    //   holder.action.setOnClickListener(this);
+        //   holder.action.setOnClickListener(this);
 
- //  String actionText = holder.status.equals("Completed") ? "View Results": "Resume" ;
+        //  String actionText = holder.status.equals("Completed") ? "View Results": "Resume" ;
         User user = getItem(position);
-    //    holder.prisonerId.setText(user.getPrisonerId());
-       // holder.status.setText(user.getStatus());
-    //    holder.volunteerId.setText(user.getVolunteerId());
- //       holder.action.setText("View Results");
+        //    holder.prisonerId.setText(user.getPrisonerId());
+        // holder.status.setText(user.getStatus());
+        //    holder.volunteerId.setText(user.getVolunteerId());
+        //       holder.action.setText("View Results");
         //TODO: set user values to fields.
         return convertView;
     }
@@ -97,7 +97,7 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
 
-            case R.id.action:{
+            case R.id.action: {
 
             }
            /* case R.id.action_delete: {
@@ -129,13 +129,11 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
 
     static final class ViewHolder {
 
-        /*  @BindView(R.id.serial_num)
-          TextView serialNumber;*/
-        @Nullable
-        @BindView(R.id.prisonerId)
+
+        TextView serialNumber;
+
         TextView prisonerId;
-        @Nullable
-        @BindView(R.id.volunteer_id)
+
         TextView volunteerId;
         /* @BindView(R.id.numberOfVisits)
          TextView numberOfVisits;
@@ -149,18 +147,16 @@ public class RecentActivityAdapter extends ArrayAdapter<User> implements View.On
          ImageView resultsButton;
          @BindView(R.id.action_edit)
          ImageView editButton;*/
-        /*@BindView(R.id.time_stamp)
-        TextView timeStamp;*/
-       @Nullable
-       @BindView(R.id.status)
+
+        TextView timeStamp;
+
         TextView status;
-       @Nullable
-        @BindView(R.id.action)
+
         TextView action;
 
 
         ViewHolder(View view) {
-            ButterKnife.bind(this, view);
+            /*ButterKnife.bind(this, view);*/
         }
 
     }

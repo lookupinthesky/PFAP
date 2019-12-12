@@ -137,10 +137,12 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                     mCurrentDomainIndex = 0;
                 }
             } else {
+                isModuleChanged = false;
                 mCurrentSectionIndex++;
                 mCurrentDomainIndex = 0;
             }
         } else {
+            isModuleChanged = false;
             mCurrentDomainIndex++;
         }
 
@@ -185,10 +187,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             showSnackBar("Please complete all the fields!");
             return;
         }
-    //    saveToDb(item, isUpdate); //TODO: push on background thread
+        //    saveToDb(item, isUpdate); //TODO: push on background thread
         loaderArgs.putBoolean("isUpdate", isUpdate);
         loaderArgs.putBoolean("isResults", false);
-        LoaderManager.getInstance(SurveyActivity.this).initLoader(LOADER_ANSWERS, loaderArgs, mCallbacks);
+        LoaderManager.getInstance(SurveyActivity.this).restartLoader(LOADER_ANSWERS, loaderArgs, mCallbacks); //initloader repeats data
 
         calculateNext(modules);
         if (!isModuleChanged) {
@@ -199,14 +201,14 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             }
 
             if (mCurrentModuleIndex < 3) {
-                int domainIndex = mCurrentModuleIndex == 1 ? -1 : 0;
+                int domainIndex = mCurrentModuleIndex == 1 ? -1 : 0; //TODO check logic
                 sectionsListFragment.setCurrentState(0, domainIndex);
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
             } else {
                 loaderArgs.putBoolean("isResults", true);
-                LoaderManager.getInstance(SurveyActivity.this).initLoader(LOADER_RESULTS, loaderArgs, mCallbacks);
-              //  saveResultsToDb();
+                LoaderManager.getInstance(SurveyActivity.this).restartLoader(LOADER_RESULTS, loaderArgs, mCallbacks);
+                //  saveResultsToDb();
                 Intent intent = new Intent(SurveyActivity.this, ResultsActivity.class);
                 startActivity(intent);
 

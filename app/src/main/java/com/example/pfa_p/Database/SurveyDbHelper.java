@@ -105,10 +105,10 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
             SurveyContract.SurveyEntry.RESULTS_COLUMN_FLAG + " TEXT NOT NULL, " +
 
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_PRISONER_ID + ") REFERENCES " +
-            SurveyContract.SurveyEntry.TABLE_USERS + " (" + SurveyContract.SurveyEntry.USERS_COLUMN_INMATE_ID + "), " +
+            SurveyContract.SurveyEntry.TABLE_USERS + " (" + SurveyContract.SurveyEntry.USERS_ID + "));"  ; /*+
 
             " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER + ") REFERENCES " +
-            SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS + " (" + SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + "));" ;
+            SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS + " (" + SurveyContract.SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + "));" ;*/
 
            /* " FOREIGN KEY (" + SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + ") REFERENCES " +
             SurveyContract.SurveyEntry.TABLE_DOMAINS + " (" + SurveyContract.SurveyEntry.RESULTS_DOMAIN_ID + "), " +*/

@@ -30,6 +30,8 @@ import com.example.pfa_p.Model.Question;
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
+import com.example.pfa_p.Utils.JSONHelper;
+import com.example.pfa_p.Utils.JavaUtils;
 
 import java.util.List;
 
@@ -178,7 +180,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
      *
      * @param prisonerId the official inmate id
      */
-    private void insertNewUser(String prisonerId, String volunteerId) {
+    private long insertNewUser(String prisonerId, String volunteerId) {
         ContentValues cv = new ContentValues();
         if (prisonerId.equals("")) {
             prisonerId = "prisonerId";
@@ -193,6 +195,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         long _id = ContentUris.parseId(uri);
         Log.d(LoginActivity.class.getName(), "inserted new user into db with id =" + _id);
         setUserToModules(prisonerId, _id, volunteerId);
+        return _id ;
        /* User user = new User();
         user.setPrisonerId(prisonerId);
         user.setIdInDb(_id);
@@ -212,6 +215,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         User user = new User();
         user.setPrisonerId(prisonerId);
         user.setVolunteerId(volunteerId);
+        Log.d(LoginActivity.class.getName(), "setUserToModules: prisonerId, idInDb, volunteerId = " + prisonerId + ", " +  idInDb +  ", " +  volunteerId);
         user.setIdInDb(idInDb);
         List<Module> modules = SurveyDataSingleton.getInstance(this).getModules();
         for (Module module : modules) {
@@ -248,10 +252,10 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
         if (idInDb == -1) {
             prepareSearchResultsFragment(-1, prisonerId);
-            insertNewUser(prisonerId, volunteerId);
+          long newIdInDb =  insertNewUser(prisonerId, volunteerId);
             setCurrentState(0, 0, -1);
-            initializeResultsTableInDb(this, idInDb);
-            setUserToModules(prisonerId, idInDb, volunteerId);
+            initializeResultsTableInDb(this, newIdInDb, volunteerId);
+          //  setUserToModules(prisonerId, idInDb, volunteerId);
             //     loadingScreenFragment.receiveProgressUpdate(30);
             Log.d(LOG_TAG, "Method: StartSurvey, user not found, inserting a new user");
 
@@ -287,17 +291,21 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
     SearchResultsFragment searchResultsFragment;
 
 
-    private void initializeResultsTableInDb(Context context, long idInDb) {
+    private void initializeResultsTableInDb(Context context, long idInDb, String volunteerId) {
 
         ContentValues cv = new ContentValues();
-
         cv.put(SurveyEntry.RESULTS_COLUMN_FLAG, "dirty");
         cv.put(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG, "INCOMPLETE");
         cv.put(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG, "INCOMPLETE");
-        cv.put(SurveyEntry.RESULTS_VOLUNTEER_ID, helper.volunteerId);
+        cv.put(SurveyEntry.RESULTS_SURVEY_ID, JSONHelper.getSurveyId());
+        cv.put(SurveyEntry.RESULTS_VOLUNTEER_ID, volunteerId);
         cv.put(SurveyEntry.RESULTS_PRISONER_ID, idInDb);
         cv.put(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER, 1);
+        cv.put(SurveyEntry.RESULTS_TIME_STAMP, JavaUtils.getCurrentDateTime());
+        cv.put(SurveyEntry.RESULTS_JSON, "N/A");
         cv.put(SurveyEntry.RESULTS_COLUMN_FLAG, "dirty"); //TODO: data type
+
+        getContentResolver().insert(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv);
 
 
     }

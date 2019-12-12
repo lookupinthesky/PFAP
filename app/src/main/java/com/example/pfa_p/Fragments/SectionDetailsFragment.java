@@ -183,9 +183,9 @@ public class SectionDetailsFragment extends Fragment implements QuestionsAdapter
 
             Question question = allQuestions.get(i - 1);
 
-            boolean isEnabled = !rule.isDisables() || ((parentQuestion.getAnswer()).equals(rule.getNecessaryAnswer()));
+            boolean isEnabled = !(rule.isDisables() && (parentQuestion.getAnswer().trim().equalsIgnoreCase(rule.getNecessaryAnswer().trim())));
             question.setEnabled(isEnabled);
-            Log.d(SectionDetailsFragment.class.getName(), "question is enabled = " + isEnabled);
+            Log.d(SectionDetailsFragment.class.getName(), "question is enabled = " + isEnabled + "required answer = " + rule.getNecessaryAnswer() + " given answer = " + parentQuestion.getAnswer() + " and rule disables = " + rule.isDisables());
 
             if (!isEnabled) {
                 question.setAnswer("N/A", false);

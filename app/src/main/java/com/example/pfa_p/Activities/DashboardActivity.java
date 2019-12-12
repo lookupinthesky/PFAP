@@ -9,7 +9,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pfa_p.Adapter.DashboardListAdapter;
 import com.example.pfa_p.Adapter.RecentActivityAdapter;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.User;
@@ -34,7 +36,7 @@ public class DashboardActivity extends AppCompatActivity  {
 
 
     @BindView(R.id.recent_activity)
-    ListView recentActivityList;
+    RecyclerView recentActivityList;
 
    /* @BindView(R.id.column_headers)
     View headerView;*/
@@ -90,7 +92,7 @@ public class DashboardActivity extends AppCompatActivity  {
         RecentActivityAdapter.ActionButtonsListener mListener = new RecentActivityAdapter.ActionButtonsListener() {
             @Override
             public void onResultsClick(User user) {
-                //TODO: how to store results? Store or not?
+
             }
 
             @Override
@@ -107,7 +109,8 @@ public class DashboardActivity extends AppCompatActivity  {
             }
         };
 
-        ArrayAdapter<User> mAdapter = new RecentActivityAdapter(this,users,mListener);
+      //  ArrayAdapter<User> mAdapter = new RecentActivityAdapter(this,users,mListener);
+        RecyclerView.Adapter mAdapter = new DashboardListAdapter(users);
         recentActivityList.setAdapter(mAdapter);
 
 

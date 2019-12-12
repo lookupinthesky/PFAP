@@ -152,7 +152,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
                 item = sections.get(mCurrentSectionIndex);
             }
         }
-            setClicked(item)/*next clickable item in List*/;
+       //     setClicked(item)/*next clickable item in List*/;
             loadSectionDetails(item);
         }
 
