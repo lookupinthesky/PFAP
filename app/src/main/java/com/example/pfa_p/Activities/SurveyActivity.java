@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -300,6 +301,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             String userId = String.valueOf(question.getSubModule().getModule().getUser().getIdInDb());
             visitNumber = String.valueOf(question.getVisitNumber());
             ContentValues cv = question.getAnswerContentValues();
+            Log.d(SurveyActivity.class.getName(), "Content Values: " + cv.toString());
             if (!isUpdate) {
                 if (isAssessment)
                     uri = getContentResolver().insert(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv);

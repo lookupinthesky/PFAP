@@ -20,8 +20,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
+import com.example.pfa_p.Database.LoginTaskLoader;
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
-import com.example.pfa_p.Database.SurveyTaskLoader;
 import com.example.pfa_p.Fragments.LoadingScreenFragment;
 import com.example.pfa_p.Fragments.LoginScreenFragment;
 import com.example.pfa_p.Fragments.SearchResultsFragment;
@@ -39,7 +39,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
     LoadingScreenFragment loadingScreenFragment;
     //   LoginScreenFragment userEntryFragment;
     CoordinatorLayout parent;
-    private static final int LOADER_ID = 100;
+    private static final int LOADER_LOGIN = 200;
     LoaderManager.LoaderCallbacks<String> mCallbacks;
     private static final String LOG_TAG = LoginActivity.class.getName();
     DialogFragment dialogFragment;
@@ -60,7 +60,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             @NonNull
             @Override
             public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-                return new SurveyTaskLoader<String>(LoginActivity.this/*, prisonerId*/, args) {
+                return new LoginTaskLoader<String>(LoginActivity.this/*, prisonerId*/, args) {
 
                     @Nullable
                     @Override
@@ -79,7 +79,11 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             @Override
             public void onLoadFinished(@NonNull Loader<String> loader, String data) {
 
+                Log.d(LoginActivity.class.getName(), "AsyncTask On load finished called on next click login dialog");
+
                 loadingScreenFragment.receiveProgressUpdate(10000);
+
+                Log.d(LoginActivity.class.getName(), "AsyncTask On load finished executed on next click login dialog");
 
             }
 
@@ -103,8 +107,9 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             @Override
             public void onLoaderFinished() {
 
-                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchResultsFragment).addToBackStack(null).commit();
+                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchResultsFragment)/*.addToBackStack(null)*/.commit();
 
+                Log.d(LoginActivity.class.getName(), "Loading finished in loadingfragment");
 
             }
         });
@@ -116,8 +121,8 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                 volunteerIdText = volunteerId;
 
 
-                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, loadingScreenFragment).addToBackStack(null).commit();
-                LoaderManager.getInstance(LoginActivity.this).initLoader(LOADER_ID, null, mCallbacks);
+                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, loadingScreenFragment)/*.addToBackStack(null)*/.commit();
+                LoaderManager.getInstance(LoginActivity.this).initLoader(LOADER_LOGIN, null, mCallbacks);
 
                 //     ft.replace(R.id.fragment_container, loadingScreenFragment);
                 //    parent.setAlpha(1);

@@ -107,8 +107,9 @@ public class LoginScreenFragment extends DialogFragment {
                     volunteerIdText = "volunteerId";
                 }
                 if (validatefields()) {
-                    dismiss();
+
                     mListener.onNextButtonClick(prisonerIdText,volunteerIdText);
+                    dismiss();
                 }
             }
         });
