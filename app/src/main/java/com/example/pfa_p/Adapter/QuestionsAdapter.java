@@ -248,6 +248,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         View parent;
         Question question;
         int count = 0;
+        RadioGridGroup.OnCheckedChangeListener mListener;
 
         TwoOptionsViewHolder(@NonNull View parent) {
             super(parent);
@@ -271,12 +272,24 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 RadioButton rb = (RadioButton) views.get(i);
                 rb.setText(question.getOptions().getOptions().get(i));
             }
+
+            mListener = new RadioGridGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGridGroup group, int checkedId) {
+                    RadioButton despButton = group.findViewById(checkedId);
+                    despButton.setChecked(true);
+                    question.setDespondency(despButton.getText().toString());
+                }
+
+            };
 /*if(question.hasDespondency()){
 
     despondency.setVisibility(View.VISIBLE);
 }*/
             options.setOnCheckedChangeListener(null); //reset when view recycles
+   //         despondency.setOnCheckedChangeListener(null);
             options.clearCheck();
+//            despondency.clearCheck();
 
 
             if (question.getAnswer() != null) { // condition for when view recycles, no data loses
@@ -285,6 +298,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                     options.check(views.get(question.getAnswerIndex()).getId());
                     options.setOnCheckedChangeListener(this);
                 }
+            }
+
+            if(question.hasDespondency() && question.getDespondency()!=-1){
+                despondency.setOnCheckedChangeListener(null);
+                despondency.check(despondency.getChildAt(getIndexOfDespondency(question.getDespondency())).getId());
+                despondency.setOnCheckedChangeListener(mListener);
             }
 
 
@@ -301,6 +320,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 }
             };*/
             options.setOnCheckedChangeListener(this);
+  //          despondency.setOnCheckedChangeListener(mListener);
 
 
             for(int i = 0; i < options.getChildCount(); i++){
@@ -310,9 +330,22 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         }
 
+        int getIndexOfDespondency(int despondency){
+
+            switch (despondency){
+                case 0: return 2;
+                case 1: return 1;
+                case 2: return 0;
+                default:return 0;
+            }
+
+
+        }
+
 
         @Override
         public void onCheckedChanged(RadioGridGroup group, int checkedId) {
+
 
 
             RadioButton button = (RadioButton) group.findViewById(checkedId);
@@ -331,14 +364,15 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
             if (question.hasDespondency()) {
                 despondencyParent.setVisibility(View.VISIBLE);
-                despondency.setOnCheckedChangeListener(new RadioGridGroup.OnCheckedChangeListener() {
+                despondency.setOnCheckedChangeListener(mListener);
+                /*despondency.setOnCheckedChangeListener(new RadioGridGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGridGroup group, int checkedId) {
                         RadioButton despButton = group.findViewById(checkedId);
                         despButton.setChecked(true);
-                        question.setDespondency(checkedId);
+                        question.setDespondency(despButton.getText().toString());
                     }
-                });
+                });*/
             }
 
 

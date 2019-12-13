@@ -228,8 +228,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     private boolean saveToDb(LeftPane item, boolean isUpdate) {
         List<Question> questions;
         if (item instanceof Domain) {
+            Log.d(SurveyActivity.class.getName(), "Method:saveToDb Called" + " item = " + ((Domain) item).getName());
             questions = ((Domain) item).getQuestions();
             insertAnswers(questions, true, isUpdate);
+
             return true;
         } else if (item instanceof SubModule) {
             if (!((SubModule) item).hasDomains()) {
@@ -309,9 +311,13 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                     uri = getContentResolver().insert(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv);
                 else
                     uri = getContentResolver().insert(SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, cv);
+
                 long _id = ContentUris.parseId(uri);
                 if (_id != -1) {
                     question.setAnswerIdInDb(_id);
+                } else {
+                    Log.d(SurveyActivity.class.getName(), "Inserting answers URI = " + uri.toString() + "Content Values = " + cv.toString());
+                    throw new IllegalStateException("Failed to insert Answers");
 
                 }
             } else {
@@ -328,7 +334,11 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
-    private boolean saveResultsToDb() { //TODO: mark assessment as complete.
+    private static final String LOG_TAG = SurveyActivity.class.getName() ;
+
+    private boolean saveResultsToDb() {
+
+        Log.d(LOG_TAG, "method: saveResultsToDb called");
 
         String results = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON(userId);
         String selection = SurveyEntry.RESULTS_PRISONER_ID + " = ?";
@@ -341,8 +351,12 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         cv.put(SurveyEntry.RESULTS_JSON, results);
         cv.put(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG, "COMPLETED");
         cv.put(SurveyEntry.RESULTS_COLUMN_FLAG, "dirty");
-        getContentResolver().insert(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv);
-        getContentResolver().update(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, selection, selectionArgs);
+        //   getContentResolver().insert(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv);
+        long _id = getContentResolver().update(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, selection, selectionArgs);
+
+        if (_id == -1) {
+            throw new IllegalStateException();
+        }
         return true;
 
 
@@ -360,6 +374,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             public String loadInBackground() {
                 boolean isResults = args.getBoolean("isResults");
                 boolean isUpdate = args.getBoolean("isUpdate");
+                Log.d(LOG_TAG, "method: loadInBackground called : isResults = " + isResults + " isUpdate = " + isUpdate);
+
                 if (!isResults) {
                     if (saveToDb(item, isUpdate))
                         return new String("Saved to Database");
@@ -393,9 +409,9 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     @Override
     protected void onDestroy() {
 
-        if (item != null && item.isEveryQuestionAnswered()) {
+       /* if (item != null && item.isEveryQuestionAnswered()) {
             saveToDb(item, false);
-        }
+        }*/
 
         super.onDestroy();
     }

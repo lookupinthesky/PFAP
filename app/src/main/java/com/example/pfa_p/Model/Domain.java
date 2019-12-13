@@ -152,7 +152,7 @@ public class Domain extends LeftPane {
     @Override
     public boolean isEveryQuestionAnswered() {
         for (Question question : questions) {
-            if (question.getAnswer() == null || question.getAnswer().length() == 0) {
+            if (question.getAnswer() == null || question.getAnswer().length() == 0 || (question.hasDespondency() && question.getDespondency()== -1)) {
                 return false;
             }
         }

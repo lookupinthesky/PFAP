@@ -68,7 +68,7 @@ public class Question extends RightPane {
   //  private View questionView;
 
 
-    private int despondency;
+    private int despondency = -1;
 
     private QuestionsAdapter adapter;
 
@@ -82,14 +82,23 @@ public class Question extends RightPane {
         return false;
     }
 
-    public void setDespondency(int despondency) {
-        this.despondency = despondency;
+    public void setDespondency(String despondency) {
+        if (despondency.equalsIgnoreCase("Positive")) {
+            this.despondency = 0;
+        } else if (despondency.equalsIgnoreCase("Neutral")) {
+            this.despondency = 1;
+        } else if (despondency.equalsIgnoreCase("Negative"))
+            this.despondency = 2;
+        else{
+            throw new IllegalArgumentException("wrong text for despondency");
+        }
     }
 
     public int getDespondency() {
-        return despondency;
-    }
 
+       return despondency;
+
+    }
     public long getId() {
         return questionIdInDb;
     }

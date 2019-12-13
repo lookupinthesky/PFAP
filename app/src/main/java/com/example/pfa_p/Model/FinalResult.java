@@ -5,7 +5,7 @@ import java.util.List;
 
 public class FinalResult  {
 
-    ResultAbstractModel sectionResult;
+    ResultAbstractModel sectionResult = new ResultAbstractModel();
 
     public ResultAbstractModel getSectionResult() {
         return sectionResult;
