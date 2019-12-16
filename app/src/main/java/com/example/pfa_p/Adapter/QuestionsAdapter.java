@@ -248,6 +248,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
         View parent;
         Question question;
         int count = 0;
+        boolean hasDespondency;
         RadioGridGroup.OnCheckedChangeListener mListener;
 
         TwoOptionsViewHolder(@NonNull View parent) {
@@ -266,6 +267,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             //   question.setQuestionView(itemView);
             questionText.setText(question.getQuestionName());
             Question question = (Question) item;
+            hasDespondency = question.hasDespondency();
 
             views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
             for (int i = 0; i < views.size(); i++) {
@@ -286,17 +288,20 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
     despondency.setVisibility(View.VISIBLE);
 }*/
-            options.setOnCheckedChangeListener(null); //reset when view recycles
-   //         despondency.setOnCheckedChangeListener(null);
-            options.clearCheck();
-//            despondency.clearCheck();
+            options.setOnCheckedChangeListener(null); //reset when view recycles so as to attach a fresh listener
 
+            options.clearCheck(); // clear the check of the button in case it lingered.
+
+            if(hasDespondency) {
+                despondency.setOnCheckedChangeListener(null);
+                despondency.clearCheck();
+            }
 
             if (question.getAnswer() != null) { // condition for when view recycles, no data loses
                 if (question.getAnswerIndex() >= 0) {
-                    options.setOnCheckedChangeListener(null);
-                    options.check(views.get(question.getAnswerIndex()).getId());
-                    options.setOnCheckedChangeListener(this);
+                    options.setOnCheckedChangeListener(null); // so that the next step doesn't trigger the listener, just restores the state
+                    options.check(views.get(question.getAnswerIndex()).getId()); // check the option which user set before scrolling
+                    options.setOnCheckedChangeListener(this); // set listener again so that user can change the answer when the view forms again after recycling
                 }
             }
 
@@ -319,9 +324,10 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                     question.setAnswer(button.getText().toString(), moduleIndex == 1);
                 }
             };*/
-            options.setOnCheckedChangeListener(this);
-  //          despondency.setOnCheckedChangeListener(mListener);
-
+            options.setOnCheckedChangeListener(this); // assign a fresh listener
+            if(hasDespondency) {
+                despondency.setOnCheckedChangeListener(mListener);
+            }
 
             for(int i = 0; i < options.getChildCount(); i++){
                 options.getChildAt(i).setEnabled(question.isEnabled());
@@ -336,7 +342,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 case 0: return 2;
                 case 1: return 1;
                 case 2: return 0;
-                default:return 0;
+                default:throw new  IllegalArgumentException("Invalid Despondency");
             }
 
 
@@ -364,7 +370,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
             if (question.hasDespondency()) {
                 despondencyParent.setVisibility(View.VISIBLE);
-                despondency.setOnCheckedChangeListener(mListener);
+            //    despondency.setOnCheckedChangeListener(mListener);
                 /*despondency.setOnCheckedChangeListener(new RadioGridGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGridGroup group, int checkedId) {

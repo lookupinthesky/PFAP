@@ -1,5 +1,6 @@
 package com.example.pfa_p.Adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,14 @@ import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.Result;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsViewHolder> {
@@ -94,4 +102,70 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
             resultView.setText(result.getResultText());
         }
     }
+
+
+    void createChart(Context context, SubModule subModule) {
+
+        HorizontalBarChart chart = new HorizontalBarChart(context);
+        chart.getXAxis().setValueFormatter(new LabelValueFormatter(subModule));
+
+
+    }
+
+    void createBarEntry(SubModule subModule) {
+
+        List<Domain> domains = subModule.getDomains();
+        List<BarEntry> barEntries = new ArrayList<>();
+
+        int j = 0;
+        for (int i = 0; i < domains.size(); i++) {
+            Domain domain = domains.get(i);
+            barEntries.add(new BarEntry(domain.getResult().getResultValueActual(), j));
+            if (domain.getDespondency()) {
+                barEntries.add(new BarEntry(domain.getResult().getDespondencyValue(), j + 1));
+            }
+            j++;
+        }
+    }
+
+    void createBarDataSet() {
+
+
+        BarDataSet dataSet = new BarDataSet()
+    }
+
+    class LabelValueFormatter extends ValueFormatter {
+
+        SubModule subModule;
+
+        private final String[] labels;
+
+        public LabelValueFormatter(SubModule subModule) {
+         //   this.subModule = subModule;
+         List<String> labelsArray =  createLabels(subModule);
+
+            this.labels = labelsArray.toArray(new String[0]);
+        }
+
+        ArrayList<String> createLabels(SubModule subModule) {
+            ArrayList<String> labelsArray = new ArrayList<>();
+            List<Domain> domains = subModule.getDomains();
+            for (int i = 0; i < domains.size(); i++) {
+                Domain domain = domains.get(i);
+                labelsArray.add(domain.getResult().getNameForResults());
+                if (domain.getDespondency()) {
+                    labelsArray.add(domain.getResult().getDespondencyText());
+                }
+            }
+            return labelsArray;
+        }
+
+
+        @Override
+        public String getFormattedValue(float value) {
+            return super.getFormattedValue(value);
+        }
+    }
+
+
 }
