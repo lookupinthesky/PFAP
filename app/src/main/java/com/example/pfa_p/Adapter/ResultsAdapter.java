@@ -10,18 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.pfa_p.Model.Bar;
 import com.example.pfa_p.Model.Domain;
-import com.example.pfa_p.Model.Result;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
-import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +82,9 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
 
         void onBind(SubModule subModule) {
 
-            List<Domain> domains = subModule.getDomains();
+            createChart(itemView.getContext(),subModule);
+
+        /*    List<Domain> domains = subModule.getDomains();
             for (Domain domain : domains) {
                 Result result = domain.getResult();
                 Bar bar = new Bar(itemView.getContext(), result.getMaxResultValue(), result.getResultValueActual(), result.getNameForResults(), result.getResultText());
@@ -99,7 +98,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
             Result result = subModule.getResult();
 
             heading.setText(subModule.getName());
-            resultView.setText(result.getResultText());
+            resultView.setText(result.getResultText());*/
         }
     }
 
@@ -108,11 +107,11 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
 
         HorizontalBarChart chart = new HorizontalBarChart(context);
         chart.getXAxis().setValueFormatter(new LabelValueFormatter(subModule));
-
-
+        BarData data = new BarData(createBarDataSet(subModule));
+        chart.setData(data);
     }
 
-    void createBarEntry(SubModule subModule) {
+    List<BarEntry> createBarEntry(SubModule subModule) {
 
         List<Domain> domains = subModule.getDomains();
         List<BarEntry> barEntries = new ArrayList<>();
@@ -126,12 +125,14 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
             }
             j++;
         }
+        return barEntries;
     }
 
-    void createBarDataSet() {
+    BarDataSet createBarDataSet(SubModule subModule) {
 
 
-        BarDataSet dataSet = new BarDataSet()
+        List<BarEntry> barEntries = createBarEntry(subModule);
+        return new BarDataSet(barEntries, "Score");
     }
 
     class LabelValueFormatter extends ValueFormatter {
@@ -163,7 +164,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
 
         @Override
         public String getFormattedValue(float value) {
-            return super.getFormattedValue(value);
+            return labels[(int)value];
         }
     }
 
