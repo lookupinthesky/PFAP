@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -60,7 +61,7 @@ public class DashboardActivity extends AppCompatActivity  {
     ImageView editButton;*/
 
     @BindView(R.id.fabNewSurvey)
-    FloatingActionButton newSurvey;
+    ImageButton newSurvey;
 
     @BindView(R.id.tv_survey_number)
     TextView totalSurveys;

@@ -1,9 +1,12 @@
 package com.example.pfa_p.Activities;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,17 +24,23 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultsActivity extends AppCompatActivity {
+public class ResultsActivity extends AppCompatActivity implements View.OnClickListener {
 
 
     private static final String TAG = ResultsActivity.class.getName();
     RecyclerView parent;
+    Button buttonHome;
+    Button buttonExit;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
+        buttonHome = findViewById(R.id.button_home);
+        buttonExit = findViewById(R.id.button_exit);
+        buttonExit.setOnClickListener(this);
+        buttonHome.setOnClickListener(this);
         parent = findViewById(R.id.results_list);
         parent.setLayoutManager(new LinearLayoutManager(this));
         List<SubModule> subModules = SurveyDataSingleton.getInstance(this).getModules().get(2).getSections();
@@ -108,4 +117,17 @@ public class ResultsActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch(v.getId() ){
+
+        case R.id.button_home:{
+            Intent intent = new Intent(ResultsActivity.this, DashboardActivity.class);
+            startActivity(intent);
+        }
+            case R.id.button_exit:{
+                this.finishAffinity();
+            }
+        }
+    }
 }

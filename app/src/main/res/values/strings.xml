@@ -4,5 +4,13 @@
     <string name="action_next">Next</string>
     <string name="display_message">No search results found for prisoner id %1$s in local database</string>
     <string name="start_new_survey">Start Survey for a new inmate</string>
-    <string name="start_survey_assessment">Enter visit number manually and start assessment directly</string>
+    <string name="start_survey_assessment">Start Assessment for old inmate</string>
+    <string name="field_prisoner_id">Prisoner ID</string>
+    <string name="field_volunteer_id">Volunteer ID</string>
+    <string name="field_demographics_status">Socio-Demographics</string>
+    <string name="field_basic_questionnaire_status">Basic Questionnaire</string>
+    <string name="field_assessment">Assessment for PFAP</string>
+    <string name="field_visit_number">Visit Number</string>
+    <string name="field_colon">:</string>
+    <string name="button_start">START</string>
 </resources>

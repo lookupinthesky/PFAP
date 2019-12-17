@@ -34,6 +34,7 @@ public class SearchResultsFragment extends Fragment {
 
     public String basicQuestionnaireStatus;
     public String assessmentStatus;
+
     public SearchResultsListener mListener;
 
 
@@ -74,8 +75,11 @@ public class SearchResultsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search_results, container, false);
         LinearLayout searchResults = view.findViewById(R.id.search_results_found);
         LinearLayout noSearchResults = view.findViewById(R.id.search_result_not_found);
+        TextView prisonerIdText = view.findViewById(R.id.field_prisoner_id);
         TextView prisonerIdView = view.findViewById(R.id.value_prisoner_id);
+        TextView volunteerIdText = view.findViewById(R.id.field_volunteer_id);
         TextView volunteerIdView = view.findViewById(R.id.value_volunteer_id);
+        //TextView demographicsStatusText = view.
         TextView demographicStatusView = view.findViewById(R.id.status_demographics);
         TextView questionnaireStatus = view.findViewById(R.id.status_basic_questionnaire);
         TextView assessmentStatusView = view.findViewById(R.id.status_assessment);

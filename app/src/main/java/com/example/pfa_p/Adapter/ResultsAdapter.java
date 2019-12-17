@@ -10,7 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pfa_p.Model.Bar;
 import com.example.pfa_p.Model.Domain;
+import com.example.pfa_p.Model.Result;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -82,9 +84,9 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
 
         void onBind(SubModule subModule) {
 
-            createChart(itemView.getContext(),subModule);
+         //   createChart(itemView.getContext(),subModule);
 
-        /*    List<Domain> domains = subModule.getDomains();
+            List<Domain> domains = subModule.getDomains();
             for (Domain domain : domains) {
                 Result result = domain.getResult();
                 Bar bar = new Bar(itemView.getContext(), result.getMaxResultValue(), result.getResultValueActual(), result.getNameForResults(), result.getResultText());
@@ -98,7 +100,7 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
             Result result = subModule.getResult();
 
             heading.setText(subModule.getName());
-            resultView.setText(result.getResultText());*/
+            resultView.setText(result.getResultText());
         }
     }
 
@@ -124,9 +126,11 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
                 barEntries.add(new BarEntry(domain.getResult().getDespondencyValue(), j + 1));
             }
             j++;
+
         }
         return barEntries;
     }
+
 
     BarDataSet createBarDataSet(SubModule subModule) {
 

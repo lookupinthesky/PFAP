@@ -283,8 +283,6 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             } else {
                 helper.fetchHistoryTableDataForUser(idInDb, this);
             }
-
-
         }
     }
 

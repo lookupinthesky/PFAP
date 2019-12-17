@@ -17,20 +17,22 @@
             android:layout_height="match_parent" />
 
         <LinearLayout
-            android:gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/button_home"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="HOME" />
 
             <Button
-                android:id="@+id/button_export"
+                android:id="@+id/button_exit"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="EXIT" />
 
         </LinearLayout>
     </LinearLayout>
