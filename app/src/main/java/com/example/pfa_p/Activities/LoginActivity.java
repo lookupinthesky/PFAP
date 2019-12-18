@@ -35,6 +35,8 @@ import com.example.pfa_p.Utils.JavaUtils;
 
 import java.util.List;
 
+import static com.example.pfa_p.Activities.DashboardActivity.ARG_BUNDLE;
+
 public class LoginActivity extends FragmentActivity implements SearchResultsFragment.SearchResultsListener {
     FragmentManager fm;
     FragmentTransaction ft;
@@ -50,14 +52,49 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
     int mCurrentModuleIndex;
     int visitNumber = 0;
     SearchResultsFragment.SearchResultsListener mListener;
+    public static final String ARG_PRISONER_ID = "PrisonerID";
+    public static final String ARG_VOLUNTEER_ID = "VolunteerID";
+    public static final String ARG_IS_RESULTS = "isResults";
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         parent = findViewById(R.id.fragment_container);
+        createLoaderCallbacks();
+        initializeLoadingScreenFragment();
+        initializeDialogFragment();
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle args = intent.getBundleExtra(ARG_BUNDLE);
+            if(args==null){
+               // throw new IllegalArgumentException("Wrong Intent received");
+                showDialogFragment();
+            }else{
+                startLoading(args);
+            }
+
+        }
         //    parent.setAlpha(0.2f);
+
+
+        //   ft.addToBackStack(null);
+        //  DialogFragment dialogFragment = new LoginScreenFragment();
+
+
+      /*  else {
+
+        }*/
+    }
+
+
+    private void createLoaderCallbacks() {
         mCallbacks = new LoaderManager.LoaderCallbacks<String>() {
             @NonNull
             @Override
@@ -67,7 +104,13 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                     @Nullable
                     @Override
                     public String loadInBackground() {
-                        prepareSurvey(prisonerIdText, volunteerIdText);
+                        if(args==null){
+                            throw new RuntimeException("No values to search for") ;
+                        }
+                        String prisonerID = args.getString(ARG_PRISONER_ID);
+                        String volunteerID = args.getString(ARG_VOLUNTEER_ID);
+                        boolean isResults = args.getBoolean(ARG_IS_RESULTS);
+                        prepareSurvey(prisonerID, volunteerID, isResults);
                         return null;
                     }
 
@@ -80,13 +123,9 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
             @Override
             public void onLoadFinished(@NonNull Loader<String> loader, String data) {
-
                 Log.d(LoginActivity.class.getName(), "AsyncTask On load finished called on next click login dialog");
-
                 loadingScreenFragment.receiveProgressUpdate(10000);
-
                 Log.d(LoginActivity.class.getName(), "AsyncTask On load finished executed on next click login dialog");
-
             }
 
             @Override
@@ -95,36 +134,42 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             }
         };
 
-
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        //   ft.addToBackStack(null);
-        //  DialogFragment dialogFragment = new LoginScreenFragment();
+    }
 
 
+    private void initializeLoadingScreenFragment() {
         loadingScreenFragment = LoadingScreenFragment.getInstance(new LoadingScreenFragment.StartSurveyListener() {
             @Override
             public void onLoaderFinished() {
-
                 LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchResultsFragment)/*.addToBackStack(null)*/.commit();
-
                 Log.d(LoginActivity.class.getName(), "Loading finished in loadingfragment");
 
             }
         });
+
+    }
+
+    private void initializeDialogFragment() {
         dialogFragment = LoginScreenFragment.getInstance(new LoginScreenFragment.NextButtonListener() {
             @Override
             public void onNextButtonClick(String prisonerId, String volunteerId) {
 
-                prisonerIdText = prisonerId;
-                volunteerIdText = volunteerId;
+              /*  prisonerIdText = prisonerId;
+                volunteerIdText = volunteerId;*/
 
+                Bundle args = new Bundle();
+                args.putString(ARG_PRISONER_ID, prisonerId);
+                args.putString(ARG_VOLUNTEER_ID, volunteerId);
+                args.putBoolean(ARG_IS_RESULTS, false);
 
-                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, loadingScreenFragment)/*.addToBackStack(null)*/.commit();
-                LoaderManager.getInstance(LoginActivity.this).initLoader(LOADER_LOGIN, null, mCallbacks);
+                startLoading(args);
+/*
+
+                LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, loadingScreenFragment)*/
+                /*.addToBackStack(null)*//*
+.commit();
+                LoaderManager.getInstance(LoginActivity.this).initLoader(LOADER_LOGIN, args, mCallbacks);
+*/
 
                 //     ft.replace(R.id.fragment_container, loadingScreenFragment);
                 //    parent.setAlpha(1);
@@ -132,6 +177,16 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
             }
         });
+
+    }
+
+    private void showDialogFragment() {
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
         dialogFragment.setCancelable(false);
 //        dialogFragment.*/
 
@@ -139,6 +194,12 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         /*ft.add(R.id.fragment_container, userEntryFragment);
         ft.commit();
 */
+    }
+
+
+    public void startLoading(Bundle args) {
+        LoginActivity.this.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, loadingScreenFragment)/*.addToBackStack(null)*/.commit();
+        LoaderManager.getInstance(LoginActivity.this).initLoader(LOADER_LOGIN, args, mCallbacks);
     }
 
 
@@ -185,7 +246,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         if (prisonerId.equals("")) {
             prisonerId = "prisonerId";
         }
-      cv.put(SurveyEntry.USERS_COLUMN_INMATE_ID, prisonerId);
+        cv.put(SurveyEntry.USERS_COLUMN_INMATE_ID, prisonerId);
         // cv.put(SurveyEntry.USERS_COLUMN_NAME, "prisonerName");
         cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, 1);
         cv.put(SurveyEntry.USERS_COLUMN_FLAG, "dirty");
@@ -195,7 +256,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         long _id = ContentUris.parseId(uri);
         Log.d(LoginActivity.class.getName(), "inserted new user into db with id =" + _id);
         setUserToModules(prisonerId, _id, volunteerId);
-        return _id ;
+        return _id;
        /* User user = new User();
         user.setPrisonerId(prisonerId);
         user.setIdInDb(_id);
@@ -215,7 +276,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         User user = new User();
         user.setPrisonerId(prisonerId);
         user.setVolunteerId(volunteerId);
-        Log.d(LoginActivity.class.getName(), "setUserToModules: prisonerId, idInDb, volunteerId = " + prisonerId + ", " +  idInDb +  ", " +  volunteerId);
+        Log.d(LoginActivity.class.getName(), "setUserToModules: prisonerId, idInDb, volunteerId = " + prisonerId + ", " + idInDb + ", " + volunteerId);
         user.setIdInDb(idInDb);
         List<Module> modules = SurveyDataSingleton.getInstance(this).getModules();
         for (Module module : modules) {
@@ -246,16 +307,16 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
      *
      * @param prisonerId
      */
-    private void prepareSurvey(String prisonerId, String volunteerId) {
+    public void prepareSurvey(String prisonerId, String volunteerId, boolean isResults) {
         helper = new LoginActivity.SurveyHelperForUser();
         long idInDb = helper.fetchUserData(prisonerId, this);
 
         if (idInDb == -1) {
             prepareSearchResultsFragment(-1, prisonerId);
-          long newIdInDb =  insertNewUser(prisonerId, volunteerId);
+            long newIdInDb = insertNewUser(prisonerId, volunteerId);
             setCurrentState(0, 0, -1);
             initializeResultsTableInDb(this, newIdInDb, volunteerId);
-          //  setUserToModules(prisonerId, idInDb, volunteerId);
+            //  setUserToModules(prisonerId, idInDb, volunteerId);
             //     loadingScreenFragment.receiveProgressUpdate(30);
             Log.d(LOG_TAG, "Method: StartSurvey, user not found, inserting a new user");
 
@@ -269,7 +330,8 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             setUserToModules(prisonerId, idInDb, volunteerId);
             if (helper.isHistoryCompleted) {
                 if (helper.isAssessmentCompleted) {
-                    incrementVisitCounter();
+                    if (!isResults)
+                        incrementVisitCounter();
                     setCurrentState(0, 0, 0);
                     searchResultsFragment.setAssessmentStatus("To be Started");
                     searchResultsFragment.setDemographicStatus("To be started");
@@ -354,7 +416,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         int currentModuleIndex;
         int currentSectionIndex;
         int currentDomainIndex = -1;
-       // int visitNumber = 0;
+        // int visitNumber = 0;
         boolean isSynced;
 
         String[] projection_history = new String[]{SurveyEntry.ANSWERS_COLUMN_QUESTION_ID,
@@ -384,7 +446,8 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                 _id = cursor.getLong(cursor.getColumnIndex(SurveyEntry.USERS_ID));
                 /*isHistoryCompleted = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_HISTORY_FLAG)).equals("COMPLETED");
                 isAssessmentCompleted = cursor.getString(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_ASSESSMENT_FLAG)).equals("COMPLETED");
-               */ totalVisits = cursor.getInt(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_TOTAL_VISITS));
+               */
+                totalVisits = cursor.getInt(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_TOTAL_VISITS));
 
                 cursor.close();
                 return _id;
@@ -408,7 +471,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                 result = cursor.getString((cursor.getColumnIndex(SurveyEntry.RESULTS_JSON)));
                 volunteerId = cursor.getString(cursor.getColumnIndex(SurveyEntry.RESULTS_VOLUNTEER_ID));
                 timeStamp = cursor.getString(cursor.getColumnIndex(SurveyEntry.RESULTS_TIME_STAMP));
-          //      visitNumber = cursor.getInt(cursor.getColumnIndex(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER));
+                //      visitNumber = cursor.getInt(cursor.getColumnIndex(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER));
                 isSynced = !cursor.getString(cursor.getColumnIndex(SurveyEntry.RESULTS_COLUMN_FLAG)).equals("dirty");
                 cursor.close();
             }

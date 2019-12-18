@@ -8,21 +8,25 @@
 
     <TextView
 
+        android:drawable = "@drawable/ic_timer_black_24dp"
         android:gravity="center"
-        android:id="@+id/time_stamp"
+        android:id="@+id/time_stamp_header"
         android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_weight="1" />
 
+
     <TextView
+        android:drawable = "@drawable/ic_person_black_24dp"
         android:layout_margin="4dp"
         android:gravity="center"
-        android:id="@+id/prisonerId"
+        android:id="@+id/prisonerId_header"
         android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_weight="1.5" />
 
     <TextView
+        android:drawable = "@drawable/ic_group_black_24dp"
         android:gravity="center"
         android:id="@+id/volunteer_id"
         android:layout_width="0dp"

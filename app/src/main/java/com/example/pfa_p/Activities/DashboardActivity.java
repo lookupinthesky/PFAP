@@ -6,10 +6,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Adapter.DashboardListAdapter;
@@ -25,6 +28,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.pfa_p.Activities.LoginActivity.ARG_IS_RESULTS;
+import static com.example.pfa_p.Activities.LoginActivity.ARG_PRISONER_ID;
+import static com.example.pfa_p.Activities.LoginActivity.ARG_VOLUNTEER_ID;
+
 /**
  * The home screen for the PFA-P app, essentially a dashboard showing following things
  * 1. A list of recently edited/filled entries with options to view result, continue editing, delete etc.
@@ -33,7 +40,7 @@ import butterknife.ButterKnife;
  * 4. Number of synced vs unsynced entries with server and a button to start or stop the sync
  */
 
-public class DashboardActivity extends AppCompatActivity  {
+public class DashboardActivity extends AppCompatActivity {
 
 
     @BindView(R.id.recent_activity)
@@ -69,6 +76,11 @@ public class DashboardActivity extends AppCompatActivity  {
     @BindView(R.id.tv_user_number)
     TextView userNumber;
 
+    @BindView(R.id.empty_view_parent)
+    LinearLayout emptyViewParent;
+
+
+    DashboardListAdapter.DashboardListInterface actionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +91,9 @@ public class DashboardActivity extends AppCompatActivity  {
         List<Module> modules = surveyData.getModules();
         List<User> users = surveyData.getUsers();
         Log.d(DashboardActivity.class.getName(), modules.toString());
-  //      totalSurveys.setText(surveyData.getTotalSurveysTaken());
-  //      userNumber.setText(surveyData.getTotalUserSurveyed());
-     //   populateListHeaders();
+        //      totalSurveys.setText(surveyData.getTotalSurveysTaken());
+        //      userNumber.setText(surveyData.getTotalUserSurveyed());
+        //   populateListHeaders();
         newSurvey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,10 +122,36 @@ public class DashboardActivity extends AppCompatActivity  {
             }
         };
 
-      //  ArrayAdapter<User> mAdapter = new RecentActivityAdapter(this,users,mListener);
-        RecyclerView.Adapter mAdapter = new DashboardListAdapter(users);
-        recentActivityList.setAdapter(mAdapter);
+        actionListener = new DashboardListAdapter.DashboardListInterface() {
+            @Override
+            public void onActionClick(User user) {
 
+
+                showResults(user);
+
+               /* if (isCompleted) {
+                    showResults();
+                } else {
+                    resumeSurvey();
+                }*/
+
+
+            }
+        };
+
+        //  ArrayAdapter<User> mAdapter = new RecentActivityAdapter(this,users,mListener);
+        if (users.size() != 0) {
+            recentActivityList.setVisibility(View.VISIBLE);
+            RecyclerView.Adapter mAdapter = new DashboardListAdapter(users, actionListener);
+            recentActivityList.setLayoutManager(new LinearLayoutManager(this));
+            recentActivityList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
+            recentActivityList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+            recentActivityList.setAdapter(mAdapter);
+            emptyViewParent.setVisibility(View.GONE);
+        } else {
+            emptyViewParent.setVisibility(View.VISIBLE);
+            recentActivityList.setVisibility(View.GONE);
+        }
 
         // not to be done in the mainactivity but some other activity to be created later.
 /*        SectionsListFragment fragment1 = new SectionsListFragment(1);
@@ -126,6 +164,25 @@ public class DashboardActivity extends AppCompatActivity  {
         });*/
     }
 
+    public static final int REQUEST_CODE = 1;
+
+    public static final String ARG_BUNDLE = "BundleForDashboard";
+
+    private void showResults(User user) {
+        String prisonerId = user.getPrisonerId();
+        String volunteerId = user.getVolunteerId();
+        boolean isResults = user.getStatus().equalsIgnoreCase("COMPLETED");
+        Bundle args = new Bundle();
+        args.putString(ARG_PRISONER_ID, prisonerId);
+        args.putString(ARG_VOLUNTEER_ID, volunteerId);
+        args.putBoolean(ARG_IS_RESULTS, isResults);
+        Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+        intent.putExtra(ARG_BUNDLE, args);
+        startActivity(intent);
+    }
+
+
+
     /*private void populateListHeaders(){
 
         serialNumber.setText("S No.");
@@ -135,7 +192,6 @@ public class DashboardActivity extends AppCompatActivity  {
         assessmentStatus.setText("Assessment Status");
         historyStatus.setText("History Status");
     }*/
-
 
 
 }

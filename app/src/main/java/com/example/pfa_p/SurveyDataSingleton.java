@@ -5,7 +5,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
+import com.example.pfa_p.Activities.SurveyActivity;
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.DomainResultModel;
@@ -241,8 +243,19 @@ public class SurveyDataSingleton {
     }
 
     private void getUsersDataFromDb(Context context) {
-        Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
+
         users = new ArrayList<>();
+
+        getDataFromUsersTable(users, context);
+
+        getDataFromResultsTable(users, context);
+
+        Log.d(SurveyActivity.class.getName(), "Users from db = " + users.toString());
+
+    }
+
+    private void getDataFromUsersTable(List<User> users, Context context) {
+        Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_USERS_CONTENT_URI, projection_users, null, null, null);
 
         try {
             if (cursor.moveToFirst()) {
@@ -265,40 +278,51 @@ public class SurveyDataSingleton {
                 totalUserSurveyed = new HashSet<>(users).size();
 
             } else {
-                User user = new User();
+                /*User user = new User();
                 user.setPrisonerId("");
                 user.setName("");
                 user.setIdInDb(0);
                 user.setSynced("dirty");
-                users.add(user);
+                users.add(user);*/
+                return;
             }
         } finally {
             cursor.close();
         }
-       /* for (User user : users) {
+    }
+
+
+    private void getDataFromResultsTable(List<User> users, Context context) {
+        for (User user : users) {
 
             long idInDb = user.getIdInDb();
             String selection_users = SurveyEntry.RESULTS_ID + " = ?";
             String[] selectionArgs_users = new String[]{String.valueOf(idInDb)};
             Cursor cursor1 = context.getContentResolver().query(SurveyEntry.TABLE_RESULTS_CONTENT_URI, null, selection_users, selectionArgs_users, null);
 
-            if (cursor1 != null && cursor1.getCount() > 0) {
-                user.setTimeStamp(cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_TIME_STAMP)));
-                boolean historyFlag = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG)).equalsIgnoreCase("COMPLETE");
-                boolean assessmentFlag = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG)).equalsIgnoreCase("COMPLETE");
-                String status = historyFlag & assessmentFlag ? "COMPLETE" : "INCOMPLETE";
-                user.setStatus(status);
-                String action = status.equalsIgnoreCase("COMPLETE") ? "VIEW RESULTS" : "RESUME";
-                user.setAction(action);
+            try {
+                if (cursor1.moveToFirst()) {
+                    user.setTimeStamp(cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_TIME_STAMP)));
+                    boolean historyFlag = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG)).equalsIgnoreCase("COMPLETE");
+                    boolean assessmentFlag = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG)).equalsIgnoreCase("COMPLETE");
+                    String status = historyFlag & assessmentFlag ? "COMPLETE" : "INCOMPLETE";
+                    user.setStatus(status);
+                    String action = status.equalsIgnoreCase("COMPLETE") ? "VIEW RESULTS" : "RESUME";
+                    user.setAction(action);
+                    cursor1.close();
+                } else {
+                    user.setTimeStamp("");
+                    user.setStatus("");
+                    user.setAction("");
+                }
+            } finally {
                 cursor1.close();
             }
-            else{
-                user.setTimeStamp("");
-                user.setStatus("");
-                user.setAction("");
-            }
-        }*/
+        }
+
     }
+
+
     // must only be called after survey completion
     public String getSurveyResultForInmateInJSON(String prisonerId) {
 

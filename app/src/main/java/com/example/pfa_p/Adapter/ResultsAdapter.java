@@ -84,25 +84,32 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
 
         void onBind(SubModule subModule) {
 
-         //   createChart(itemView.getContext(),subModule);
+            //   createChart(itemView.getContext(),subModule);
 
-            List<Domain> domains = subModule.getDomains();
-            for (Domain domain : domains) {
-                Result result = domain.getResult();
-                Bar bar = new Bar(itemView.getContext(), result.getMaxResultValue(), result.getResultValueActual(), result.getNameForResults(), result.getResultText());
-                details.addView(bar.getView());
-                if (domain.getDespondency()) {
-                    Bar bar1 = new Bar(itemView.getContext(), 20, result.getDespondencyValue(), result.getDespondencyText(), result.getDespondencyResultText());
-                    details.addView(bar1.getView());
+            if (subModule.isPresent()) {
+                List<Domain> domains = subModule.getDomains();
+                for (Domain domain : domains) {
+                    Result result = domain.getResult();
+                    Bar bar = new Bar(itemView.getContext(), result.getMaxResultValue(), result.getResultValueActual(), result.getNameForResults(), result.getResultText());
+                    details.addView(bar.getView());
+                    if (domain.getDespondency()) {
+                        Bar bar1 = new Bar(itemView.getContext(), 20, result.getDespondencyValue(), result.getDespondencyText(), result.getDespondencyResultText());
+                        details.addView(bar1.getView());
+                    }
                 }
+
+                Result result = subModule.getResult();
+
+                heading.setText(subModule.getName());
+                resultView.setText(result.getResultText());
             }
-
-            Result result = subModule.getResult();
-
-            heading.setText(subModule.getName());
-            resultView.setText(result.getResultText());
         }
     }
+
+
+
+
+
 
 
     void createChart(Context context, SubModule subModule) {
