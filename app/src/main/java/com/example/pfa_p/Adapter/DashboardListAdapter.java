@@ -3,9 +3,11 @@ package com.example.pfa_p.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Model.User;
@@ -53,7 +55,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         if (viewType == TYPE_ITEM) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dashboard_list_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.dashboard_list_item_new, parent, false);
 
             return new DashboardListViewHolder(view);
 
@@ -93,35 +95,48 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         TextView prisonerId;
 
         //   @BindView(R.id.volunteer_id)
-        TextView volunteerId;
+        AppCompatTextView volunteerId;
 
         //    @BindView(R.id.time_stamp)
-        TextView timeStamp;
+        AppCompatTextView timeStamp;
 
         //     @BindView(R.id.status)
         TextView status;
 
         //      @BindView(R.id.action)
-        TextView action;
+        AppCompatTextView action;
 
+        LinearLayout listItemTop;
+        LinearLayout listItemBottom;
 
 
         public DashboardListViewHolder(@NonNull View itemView) {
             super(itemView);
             //      ButterKnife.bind(itemView);
 
+            listItemTop = itemView.findViewById(R.id.list_item_top);
+            listItemBottom = itemView.findViewById(R.id.list_item_bottom);
             prisonerId = itemView.findViewById(R.id.prisonerId);
             volunteerId = itemView.findViewById(R.id.volunteer_id);
             timeStamp = itemView.findViewById(R.id.time_stamp);
             status = itemView.findViewById(R.id.status);
             action = itemView.findViewById(R.id.action);
             action.setOnClickListener(this);
+            listItemTop.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
 
-            mListener.onActionClick(getItem(getAdapterPosition()));
+            switch (v.getId()) {
+                case R.id.action:
+                    mListener.onActionClick(getItem(getAdapterPosition()));
+                case R.id.list_item_top: {
+                    boolean isBottomVisible = listItemBottom.getVisibility() == View.VISIBLE;
+                    listItemBottom.setVisibility(isBottomVisible ? View.GONE : View.VISIBLE);
+                }
+
+            }
         }
 
         void bind(User user) {
@@ -143,7 +158,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    public interface DashboardListInterface{
+    public interface DashboardListInterface {
 
         void onActionClick(User user);
     }

@@ -89,7 +89,7 @@ public class SearchResultsFragment extends Fragment {
         TextView noResultDisplayMessage = view.findViewById(R.id.not_found_message);
 
 
-        if (idInDb == -1) {
+        if (idInDb == -1) { //TODO: make it a boolean : bug : on screen sleep the value changes
             searchResults.setVisibility(View.GONE);
             noResultDisplayMessage.setText(getString(R.string.display_message, String.valueOf(prisonerId)));
             startNewPrisoner.setText(getString(R.string.start_new_survey));
