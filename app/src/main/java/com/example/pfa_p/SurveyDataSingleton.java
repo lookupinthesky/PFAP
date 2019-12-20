@@ -72,7 +72,7 @@ public class SurveyDataSingleton {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         } else {
             createSurveyData(context);
-            getUsersDataFromDb(context);
+       //     getUsersDataFromDb(context);
         }
     }
    /* public void setContext(Context mContext) {
@@ -242,7 +242,7 @@ public class SurveyDataSingleton {
         }
     }
 
-    private void getUsersDataFromDb(Context context) {
+    public List<User> getUsersDataFromDb(Context context) {
 
         users = new ArrayList<>();
 
@@ -252,6 +252,7 @@ public class SurveyDataSingleton {
 
         Log.d(SurveyActivity.class.getName(), "Users from db = " + users.toString());
 
+        return users;
     }
 
     private void getDataFromUsersTable(List<User> users, Context context) {

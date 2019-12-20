@@ -43,19 +43,14 @@
         app:drawableTopCompat="@drawable/ic_group_black_24dp" />
 
     <TextView
-
         android:id="@+id/status"
         android:layout_width="0dp"
         android:layout_height="24dp"
         android:layout_margin="4dp"
         android:layout_weight="1.2"
         android:gravity="center"
-        android:textColor="@android:color/white"
         android:text="Survey Status"
-
-
-
-        />
+        android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/action"

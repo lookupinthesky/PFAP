@@ -89,7 +89,7 @@ public class DashboardActivity extends AppCompatActivity {
         SurveyDataSingleton surveyData = SurveyDataSingleton.getInstance(this);
         ButterKnife.bind(this);
         List<Module> modules = surveyData.getModules();
-        List<User> users = surveyData.getUsers();
+        List<User> users = surveyData.getUsersDataFromDb(this);
         Log.d(DashboardActivity.class.getName(), modules.toString());
         //      totalSurveys.setText(surveyData.getTotalSurveysTaken());
         //      userNumber.setText(surveyData.getTotalUserSurveyed());

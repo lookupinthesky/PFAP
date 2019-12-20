@@ -48,5 +48,7 @@ dependencies {
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.marcok.stepprogressbar:stepprogressbar:1.0.1'
+    implementation 'com.kofigyan.stateprogressbar:stateprogressbar:1.0.0'
 
 }

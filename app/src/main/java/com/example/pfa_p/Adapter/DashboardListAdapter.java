@@ -41,11 +41,11 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private boolean isPositionHeader(int position) {
-        return position == 0;
+        return position == -1;
     }
 
     private User getItem(int position) {
-        return data.get(position - 1);
+        return data.get(position /*- 1*/);
     }
 
 
@@ -83,12 +83,12 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemCount() {
         if (data.size() < 11)
-            return data.size() + 1;
+            return data.size() /*+ 1*/;
         else
             return 11;
     }
 
-
+    DashboardListViewHolder previous = null;
     class DashboardListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         //  @BindView(R.id.prisonerId)
@@ -108,6 +108,10 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         LinearLayout listItemTop;
         LinearLayout listItemBottom;
+
+        LinearLayout lastClickedView = null;
+
+
 
 
         public DashboardListViewHolder(@NonNull View itemView) {
@@ -131,9 +135,18 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
             switch (v.getId()) {
                 case R.id.action:
                     mListener.onActionClick(getItem(getAdapterPosition()));
+                    break;
                 case R.id.list_item_top: {
                     boolean isBottomVisible = listItemBottom.getVisibility() == View.VISIBLE;
                     listItemBottom.setVisibility(isBottomVisible ? View.GONE : View.VISIBLE);
+
+                    if (previous != null && previous != this)
+
+                        if (previous.listItemBottom.getVisibility() == View.VISIBLE) {
+                            previous.listItemBottom.setVisibility(View.GONE);
+                        }
+                    previous = this;
+                    break;
                 }
 
             }
