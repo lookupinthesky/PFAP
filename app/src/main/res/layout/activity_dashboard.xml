@@ -283,6 +283,7 @@
             android:id="@+id/fabNewSurvey"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:foreground="?attr/selectableItemBackground"
             android:layout_gravity="center_vertical|center_horizontal"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_add_black_24dp" />

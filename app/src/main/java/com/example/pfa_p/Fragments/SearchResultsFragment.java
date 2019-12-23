@@ -85,7 +85,7 @@ public class SearchResultsFragment extends Fragment {
         TextView assessmentStatusView = view.findViewById(R.id.status_assessment);
         Button resumeButton = view.findViewById(R.id.resume_or_next_visit);
         Button startNewPrisoner = view.findViewById(R.id.start_new);
-        Button startAssessment = view.findViewById(R.id.start_assessment);
+  //      Button startAssessment = view.findViewById(R.id.start_assessment);
         TextView noResultDisplayMessage = view.findViewById(R.id.not_found_message);
 
 
@@ -99,8 +99,8 @@ public class SearchResultsFragment extends Fragment {
                     mListener.prepareAndStartSurvey(true, prisonerId, idInDb, false);
                 }
             });
-            startAssessment.setText(getString(R.string.start_survey_assessment));
-            startAssessment.setOnClickListener(null);
+ //           startAssessment.setText(getString(R.string.start_survey_assessment));
+   //         startAssessment.setOnClickListener(null);
         } else {
             noSearchResults.setVisibility(View.GONE);
             prisonerIdView.setText(String.valueOf(prisonerId));

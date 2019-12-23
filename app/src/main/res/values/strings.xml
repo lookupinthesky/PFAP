@@ -2,7 +2,7 @@
     <string name="app_name">PFA-P</string>
     <string name="title_activity_before_survey">BeforeSurveyActivity</string>
     <string name="action_next">Next</string>
-    <string name="display_message">No search results found for prisoner id %1$s in local database</string>
+    <string name="display_message">No search results found for prisoner id %1$s in local database. We will create a new ID and start a fresh survey.</string>
     <string name="start_new_survey">Start Survey for a new inmate</string>
     <string name="start_survey_assessment">Start Assessment for old inmate</string>
     <string name="field_prisoner_id">Prisoner ID</string>

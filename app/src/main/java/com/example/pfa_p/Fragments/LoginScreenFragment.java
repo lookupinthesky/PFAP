@@ -89,6 +89,7 @@ public class LoginScreenFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.user_details_layout, container, false);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.DialogStyle);
         //     setCancelable(false);
         //      (LoginActivity)context.
 
@@ -136,4 +137,6 @@ public class LoginScreenFragment extends DialogFragment {
 
         void onNextButtonClick(String prisonerId, String volunteerId);
     }
+
+
 }

@@ -1,11 +1,11 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimaryDefault</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkDefault</item>
+        <item name="colorAccent">@color/colorAccentDefault</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -13,18 +13,30 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="DialogStyle" parent="android:style/Theme.Translucent">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsFloating">false</item>
+       <!-- <item name="android:windowBackground">@color/colorPrimaryLightLogin</item>-->
 
     </style>
     <style name="TextLabel" parent="TextAppearance.Design.Hint">
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="LoginActivityTheme" parent="AppTheme.NoActionBar">
+
+        <item name="colorPrimary">@color/colorPrimaryLogin</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkLogin</item>
+        <item name="colorAccent">@color/colorAccentLogin</item>
+        <item name="android:textColor">@color/color_white</item>
+
+
     </style>
 
 </resources>
