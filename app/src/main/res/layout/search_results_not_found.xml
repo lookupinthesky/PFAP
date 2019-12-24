@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/disclaimer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:padding="100dp"
+            app:srcCompat = "@drawable/ic_404_error"
+            android:scaleType="fitCenter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="120dp"
+            android:layout_weight="1" />
+
+
+        <TextView
+            android:id="@+id/not_found_message"
+            android:text="@string/display_message"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="120dp"
+            android:textColor="@android:color/black"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="24sp" />
+
+
+    </LinearLayout>
+
+    <!--
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height=""></LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height=""></LinearLayout>
+
+
+
+        </LinearLayout>-->
+
+
+</LinearLayout>

@@ -64,56 +64,84 @@ public class SearchResultsFragment extends Fragment {
         return new SearchResultsFragment();
     }
 
-    public void setSearchResultsListener(SearchResultsListener listener){
+    public void setSearchResultsListener(SearchResultsListener listener) {
         this.mListener = listener;
     }
+
+    View view;
+    LinearLayout searchResults;
+    LinearLayout noSearchResults;
+    TextView prisonerIdView;
+    TextView volunteerIdView;
+    TextView demographicStatusView;
+    TextView questionnaireStatus;
+    TextView assessmentStatusView;
+    Button resumeButton;
+    Button startNewPrisoner;
+    TextView noResultDisplayMessage;
+
+    Button nextButton;
+    Button discardButton;
+
+    View confirmationScreen;
+    View searchResultsNotFound;
+    View bottomBar;
+
+
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_search_results, container, false);
-        LinearLayout searchResults = view.findViewById(R.id.search_results_found);
-        LinearLayout noSearchResults = view.findViewById(R.id.search_result_not_found);
+        view = inflater.inflate(R.layout.fragment_search_results_new, container, false);
+
+        searchResultsNotFound = view.findViewById(R.id.search_result_not_found);
+        confirmationScreen = view.findViewById(R.id.search_results_found);
+
+
+
+      //  searchResults = view.findViewById(R.id.search_results_found);
+
+
+
+        nextButton = view.findViewById(R.id.next_button);
+        discardButton = view.findViewById(R.id.discard_button);
+   //     noSearchResults = view.findViewById(R.id.search_result_not_found);
         TextView prisonerIdText = view.findViewById(R.id.field_prisoner_id);
-        TextView prisonerIdView = view.findViewById(R.id.value_prisoner_id);
-        TextView volunteerIdText = view.findViewById(R.id.field_volunteer_id);
-        TextView volunteerIdView = view.findViewById(R.id.value_volunteer_id);
+        prisonerIdView = confirmationScreen.findViewById(R.id.value_prisoner_id);
+        TextView volunteerIdText = confirmationScreen.findViewById(R.id.field_volunteer_id);
+        volunteerIdView = confirmationScreen.findViewById(R.id.value_volunteer_id);
         //TextView demographicsStatusText = view.
-        TextView demographicStatusView = view.findViewById(R.id.status_demographics);
-        TextView questionnaireStatus = view.findViewById(R.id.status_basic_questionnaire);
-        TextView assessmentStatusView = view.findViewById(R.id.status_assessment);
-        Button resumeButton = view.findViewById(R.id.resume_or_next_visit);
-        Button startNewPrisoner = view.findViewById(R.id.start_new);
-  //      Button startAssessment = view.findViewById(R.id.start_assessment);
-        TextView noResultDisplayMessage = view.findViewById(R.id.not_found_message);
+        demographicStatusView = confirmationScreen.findViewById(R.id.status_demographics);
+        questionnaireStatus = confirmationScreen.findViewById(R.id.status_basic_questionnaire);
+        assessmentStatusView = confirmationScreen.findViewById(R.id.status_assessment);
+     //   resumeButton = confirmationScreen.findViewById(R.id.resume_or_next_visit);
+     //   startNewPrisoner = confirmationScreen.findViewById(R.id.start_new);
+        //      Button startAssessment = view.findViewById(R.id.start_assessment);
+        noResultDisplayMessage = searchResultsNotFound.findViewById(R.id.not_found_message);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(idInDb == -1){
+                    showConfirmationScreen();
+                } else{
+                    mListener.prepareAndStartSurvey(false, prisonerId, idInDb, true);
+                }
+            }
+        });
+
+        discardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: Remove ID from DB
+            }
+        });
 
 
         if (idInDb == -1) { //TODO: make it a boolean : bug : on screen sleep the value changes
-            searchResults.setVisibility(View.GONE);
-            noResultDisplayMessage.setText(getString(R.string.display_message, String.valueOf(prisonerId)));
-            startNewPrisoner.setText(getString(R.string.start_new_survey));
-            startNewPrisoner.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.prepareAndStartSurvey(true, prisonerId, idInDb, false);
-                }
-            });
- //           startAssessment.setText(getString(R.string.start_survey_assessment));
-   //         startAssessment.setOnClickListener(null);
+            showNoResultsView();
         } else {
-            noSearchResults.setVisibility(View.GONE);
-            prisonerIdView.setText(String.valueOf(prisonerId));
-            volunteerIdView.setText(volunteerId);
-            demographicStatusView.setText(demographicStatus);
-            questionnaireStatus.setText(demographicStatus);
-            assessmentStatusView.setText(assessmentStatus);
-            resumeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mListener.prepareAndStartSurvey(false, prisonerId, idInDb, true);
-                }
-            });
+            showConfirmationScreen();
         }
 
         return view;
@@ -123,6 +151,42 @@ public class SearchResultsFragment extends Fragment {
     public interface SearchResultsListener {
 
         void prepareAndStartSurvey(boolean newUser, String prisonerId, long idInDb, boolean resume);
+
+    }
+
+
+    private void showNoResultsView() {
+
+
+        confirmationScreen.setVisibility(View.GONE);
+        searchResultsNotFound.setVisibility(View.VISIBLE);
+        noResultDisplayMessage.setText(getString(R.string.display_message, String.valueOf(prisonerId)));
+     //   startNewPrisoner.setText(getString(R.string.start_new_survey));
+       /* startNewPrisoner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.prepareAndStartSurvey(true, prisonerId, idInDb, false);
+            }
+        });*/
+        //           startAssessment.setText(getString(R.string.start_survey_assessment));
+        //         startAssessment.setOnClickListener(null);
+
+    }
+
+    private void showConfirmationScreen(){
+        searchResultsNotFound.setVisibility(View.GONE);
+        confirmationScreen.setVisibility(View.VISIBLE);
+        prisonerIdView.setText(String.valueOf(prisonerId));
+        volunteerIdView.setText(volunteerId);
+        demographicStatusView.setText(demographicStatus);
+        questionnaireStatus.setText(demographicStatus);
+        assessmentStatusView.setText(assessmentStatus);
+        /*resumeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.prepareAndStartSurvey(false, prisonerId, idInDb, true);
+            }
+        });*/
 
     }
 }

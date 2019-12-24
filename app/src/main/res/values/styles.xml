@@ -10,6 +10,10 @@
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -34,7 +38,9 @@
         <item name="colorPrimary">@color/colorPrimaryLogin</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkLogin</item>
         <item name="colorAccent">@color/colorAccentLogin</item>
-        <item name="android:textColor">@color/color_white</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
 
 
     </style>
