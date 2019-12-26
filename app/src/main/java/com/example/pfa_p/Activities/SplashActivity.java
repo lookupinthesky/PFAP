@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 SurveyDataSingleton.getInstance(SplashActivity.this);
 
-                Intent mainIntent = new Intent(SplashActivity.this, DashboardActivity.class);
+                Intent mainIntent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(mainIntent);
                 finish();
             }
