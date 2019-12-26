@@ -312,8 +312,9 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         long idInDb = helper.fetchUserData(prisonerId, this);
 
         if (idInDb == -1) {
-            prepareSearchResultsFragment(-1, prisonerId);
+
             long newIdInDb = insertNewUser(prisonerId, volunteerId);
+            prepareSearchResultsFragment(newIdInDb, prisonerId, volunteerId, true);
             setCurrentState(0, 0, -1);
             initializeResultsTableInDb(this, newIdInDb, volunteerId);
             //  setUserToModules(prisonerId, idInDb, volunteerId);
@@ -326,7 +327,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         } else {
             //TODO: initializeresultstable????
             helper.fetchResultsDataForUser(idInDb, this);
-            prepareSearchResultsFragment(idInDb, prisonerId);
+            prepareSearchResultsFragment(idInDb, prisonerId, volunteerId,false);
             setUserToModules(prisonerId, idInDb, volunteerId);
             if (helper.isHistoryCompleted) {
                 if (helper.isAssessmentCompleted) {
@@ -370,10 +371,12 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
     }
 
-    private void prepareSearchResultsFragment(long idInDb, String prisonerId) {
+    private void prepareSearchResultsFragment(long idInDb, String prisonerId, String volunteerId, boolean isNewPrisoner) {
         searchResultsFragment = SearchResultsFragment.newInstance();
+        searchResultsFragment.setIsNewPrisoner(isNewPrisoner);
         searchResultsFragment.setId(idInDb);
         searchResultsFragment.setPrisonerId(prisonerId);
+        searchResultsFragment.setVolunteerId(volunteerId);
         searchResultsFragment.setSearchResultsListener(this);
         //
     }

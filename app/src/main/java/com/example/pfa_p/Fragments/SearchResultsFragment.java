@@ -85,7 +85,17 @@ public class SearchResultsFragment extends Fragment {
 
     View confirmationScreen;
     View searchResultsNotFound;
+
+    public boolean isNewPrisoner() {
+        return isNewPrisoner;
+    }
+
+    public void setIsNewPrisoner(boolean newPrisoner) {
+        isNewPrisoner = newPrisoner;
+    }
+
     View bottomBar;
+    boolean isNewPrisoner = true;
 
 
 
@@ -122,7 +132,7 @@ public class SearchResultsFragment extends Fragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(idInDb == -1){
+                if(isNewPrisoner){
                     showConfirmationScreen();
                 } else{
                     mListener.prepareAndStartSurvey(false, prisonerId, idInDb, true);
@@ -130,6 +140,7 @@ public class SearchResultsFragment extends Fragment {
             }
         });
 
+        //TODO: null checks for all data
         discardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,7 +149,7 @@ public class SearchResultsFragment extends Fragment {
         });
 
 
-        if (idInDb == -1) { //TODO: make it a boolean : bug : on screen sleep the value changes
+        if (isNewPrisoner) { //TODO: make it a boolean : bug : on screen sleep the value changes
             showNoResultsView();
         } else {
             showConfirmationScreen();
@@ -174,6 +185,9 @@ public class SearchResultsFragment extends Fragment {
     }
 
     private void showConfirmationScreen(){
+        if(isNewPrisoner){
+            isNewPrisoner = false;
+        }
         searchResultsNotFound.setVisibility(View.GONE);
         confirmationScreen.setVisibility(View.VISIBLE);
         prisonerIdView.setText(String.valueOf(prisonerId));

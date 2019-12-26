@@ -5,10 +5,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
+import com.example.pfa_p.Activities.MainActivity;
 import com.example.pfa_p.Activities.SurveyActivity;
+import com.example.pfa_p.Database.SurveyContract;
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
+import com.example.pfa_p.Database.SurveyProvider;
 import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.DomainResultModel;
 import com.example.pfa_p.Model.FinalResult;
@@ -20,11 +24,20 @@ import com.example.pfa_p.Model.User;
 import com.example.pfa_p.Utils.JSONHelper;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+
+import timber.log.Timber;
 
 public class SurveyDataSingleton {
 
@@ -112,6 +125,11 @@ public class SurveyDataSingleton {
         domains = helper.getDomains();
         questions = helper.getQuestions();
         writeToDb(context);
+        try {
+            printDatabase(context);
+        } catch (JSONException e) {
+            throw new IllegalStateException("Failed to print test database");
+        }
 
     }
 
@@ -310,6 +328,8 @@ public class SurveyDataSingleton {
                     user.setStatus(status);
                     String action = status.equalsIgnoreCase("COMPLETE") ? "VIEW RESULTS" : "RESUME";
                     user.setAction(action);
+                    String volunteerId = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_VOLUNTEER_ID));
+                    user.setVolunteerId(volunteerId);
                     cursor1.close();
                 } else {
                     user.setTimeStamp("");
@@ -352,6 +372,107 @@ public class SurveyDataSingleton {
         Gson gson = new Gson();
         return gson.toJson(finalResults);
     }
+
+    private void printDatabase(Context context) throws JSONException {
+        JSONArray array = getExportableDatabaseInJSON(context);
+        String database = array.toString();
+        int maxLogSize = 1000;
+        for(int i = 0; i <= database.length() / maxLogSize; i++) {
+            int start = i * maxLogSize;
+            int end = (i+1) * maxLogSize;
+            end = end > database.length() ? database.length() : end;
+            Timber.tag("database logs").v(database.substring(start, end));
+        }
+
+    //    writeToFile(database);
+
+    }
+    private void writeToFile(String content) {
+        try {
+            File file = new File(Environment.getExternalStorageDirectory() + "/sample_data.txt");
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            FileWriter writer = new FileWriter(file);
+            writer.append(content);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            Log.d("Error Database", e.toString());
+        }
+    }
+
+    public JSONArray getExportableDatabaseInJSON(Context context) throws JSONException {
+        JSONArray arr = new JSONArray();
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SURVEYS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SECTIONS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_DOMAINS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, context));
+        Log.d(MainActivity.class.getName(), arr.toString());
+        return arr;
+    }
+
+    public JSONObject getCursorFromTable(Uri tableuri, Context context) throws JSONException {
+
+        String tableName = getTableName(SurveyProvider.sUriMatcher.match(tableuri));
+        JSONObject obj;
+        Cursor cursor = context.getContentResolver().query(tableuri, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            obj = cursorToJSON(cursor, tableName);
+        } else {
+            obj = new JSONObject();
+        }
+        cursor.close();
+        return obj;
+    }
+
+    public JSONObject cursorToJSON(Cursor cursor, String tableName) throws JSONException {
+
+        JSONObject finalJ = new JSONObject();
+
+        JSONArray rows = new JSONArray();
+
+        if (cursor.moveToFirst()) {
+            do {
+                JSONObject jsonObject = new JSONObject();
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    String columnName = cursor.getColumnName(i);
+                    try {
+                        switch (cursor.getType(i)) {
+                            case Cursor.FIELD_TYPE_INTEGER:
+                                jsonObject.put(columnName, cursor.getInt(i));
+                                break;
+                            case Cursor.FIELD_TYPE_FLOAT:
+                                jsonObject.put(columnName, cursor.getFloat(i));
+                                break;
+                            case Cursor.FIELD_TYPE_STRING:
+                                jsonObject.put(columnName, cursor.getString(i));
+                                break;
+
+                        }
+                    } catch (Exception ex) {
+                        Log.e(MainActivity.class.getName(), "Exception converting cursor column to json field: " + columnName);
+                    }
+
+
+                }
+                rows.put(jsonObject);
+                Log.d(MainActivity.class.getName(), "row = " + jsonObject.toString());
+            } while (cursor.moveToNext());
+
+            finalJ.put(tableName, rows);
+        }
+        return finalJ;
+    }
+
+
+
+
 
 
 
@@ -561,6 +682,31 @@ public class SurveyDataSingleton {
 
         this.modules = modulesNew;
     }*/
+
+
+    private String getTableName(int match){
+        switch (match){
+            case SurveyProvider.SECTIONS:
+                return SurveyEntry.TABLE_SECTIONS;
+            case SurveyProvider.DOMAINS:
+                return SurveyEntry.TABLE_DOMAINS;
+            case SurveyProvider.RESULTS:
+                return SurveyEntry.TABLE_RESULTS;
+            case SurveyProvider.ANSWERS_ASSESSMENT:
+                return SurveyEntry.TABLE_ASSESSMENT_ANSWERS;
+            case SurveyProvider.ANSWERS_HISTORY:
+                return SurveyEntry.TABLE_HISTORY_ANSWERS;
+            case SurveyProvider.SURVEYS:
+                return SurveyEntry.TABLE_SURVEYS;
+            case SurveyProvider.QUESTIONS:
+                return SurveyEntry.TABLE_QUESTIONS;
+            case SurveyProvider.USERS:
+                return SurveyEntry.TABLE_USERS;
+                default:throw new IllegalStateException("Unknown Request for table name");
+        }
+    }
+
+
 
     public List<Module> getSurveyData() {
         return this.modules;

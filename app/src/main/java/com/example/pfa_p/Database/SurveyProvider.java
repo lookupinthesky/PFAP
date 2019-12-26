@@ -15,24 +15,24 @@ public class SurveyProvider extends ContentProvider {
     private SurveyDbHelper mOpenHelper;
 
     // Codes for the UriMatcher //////
-    private static final int SECTIONS = 100;
-    private static final int SECTIONS_WITH_ID = 101;
-    private static final int QUESTIONS = 200;
-    private static final int QUESTIONS_WITH_ID = 201;
-    private static final int USERS = 300;
-    private static final int USERS_WITH_ID = 301;
-    private static final int ANSWERS_ASSESSMENT = 400;
-    private static final int ANSWERS_ASSESSMENT_WITH_ID = 401;
-    private static final int ANSWERS_HISTORY = 500;
-    private static final int ANSWERS_HISTORY_WITH_ID = 501;
-    private static final int DOMAINS = 600;
-    private static final int DOMAINS_WITH_ID = 601;
-    private static final int SURVEYS = 700;
-    private static final int SURVEYS_WITH_ID = 701;
-    private static final int RESULTS = 800;
-    private static final int RESULTS_WITH_ID = 801;
-    private static final int RESULTS_TYPES = 900;
-    private static final int RESULTS_TYPES_WITH_ID = 901;
+    public static final int SECTIONS = 100;
+    public static final int SECTIONS_WITH_ID = 101;
+    public static final int QUESTIONS = 200;
+    public static final int QUESTIONS_WITH_ID = 201;
+    public static final int USERS = 300;
+    public static final int USERS_WITH_ID = 301;
+    public static final int ANSWERS_ASSESSMENT = 400;
+    public static final int ANSWERS_ASSESSMENT_WITH_ID = 401;
+    public static final int ANSWERS_HISTORY = 500;
+    public static final int ANSWERS_HISTORY_WITH_ID = 501;
+    public static final int DOMAINS = 600;
+    public static final int DOMAINS_WITH_ID = 601;
+    public static final int SURVEYS = 700;
+    public static final int SURVEYS_WITH_ID = 701;
+    public static final int RESULTS = 800;
+    public static final int RESULTS_WITH_ID = 801;
+    public static final int RESULTS_TYPES = 900;
+    public static final int RESULTS_TYPES_WITH_ID = 901;
 
     ////////
 

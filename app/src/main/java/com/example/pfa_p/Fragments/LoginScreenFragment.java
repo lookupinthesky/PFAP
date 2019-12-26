@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -104,13 +105,15 @@ public class LoginScreenFragment extends DialogFragment {
 
                 String prisonerIdText = prisonerId.getText().toString();
                 String volunteerIdText = volunteerId.getText().toString();
-                if(volunteerIdText.equals("")){
+                /*if(volunteerIdText.equals("")){
                     volunteerIdText = "volunteerId";
-                }
-                if (validatefields()) {
+                }*/
+                if (validatefields(prisonerIdText, volunteerIdText)) {
 
                     mListener.onNextButtonClick(prisonerIdText,volunteerIdText);
                     dismiss();
+                } else  {
+                    Toast.makeText(view.getContext(),"Please enter a value", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -126,9 +129,9 @@ public class LoginScreenFragment extends DialogFragment {
     }
 
 
-    private boolean validatefields() {
+    private boolean validatefields(String prisonerId, String volunteerId) {
 
-        return true;
+        return !prisonerId.equals("") && !volunteerId.equals("");
         //TODO: conditions for text fields
 
     }
