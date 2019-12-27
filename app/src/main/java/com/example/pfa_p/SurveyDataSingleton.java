@@ -43,6 +43,7 @@ public class SurveyDataSingleton {
 
     private static volatile SurveyDataSingleton sInstance;
     private List<Module> modules;
+    private List<CurrentSessionData> currentSessionUsers;
 
     private List<Question> questions;
     private List<User> users;
@@ -227,6 +228,53 @@ public class SurveyDataSingleton {
                 }
                 cursor.close();
             }
+        }
+
+    }
+    CurrentSessionData surveyData;
+
+    int userCount;
+    public  void addToCurrentSessionDataAndCreateNew(CurrentSessionData data, Context context){
+
+
+
+        currentSessionUsers.add(data);
+
+        surveyData = new CurrentSessionData();
+
+        //clean up old identifiers, make all modules, submodule, domain objects again - repeat startup procedure after collecting all the data to this object
+
+
+        createSurveyData(context);
+        userCount ++;
+
+        surveyData.setSurveyData(modules);
+        surveyData.setSerialNumber(userCount);
+    }
+
+
+     class CurrentSessionData{
+
+
+        CurrentSessionData(){}
+
+        int serialNumber;
+        List<Module> surveyData;
+
+        public int getSerialNumber() {
+            return serialNumber;
+        }
+
+        public void setSerialNumber(int serialNumber) {
+            this.serialNumber = serialNumber;
+        }
+
+        public List<Module> getSurveyData() {
+            return surveyData;
+        }
+
+        public void setSurveyData(List<Module> surveyData) {
+            this.surveyData = surveyData;
         }
 
     }

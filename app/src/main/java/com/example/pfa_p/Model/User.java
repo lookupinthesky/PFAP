@@ -2,6 +2,8 @@ package com.example.pfa_p.Model;
 
 import android.util.Log;
 
+import java.util.List;
+
 public class User {
 
     private String prisonerId; // the inmate_id as filled at the login screen
@@ -12,6 +14,15 @@ public class User {
     private boolean ifAssessmentTaken; // status of assessment in the current visit number
     private boolean isSynced; // is synced to server
     private String volunteerId;
+    private List<Module> modules;
+
+    public List<Module> getModules() {
+        return modules;
+    }
+
+    public void setModules(List<Module> modules) {
+        this.modules = modules;
+    }
 
     public String getTimeStamp() {
         return timeStamp;
