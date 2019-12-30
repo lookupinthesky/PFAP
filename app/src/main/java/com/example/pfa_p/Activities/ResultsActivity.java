@@ -1,5 +1,6 @@
 package com.example.pfa_p.Activities;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -127,6 +128,16 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         }
             case R.id.button_exit:{
                 this.finishAffinity();
+            }
+
+            case R.id.force_sync: {
+
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+                bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+                bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+                ContentResolver.requestSync(null, SurveyContract.CONTENT_AUTHORITY, bundle);
+
             }
         }
     }

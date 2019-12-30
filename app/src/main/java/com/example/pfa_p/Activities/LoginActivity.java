@@ -27,6 +27,8 @@ import com.example.pfa_p.Fragments.LoginScreenFragment;
 import com.example.pfa_p.Fragments.SearchResultsFragment;
 import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.Question;
+import com.example.pfa_p.Model.Result;
+import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
@@ -570,6 +572,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             int count = 0;
             int tempVisitNumber = -1;
             int loopcounter = 0;
+            int lastFilledModuleIndex;
 
             if (cursor.moveToFirst()) {
                 loopcounter = cursor.getCount();
@@ -583,12 +586,20 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                     if (questionId == question.getId())
                         question.setAnswer(response, true);
                     if (count == loopcounter && i < lastSerialNumber - 1) {
-                        Question question1 = questions.get(i + 1);
-                        currentSectionIndex = question1.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
+                        Question question1 = questions.get(i + 1); //TODO: Bug: In case of Assessment involving only some of questionnairres, and app restarted this logic is not valid
+
+                        //TODO: .. continued: Domain number must be calculated based on the results of basic questionnaire
+
+
+
                         currentModuleIndex = question1.getSubModule().getModule().getIndex();
+                        lastFilledModuleIndex = currentModuleIndex -1 ;
+                        currentSectionIndex = question1.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
                         if (question1.getDomain() == null) {
                             currentDomainIndex = -1;
                         } else
+                       //     calculateCurrentIndices(lastFilledModuleIndex, currentSectionIndex, currentDomainIndex);
+
                             currentDomainIndex = question1.getDomain().getIndex();
                         Log.d(LOG_TAG, "In loginActivity when user exists: mCurrentSectionIndex = " + mCurrentSectionIndex);
                         setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
@@ -604,6 +615,18 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                 setCurrentState(1, 0, -1);
             }
             //cursor.close();
+        }
+
+        private void calculateCurrentIndices(int moduleIndex, int mCurrentSectionIndex, int mCurrentDomainIndex) {
+            Module module = SurveyDataSingleton.getInstance(LoginActivity.this).getModules().get(mCurrentModuleIndex);
+            Result.evaluateQuestionnaires(module, LoginActivity.this);
+            for (int k = 0; k < module.getSections().size(); k++) {
+                SubModule section = module.getSections().get(k);
+                if (section.isPresent()) {
+                    mCurrentSectionIndex = k;
+                    mCurrentDomainIndex = 0;
+                }
+            }
         }
     }
 }

@@ -9,6 +9,9 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.pfa_p.Database.SurveyContract;
+import com.example.pfa_p.Database.SurveyProvider;
+
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
@@ -50,7 +53,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 
-        String url = "";
+        String url = "http://mhfindia.org/apps/jsonpostdata.php";
         performPostCall(url);
 
         //TODO: manage synacadapter timing.
@@ -122,6 +125,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         return response;
     }
+
+    public void forceSync(){
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
+        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        ContentResolver.requestSync(null, SurveyContract.CONTENT_AUTHORITY, bundle);
+    }
+
+
 }
 
 

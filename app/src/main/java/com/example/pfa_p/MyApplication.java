@@ -13,7 +13,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Stetho.initializeWithDefaults(this);
         AndroidNetworking.initialize(getApplicationContext());
-        Timber.plant(new Timber.DebugTree());
+   //     Timber.plant(new Timber.DebugTree());
         /*OkHttpClient okHttpClient = new OkHttpClient() .newBuilder()
                 .addNetworkInterceptor(new StethoInterceptor())
                 .build();
