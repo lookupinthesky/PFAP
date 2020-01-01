@@ -573,6 +573,13 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             int tempVisitNumber = -1;
             int loopcounter = 0;
             int lastFilledModuleIndex;
+            int lastQuestionModuleIndex;
+            int lastQuestionSectionIndex;
+            int lastQuestionDomainIndex;
+            int nextQuestionModuleIndex;
+            int nextQuestionSectionIndex;
+            int nextQuestionDomainIndex;
+
 
             if (cursor.moveToFirst()) {
                 loopcounter = cursor.getCount();
@@ -587,12 +594,60 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                         question.setAnswer(response, true);
                     if (count == loopcounter && i < lastSerialNumber - 1) {
                         Question question1 = questions.get(i + 1); //TODO: Bug: In case of Assessment involving only some of questionnairres, and app restarted this logic is not valid
-
+                        Question question0 = questions.get(i);
                         //TODO: .. continued: Domain number must be calculated based on the results of basic questionnaire
 
 
+                        lastQuestionModuleIndex = question0.getSubModule().getModule().getIndex();
+                        lastQuestionSectionIndex = question0.getSubModule().getIndex();
 
-                        currentModuleIndex = question1.getSubModule().getModule().getIndex();
+                        nextQuestionModuleIndex = question1.getSubModule().getModule().getIndex();
+                        nextQuestionSectionIndex = question1.getSubModule().getIndex();
+
+                        if (lastQuestionModuleIndex == nextQuestionModuleIndex) {
+                            currentModuleIndex = nextQuestionModuleIndex;
+                            if (lastQuestionSectionIndex == nextQuestionSectionIndex) {
+                                currentSectionIndex = question1.getSubModule().getIndex();
+                                if (question1.getDomain() == null) {
+                                    currentDomainIndex = -1;
+                                } else
+                                    currentDomainIndex = question1.getDomain().getIndex();
+                            }
+                            else{
+                                currentSectionIndex = getNextSectionIndex(currentModuleIndex, question0, question1);
+                                if (question1.getDomain() == null) {
+                                    currentDomainIndex = -1;
+                                } else
+                                    currentDomainIndex = question1.getSubModule().getModule().getSections().get(currentSectionIndex).getDomains().get(0).getIndex();
+                            }
+                            /*if (question1.getDomain() == null) {
+                                currentDomainIndex = -1;
+                            } else
+                                //     calculateCurrentIndices(lastFilledModuleIndex, currentSectionIndex, currentDomainIndex);
+
+                                currentDomainIndex = question1.getDomain().getIndex();
+                            setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);*/
+                        } else {
+                            if (lastQuestionModuleIndex == 1) {
+                                calculateCurrentIndices(lastQuestionModuleIndex);
+                                currentModuleIndex = nextQuestionModuleIndex;
+
+                            } else {
+                                currentModuleIndex = nextQuestionModuleIndex;
+                                currentSectionIndex = question1.getSubModule().getIndex();
+                                if (question1.getDomain() == null) {
+                                    currentDomainIndex = -1;
+                                } else
+                                    currentDomainIndex = question1.getSubModule().getModule().getSections().get(currentSectionIndex).getDomains().get(0).getIndex();
+
+                            }
+
+                        }
+                        Log.d(LOG_TAG, "current state being set for assessmnent; currentModuleIndex = " + currentModuleIndex + " currentSectionIndex = " + currentSectionIndex + " currentDomainIndex = " + currentDomainIndex);
+                        setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
+
+
+                        /*currentModuleIndex = question1.getSubModule().getModule().getIndex();
                         lastFilledModuleIndex = currentModuleIndex -1 ;
                         currentSectionIndex = question1.getSubModule().getIndex(); //TODO: set as mCurrentSubmodule
                         if (question1.getDomain() == null) {
@@ -602,7 +657,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
                             currentDomainIndex = question1.getDomain().getIndex();
                         Log.d(LOG_TAG, "In loginActivity when user exists: mCurrentSectionIndex = " + mCurrentSectionIndex);
-                        setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
+                        setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);*/
                         break;
                     } else if (i == lastSerialNumber - 1) {
                         setCurrentState(3, -1, -1);
@@ -617,15 +672,47 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             //cursor.close();
         }
 
-        private void calculateCurrentIndices(int moduleIndex, int mCurrentSectionIndex, int mCurrentDomainIndex) {
-            Module module = SurveyDataSingleton.getInstance(LoginActivity.this).getModules().get(mCurrentModuleIndex);
+        private void calculateCurrentIndices(int moduleIndex) {
+            Module module = SurveyDataSingleton.getInstance(LoginActivity.this).getModules().get(moduleIndex);
             Result.evaluateQuestionnaires(module, LoginActivity.this);
             for (int k = 0; k < module.getSections().size(); k++) {
                 SubModule section = module.getSections().get(k);
                 if (section.isPresent()) {
-                    mCurrentSectionIndex = k;
-                    mCurrentDomainIndex = 0;
+                    currentSectionIndex = k;
+                    currentDomainIndex = 0;
+                    break;
                 }
+            }
+            Log.d(LOG_TAG, "method:calculateCurrentIndices called for moduleIndex = " + moduleIndex + " currentSectionIndex = " + currentSectionIndex);
+          /*  mCurrentSectionIndex = 0;
+            mCurrentDomainIndex = 0; */
+        }
+
+        private int getNextSectionIndex(int mCurrentModuleIndex, Question lastQuestion, Question nextQuestion){
+            Module module = SurveyDataSingleton.getInstance(LoginActivity.this).getModules().get(mCurrentModuleIndex);
+            List<SubModule> sections = module.getSections();
+            boolean found = false;
+            int index = 0;
+            if(mCurrentModuleIndex==2){
+                for(SubModule subModule: sections){
+                    if(subModule.isPresent()){
+                        if(found){
+                            index =  subModule.getIndex();
+                            Log.d(LOG_TAG, "Index of found next section = " + index + " current module is 2");
+                            break;
+                        }
+                        if(lastQuestion.getSubModule().equals(subModule)){
+                            found = true;
+
+                        }
+
+                    }
+                }
+                return index;
+            }else{
+               index = nextQuestion.getSubModule().getIndex();
+                Log.d(LOG_TAG, "Index of found next section = " + index + " current module is " + mCurrentModuleIndex);
+                return index;
             }
         }
     }

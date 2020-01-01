@@ -85,7 +85,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (data.size() < 11)
             return data.size() /*+ 1*/;
         else
-            return 11;
+            return data.size();
     }
 
     DashboardListViewHolder previous = null;

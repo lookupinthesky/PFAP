@@ -2,6 +2,7 @@ package com.example.pfa_p.Model;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.pfa_p.Database.SurveyContract;
 import com.example.pfa_p.SurveyDataSingleton;
@@ -66,6 +67,7 @@ public class SubModule extends LeftPane {
 
     public void setIsPresent(boolean flag) {
         this.isPresent = flag;
+        Log.d("Model Class: SubModule", " Set is present called for subModule = " + this.getName() + " flag = " + flag);
     }
 
     public boolean isPresent() {

@@ -144,7 +144,8 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
             mCurrentDomainIndex++;
             item = sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
         } else {
-            mCurrentSectionIndex++;
+            //     mCurrentSectionIndex++;
+            mCurrentSectionIndex = getNextSectionIndex(mCurrentSectionIndex);
             if (mCurrentDomainIndex != -1) {
                 mCurrentDomainIndex = 0;
                 item = sections.get(mCurrentSectionIndex).getDomains().get(mCurrentDomainIndex);
@@ -155,6 +156,36 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
        //     setClicked(item)/*next clickable item in List*/;
             loadSectionDetails(item);
         }
+
+    private int getNextSectionIndex(int currentIndex) {
+
+        //find current index in left pane list
+        boolean found = false;
+        int index = -1;
+
+        SubModule subModule = sections.get(currentIndex);
+
+        for (int i = 0; i < leftPaneList.size(); i++) {
+            if (leftPaneList.get(i) instanceof SubModule) {
+                if (found) {
+                    index = ((SubModule) leftPaneList.get(i)).getIndex();
+                    break;
+                }
+                if (subModule.equals(leftPaneList.get(i))) {
+                    found = true;
+
+                }
+
+            }
+        }
+        Log.d("SectionsListFragment", "method: getNextSectionIndex called, index found = " + index);
+        return index;
+
+
+        // find next in left pane list and get index
+
+
+    }
 
 
         @Override
