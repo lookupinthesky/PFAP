@@ -1,6 +1,7 @@
 package com.example.pfa_p.Model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.pfa_p.SurveyDataSingleton;
 import com.example.pfa_p.Utils.RatingSystem;
@@ -264,6 +265,7 @@ public class Result implements RatingSystem {
 
     }
 
+
     private String getResultForSectionWiseLimits(int firstLimit, int secondLimit, int thirdLimit, float meanSectionScore) {
 
 
@@ -427,14 +429,14 @@ public class Result implements RatingSystem {
     }*/
 
 
-    public static void evaluateQuestionnaires(Module module, Context context) {
+    public static boolean[] evaluateQuestionnaires(Module module, Context context) {
 
         if (module.getName().equals("Basic Questionnaire")) {
 
             List<Question> currentModuleQuestions = module.getSections().get(0).getQuestions();
             Module nextModule = SurveyDataSingleton.getInstance(context).getModules().get(module.getIndex() + 1);
             List<SubModule> nextSections = nextModule.getSections();
-            calculate(currentModuleQuestions, nextModule);
+            return calculate(currentModuleQuestions, nextModule);
 
 
 
@@ -450,10 +452,11 @@ public class Result implements RatingSystem {
 
 
         }
+        return null;
     }
 
 
-    private static void calculate(List<Question> questions, Module nextModule) {
+    private static boolean[] calculate(List<Question> questions, Module nextModule) {
 
 
         boolean[] isSectionIPresent = new boolean[nextModule.getSections().size()];
@@ -482,8 +485,11 @@ public class Result implements RatingSystem {
         for (int i = 0; i < nextModule.getSections().size(); i++) {
 
             nextModule.getSections().get(i).setIsPresent(isSectionIPresent[i]);
+            Log.d("RESULTS", "following state of sections = " + isSectionIPresent[i]);
 
         }
+        return isSectionIPresent;
+
 
 
 

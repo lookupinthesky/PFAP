@@ -51,6 +51,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     int mCurrentSectionIndex;
     int mCurrentDomainIndex;
     int mCurrentModuleIndex;
+    boolean[] isSectionIPresent;
     private boolean isModuleChanged = false;
     LoaderManager.LoaderCallbacks<String> mCallbacks;
     Bundle loaderArgs;
@@ -82,6 +83,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         mCurrentModuleIndex = intent.getExtras().getInt("current_module_index");
         mCurrentSectionIndex = intent.getExtras().getInt("current_section_index");
         mCurrentDomainIndex = intent.getExtras().getInt("current_domain_index");
+        isSectionIPresent = intent.getExtras().getBooleanArray("is_section_present");
+
         if (mCurrentModuleIndex < 3) {
             fm = getSupportFragmentManager();
             ft = fm.beginTransaction();
@@ -90,7 +93,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             sectionDetailsFragment = SectionDetailsFragment.newInstance(/*DEFAULT_SECTIONS_EMPTY*/);
             sectionsListFragment = SectionsListFragment.newInstance(0/*DEFAULT_SECTIONS_EMPTY*/);
             sectionsListFragment.setData(modules.get(mCurrentModuleIndex));
-            sectionsListFragment.setCurrentState(mCurrentSectionIndex, mCurrentDomainIndex);
+            sectionsListFragment.setCurrentState(mCurrentSectionIndex, mCurrentDomainIndex, isSectionIPresent);
             sectionsListFragment.setOnListItemClickListener(this);
             ft.add(R.id.fragment_section_details_parent, sectionDetailsFragment);
             ft.add(R.id.fragment_sections_list_parent, sectionsListFragment);
@@ -202,7 +205,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
             if (mCurrentModuleIndex < 3) {
                 int domainIndex = mCurrentModuleIndex == 1 ? -1 : 0; //TODO check logic
-                sectionsListFragment.setCurrentState(0, domainIndex);
+                sectionsListFragment.setCurrentState(0, domainIndex, null);
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
             } else {
@@ -334,7 +337,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     }
 
-    private static final String LOG_TAG = SurveyActivity.class.getName() ;
+    private static final String LOG_TAG = SurveyActivity.class.getName();
 
     private boolean saveResultsToDb() {
 

@@ -47,6 +47,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     private TextView moduleName;
     private int mCurrentSectionIndex;
     private int mCurrentDomainIndex;
+    private boolean[] isSectionIPresent;
     private List<LeftPane> leftPaneList;
     private RecyclerView.Adapter<LeftPaneAdapter.LeftPaneViewHolder> adapter;
     private Module module;
@@ -97,11 +98,21 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     }
 
 
-    public void setCurrentState(/*int moduleIndex,*/ int subModuleIndex, int domainIndex) {
+    public void setCurrentState(/*int moduleIndex,*/ int subModuleIndex, int domainIndex, boolean[] isSectionIPresent) {
 
-        Log.d(LOG_TAG, "mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex);
+        Log.d(LOG_TAG, "method: setCurrentState; mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex);
         this.mCurrentDomainIndex = domainIndex;
         this.mCurrentSectionIndex = subModuleIndex;
+        this.isSectionIPresent = isSectionIPresent;
+        if(isSectionIPresent!=null){
+            setPresentSections(isSectionIPresent);
+        }
+    }
+
+    private void setPresentSections(boolean[] isSectionIPresent){
+        for(int i = 0; i<sections.size(); i++){
+            sections.get(i).setIsPresent(isSectionIPresent[i]);
+        }
     }
 
     public void setOnListItemClickListener(OnListItemClickListener mListener) {
@@ -201,19 +212,37 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
             parent.setLayoutManager(new LayoutManager(context));
             parent.setAdapter(adapter);
             int subModuleIndexInList = leftPaneList.indexOf(sections.get(mCurrentSectionIndex));
-            loadSectionDetails(mCurrentDomainIndex == -1 ? leftPaneList.get(mCurrentSectionIndex) :
+            /*if(mCurrentDomainIndex==-1){
+                loadSectionDetails(leftPaneList.get(getLeftPaneIndexForSectionIndex(mCurrentSectionIndex)));
+            }
+            else{
+                int sectionPosition = getLeftPaneIndexForSectionIndex(mCurrentSectionIndex);
+                int domainPosition = mCurrentDomainIndex + 1;
+                int finalPositionInList = sectionPosition + domainPosition;
+                loadSectionDetails(leftPaneList.get(getLeftPaneIndexForSectionIndex(finalPositionInList)));
+            }*/
+            Log.d(SectionDetailsFragment.class.getName(), "onViewCreated: mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex + " mSectionIndexinList = " + subModuleIndexInList  );
+            loadSectionDetails(mCurrentDomainIndex == -1 ? leftPaneList.get(subModuleIndexInList) :
                     leftPaneList.get(subModuleIndexInList + mCurrentDomainIndex + 1));
             moduleName.setText(module.getName());
         }
 
 
-        public LeftPane getLeftPaneItemForPosition ( int position){
-            return leftPaneList.get(position);
-        }
+       /* public int getLeftPaneIndexForSectionIndex ( int currentSectionIndex){
+            SubModule subModule = sections.get(currentSectionIndex);
+            for(int i = 0; i<leftPaneList.size(); i++){
+                LeftPane item = leftPaneList.get(i);
+                if(item instanceof SubModule){
+                    if(item.equals(subModule)){
+                        return i;
+                    }
+                }
+            }
+        }*/
 
         public LeftPane getCurrentItem () {
 
-            Log.d(LOG_TAG, "mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex);
+            Log.d(LOG_TAG, "method: getCurrentItem ; mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex);
             if (sections.get(mCurrentSectionIndex).getName().equals("Basic Questionnaire")) {
                 return sections.get(mCurrentSectionIndex);
             }
