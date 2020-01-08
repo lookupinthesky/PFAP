@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
+import com.example.pfa_p.Database.ResultTaskLoader;
 import com.example.pfa_p.Database.SurveyContract.SurveyEntry;
 import com.example.pfa_p.Database.SurveyTaskLoader;
 import com.example.pfa_p.Fragments.SectionDetailsFragment;
@@ -128,7 +129,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
      */
     private void calculateNext(List<Module> modules) {
         List<SubModule> subModules = modules.get(mCurrentModuleIndex).getSections();
-        List<Domain> domains = subModules.get(mCurrentSectionIndex).getDomains();
+        List<Domain> domains = subModules.get(mCurrentSectionIndex).getDomains(); //TODO: bug present here in mCurrentSectionindex
         if (mCurrentDomainIndex > domains.size() - 1 || mCurrentDomainIndex == domains.size() - 1) {
             if (mCurrentSectionIndex > subModules.size() - 1 || mCurrentSectionIndex == subModules.size() - 1) {
                 if (mCurrentModuleIndex > modules.size() - 1) {
@@ -136,19 +137,25 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                 } else {
                     isModuleChanged = true;
                     mCurrentModuleIndex++;
-                    mCurrentSectionIndex = 0;
+                    mCurrentSectionIndex = 0;/* mCurrentModuleIndex == 1 ? 0 : getFirstSectionIndexFromArray(isSectionIPresent);*/ //TODO: bug present here
                     mCurrentDomainIndex = 0;
+
+                    Log.d(LOG_TAG, "Loop1: mCurrentModuleIndex = " + mCurrentModuleIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex + " mCurrentDomainIndex = " + mCurrentDomainIndex + " isModuleChanged = " + isModuleChanged);
                 }
             } else {
                 isModuleChanged = false;
-                mCurrentSectionIndex++;
+                mCurrentSectionIndex = getCurrentSectionIndexFromArray(isSectionIPresent, mCurrentSectionIndex); //TODO: faulty - bug present - mindlessly increasing index without looking if present or not
                 mCurrentDomainIndex = 0;
+
+                Log.d(LOG_TAG, "Loop2: mCurrentModuleIndex = " + mCurrentModuleIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex + " mCurrentDomainIndex = " + mCurrentDomainIndex + " isModuleChanged = " + isModuleChanged);
             }
         } else {
+
             isModuleChanged = false;
             mCurrentDomainIndex++;
-        }
 
+            Log.d(LOG_TAG, "Loop3: mCurrentModuleIndex = " + mCurrentModuleIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex + " mCurrentDomainIndex = " + mCurrentDomainIndex + " isModuleChanged = " + isModuleChanged);
+        }
     }
 
 
@@ -197,15 +204,24 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
         calculateNext(modules);
         if (!isModuleChanged) {
+            /*if (mCurrentModuleIndex == 2) {
+             *//*int domainIndex*//*
+                mCurrentDomainIndex = 0; //TODO check logic
+                *//*int sectionIndex*//*
+                mCurrentSectionIndex = getCurrentSectionIndexFromArray(isSectionIPresent, mCurrentSectionIndex);
+            }*/
             sectionsListFragment.onStateChanged(false);
         } else {
             if (mCurrentModule.getName().equals("Basic Questionnaire")) {
-                Result.evaluateQuestionnaires(mCurrentModule, this);// evaluate next sections before setting data to list
+                isSectionIPresent = Result.evaluateQuestionnaires(mCurrentModule, this);// evaluate next sections before setting data to list
             }
 
             if (mCurrentModuleIndex < 3) {
-                int domainIndex = mCurrentModuleIndex == 1 ? -1 : 0; //TODO check logic
-                sectionsListFragment.setCurrentState(0, domainIndex, null);
+                /*int domainIndex*/
+                mCurrentDomainIndex = mCurrentModuleIndex == 1 ? -1 : 0; //TODO check logic
+                /*int sectionIndex*/
+                mCurrentSectionIndex = mCurrentModuleIndex == 1 ? 0 : getFirstSectionIndexFromArray(isSectionIPresent);
+                sectionsListFragment.setCurrentState(/*sectionIndex*/ mCurrentSectionIndex, /*domainIndex*/mCurrentDomainIndex, null);
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
             } else {
@@ -219,6 +235,37 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             }
 
         }
+    }
+
+    private int getFirstSectionIndexFromArray(boolean[] isSectionIPresent) {
+
+        for (int i = 0; i < isSectionIPresent.length; i++) {
+            if (isSectionIPresent[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int getCurrentSectionIndexFromArray(boolean[] isSectionIPresent, int currentSectionIndex) {
+        if (isSectionIPresent == null) {
+            if (mCurrentModuleIndex == 2)
+                throw new IllegalArgumentException();
+            else
+                return currentSectionIndex + 1;
+        }
+
+        if(currentSectionIndex == isSectionIPresent.length - 1){
+            return currentSectionIndex + 1;
+        }
+        for (int i = currentSectionIndex; i < isSectionIPresent.length - 1 ; i++) {
+            if (isSectionIPresent[i + 1]) {
+                return i + 1;
+            }
+        }
+
+        return -1;
+
     }
 
     String userId;
@@ -371,7 +418,63 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int id, @Nullable Bundle args) {
-        return new SurveyTaskLoader<String>(this/*, prisonerId*/, args) {
+
+        switch (id) {
+            case LOADER_ANSWERS: {
+                return new SurveyTaskLoader<String>(this, args) {
+                    @Nullable
+                    @Override
+                    public String loadInBackground() {
+                        boolean isResults = args.getBoolean("isResults");
+                        boolean isUpdate = args.getBoolean("isUpdate");
+                        Log.d(LOG_TAG, "method: loadInBackground called : isResults = " + isResults + " isUpdate = " + isUpdate);
+
+
+                        if (saveToDb(item, isUpdate))
+                            return new String("Saved to Database");
+                        return "Could Not Save values to Database";
+                    }
+
+
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+                    }
+                };
+            }
+
+
+            case LOADER_RESULTS: {
+                return new ResultTaskLoader<String>(this, args) {
+                    @Nullable
+                    @Override
+                    public String loadInBackground() {
+                        boolean isResults = args.getBoolean("isResults");
+                        boolean isUpdate = args.getBoolean("isUpdate");
+                        Log.d(LOG_TAG, "method: loadInBackground called : isResults = " + isResults + " isUpdate = " + isUpdate);
+
+
+                        if (saveResultsToDb()) {
+                            return new String("Saved Results to Database");
+                        } else
+                            return "Could Not save Results to Database";
+                    }
+
+
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+                    }
+                };
+
+            }
+
+            default:
+                throw new IllegalStateException("unexpected call to loader");
+        }
+    }
+
+    /* return new SurveyTaskLoader<String>(this*//*, prisonerId*//*, args) {
             @Nullable
             @Override
             public String loadInBackground() {
@@ -396,10 +499,12 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                 super.onStartLoading();
             }
         };
-    }
+    }*/
 
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String data) {
+
+
         if (data != null) {
             showSnackBar((String) data);
         }

@@ -24,6 +24,8 @@ import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.tonicartos.superslim.LayoutManager;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +79,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     public void setData(Module module) {
 
         this.module = module;
+        sections = module.getSections();
     }
 
     private void setDataToAdapter() {
@@ -104,7 +107,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
         this.mCurrentDomainIndex = domainIndex;
         this.mCurrentSectionIndex = subModuleIndex;
         this.isSectionIPresent = isSectionIPresent;
-        if(isSectionIPresent!=null){
+        if(isSectionIPresent!=null && sections!=null){
             setPresentSections(isSectionIPresent);
         }
     }
@@ -135,14 +138,14 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
 
     private void createLeftPaneListData() {
         leftPaneList = new ArrayList<>();
-        sections = module.getSections();
-
         for (SubModule subModule : sections) {
             if (subModule.isPresent()) {
                 leftPaneList.add(subModule);
                 if (subModule.hasDomains()) {
                     domains = subModule.getDomains();
                     leftPaneList.addAll(domains);
+
+
                 }
             }
         }
@@ -206,6 +209,10 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
 
             parent = view.findViewById(R.id.parent_sections_list);
             moduleName = view.findViewById(R.id.list_module_name);
+            sections = module.getSections();
+            if(isSectionIPresent!=null && sections!=null){
+                setPresentSections(isSectionIPresent);
+            }
             createLeftPaneListData();
             adapter = new LeftPaneAdapter(leftPaneList, this);
             parent.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));

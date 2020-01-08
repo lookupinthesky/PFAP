@@ -85,7 +85,7 @@ public class SurveyDataSingleton {
         if (sInstance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         } else {
-            createSurveyData(context);
+            createSurveyDataAndAddToCurrentSession(context);
        //     getUsersDataFromDb(context);
         }
     }
@@ -168,7 +168,6 @@ public class SurveyDataSingleton {
             JSONHelper.setSurveyId(_id);
         }
 
-
     }
 
     private void insertSections(Context context) {
@@ -231,7 +230,25 @@ public class SurveyDataSingleton {
         }
 
     }
+
+
+    public void createSurveyDataAndAddToCurrentSession(Context context){
+
+        createSurveyData(context);
+        addCurrentSurveyToSessionDataList();
+    }
+
+    private void addCurrentSurveyToSessionDataList(){
+
+        CurrentSessionData data = new CurrentSessionData();
+        data.setSerialNumber(userCount);
+        data.setSurveyData(modules);
+        currentSessionData.add(data);
+    }
+
+
     CurrentSessionData surveyData;
+    List<CurrentSessionData> currentSessionData = new ArrayList<>();
 
     int userCount;
     public  void addToCurrentSessionDataAndCreateNew(CurrentSessionData data, Context context){

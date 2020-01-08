@@ -295,6 +295,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             if(hasDespondency) {
                 despondency.setOnCheckedChangeListener(null);
                 despondency.clearCheck();
+                despondencyParent.setVisibility(View.GONE);
             }
 
             if (question.getAnswer() != null) { // condition for when view recycles, no data loses
@@ -307,6 +308,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
             if(question.hasDespondency() && question.getDespondency()!=-1){
                 despondency.setOnCheckedChangeListener(null);
+                despondencyParent.setVisibility(View.VISIBLE);
                 despondency.check(despondency.getChildAt(getIndexOfDespondency(question.getDespondency())).getId());
                 despondency.setOnCheckedChangeListener(mListener);
             }

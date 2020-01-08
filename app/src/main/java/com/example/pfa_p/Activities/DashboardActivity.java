@@ -43,6 +43,7 @@ import static com.example.pfa_p.Activities.LoginActivity.ARG_VOLUNTEER_ID;
 public class DashboardActivity extends AppCompatActivity {
 
 
+    private static final String LOG_TAG =DashboardActivity.class.getName() ;
     @BindView(R.id.recent_activity)
     RecyclerView recentActivityList;
 
@@ -172,6 +173,8 @@ public class DashboardActivity extends AppCompatActivity {
         String prisonerId = user.getPrisonerId();
         String volunteerId = user.getVolunteerId();
         boolean isResults = user.getStatus().equalsIgnoreCase("COMPLETED");
+        Log.d(LOG_TAG, "method: showResults: prisonerId = " + prisonerId + " volunteerId = " + volunteerId + " isResults = " + isResults);
+
         Bundle args = new Bundle();
         args.putString(ARG_PRISONER_ID, prisonerId);
         args.putString(ARG_VOLUNTEER_ID, volunteerId);

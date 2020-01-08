@@ -113,6 +113,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                         String prisonerID = args.getString(ARG_PRISONER_ID);
                         String volunteerID = args.getString(ARG_VOLUNTEER_ID);
                         boolean isResults = args.getBoolean(ARG_IS_RESULTS);
+                        Log.d(LOG_TAG, "method: LoginTaskLoader ; loadInBackground: prisonerId = " + prisonerID + " volunteerId = " + volunteerID + " isResults = " + isResults);
                         prepareSurvey(prisonerID, volunteerID, isResults);
                         return null;
                     }
@@ -294,11 +295,17 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         getContentResolver().delete(SurveyEntry.TABLE_USERS_CONTENT_URI, SurveyEntry.USERS_ID, new String[]{String.valueOf(userId)});
     }
 
-    private void incrementVisitCounter() { //TODO: retrieve visit number
+    private void incrementVisitCounter(String prisonerId) { //TODO: retrieve visit number
+
+        String selection =  SurveyEntry.USERS_COLUMN_INMATE_ID + " = ?" ;
+        String[] selectionArgs  = new String[]{prisonerId};
+
         int totalVisits = helper.totalVisits++;
         ContentValues cv = new ContentValues();
         cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, totalVisits);
-        getContentResolver().insert(SurveyEntry.TABLE_USERS_CONTENT_URI, cv);
+        cv.put(SurveyEntry.USERS_COLUMN_FLAG, "dirty");
+
+        getContentResolver().update(SurveyEntry.TABLE_USERS_CONTENT_URI, cv, selection,selectionArgs);
     }
 
     LoginActivity.SurveyHelperForUser helper;
@@ -335,7 +342,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             if (helper.isHistoryCompleted) {
                 if (helper.isAssessmentCompleted) {
                     if (!isResults)
-                        incrementVisitCounter();
+                        incrementVisitCounter(prisonerId);
                     setCurrentState(0, 0, 0);
                     searchResultsFragment.setAssessmentStatus("To be Started");
                     searchResultsFragment.setDemographicStatus("To be started");
@@ -555,6 +562,17 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
         }
 
+        private Question findQuestionByQuestionId(long questionId, List<Question> questions) {
+
+            for (Question question : questions) {
+                if (question.getId() == questionId) {
+                    return question;
+                }
+            }
+            return null;
+
+        }
+
         /**
          * @param userId
          * @param visitNumber
@@ -584,56 +602,62 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
 
             if (cursor.moveToFirst()) {
+
                 loopcounter = cursor.getCount();
-                for (int i = questionSerialNumber - 1; i < questionSerialNumber + loopcounter - 1; i++) {
+                do {
+                    //        for (int i = questionSerialNumber - 1; i < questionSerialNumber + loopcounter - 1; i++) {
                     // do {
                     count++;
                     questionId = cursor.getLong(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_QUESTION_ID));
                     response = cursor.getString(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_RESPONSE));
+                    Log.d(LOG_TAG, " questionId = " + questionId);
 
-                    Question question = questions.get(i);
-                    if (questionId == question.getId())
-                        question.setAnswer(response, true);
-                    if (count == loopcounter && i < lastSerialNumber - 1) {
-                        Log.d(LOG_TAG, " count = " + count + "loopcounter = " + loopcounter + " i = " + i + " questionSerialNumber = " + questionSerialNumber + " lastSerialNumber = " + lastSerialNumber);
+                    //  Question question = questions.get(i);
+                    Question question0 = findQuestionByQuestionId(questionId, questions);
+                    if (question0 != null) {
+                        question0.setAnswer(response, true);
+                        if (count == loopcounter && !cursor.isAfterLast()/*&& i < lastSerialNumber - 1*/) { // last iteration of loop
+                            Log.d(LOG_TAG, " count = " + count + "loopcounter = " + loopcounter + " questionSerialNumber = " + questionSerialNumber + " lastSerialNumber = " + lastSerialNumber);
 
-                        Question question1 = questions.get(i + 1); //TODO: Bug: In case of Assessment involving only some of questionnairres, and app restarted this logic is not valid
-                        Question question0 = questions.get(i);
-                        Log.d(LOG_TAG, "question0 serial Number = " + question0.getSerialNumber() + " question1 serial Number = " + question1.getSerialNumber());
-                        //TODO: .. continued: Domain number must be calculated based on the results of basic questionnaire
+                            if (questionId != lastSerialNumber) {
+
+                                Question question1 = findQuestionByQuestionId(questionId + 1, questions); //TODO: Bug: In case of Assessment involving only some of questionnairres, and app restarted this logic is not valid
+                                //     Question question0 = questions.get(i);
+                                Log.d(LOG_TAG, "question0 serial Number = " + question0.getSerialNumber() + " question1 serial Number = " + question1.getSerialNumber());
+                                //TODO: .. continued: Domain number must be calculated based on the results of basic questionnaire
 
 
-                        lastQuestionModuleIndex = question0.getSubModule().getModule().getIndex();
-                        lastQuestionSectionIndex = question0.getSubModule().getIndex();
+                                lastQuestionModuleIndex = question0.getSubModule().getModule().getIndex();
+                                lastQuestionSectionIndex = question0.getSubModule().getIndex();
 
-                        nextQuestionModuleIndex = question1.getSubModule().getModule().getIndex();
-                        nextQuestionSectionIndex = question1.getSubModule().getIndex();
+                                nextQuestionModuleIndex = question1.getSubModule().getModule().getIndex();
+                                nextQuestionSectionIndex = question1.getSubModule().getIndex();
 
-                        if (lastQuestionModuleIndex == nextQuestionModuleIndex) {
-                            currentModuleIndex = nextQuestionModuleIndex;
-                            if (lastQuestionSectionIndex == nextQuestionSectionIndex) {
-                                currentSectionIndex = question1.getSubModule().getIndex();
-                                if (question1.getDomain() == null) {
-                                    Log.d(LOG_TAG, "State: Same module, same section, no domain");
-                                    currentDomainIndex = -1;
-                                } else {
-                                    Log.d(LOG_TAG, "State: Same module, same section, present domain");
-                                    calculateCurrentIndices(lastQuestionModuleIndex);
-                                    currentSectionIndex = question1.getSubModule().getIndex();
-                                    currentDomainIndex = question1.getDomain().getIndex();
-                                }
-                            } else {
+                                if (lastQuestionModuleIndex == nextQuestionModuleIndex) {
+                                    currentModuleIndex = nextQuestionModuleIndex;
+                                    if (lastQuestionSectionIndex == nextQuestionSectionIndex) {
+                                        currentSectionIndex = question1.getSubModule().getIndex();
+                                        if (question1.getDomain() == null) {
+                                            Log.d(LOG_TAG, "State: Same module, same section, no domain");
+                                            currentDomainIndex = -1;
+                                        } else {
+                                            Log.d(LOG_TAG, "State: Same module, same section, present domain");
+                                            calculateCurrentIndices(currentModuleIndex - 1); // need better logic here
+                                            currentSectionIndex = question1.getSubModule().getIndex();
+                                            currentDomainIndex = question1.getDomain().getIndex();
+                                        }
+                                    } else {
 
-                                calculateCurrentIndices(lastQuestionModuleIndex); // set present to all the sections present.
-                                currentSectionIndex = getNextSectionIndex(currentModuleIndex, question0, question1);
-                                if (question1.getDomain() == null) {
-                                    Log.d(LOG_TAG, "State: Same module, different section, no domain");
-                                    currentDomainIndex = -1;
-                                } else {
-                                    Log.d(LOG_TAG, "State: Same module, different section, no domain");
-                                    currentDomainIndex = question1.getSubModule().getModule().getSections().get(currentSectionIndex).getDomains().get(0).getIndex();
-                                }
-                            }
+                                        calculateCurrentIndices(currentModuleIndex - 1); // set present to all the sections present.
+                                        currentSectionIndex = getNextSectionIndex(currentModuleIndex, question0, question1);
+                                        if (question1.getDomain() == null) {
+                                            Log.d(LOG_TAG, "State: Same module, different section, no domain");
+                                            currentDomainIndex = -1;
+                                        } else {
+                                            Log.d(LOG_TAG, "State: Same module, different section, no domain");
+                                            currentDomainIndex = question1.getSubModule().getModule().getSections().get(currentSectionIndex).getDomains().get(0).getIndex();
+                                        }
+                                    }
                             /*if (question1.getDomain() == null) {
                                 currentDomainIndex = -1;
                             } else
@@ -641,27 +665,27 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
                                 currentDomainIndex = question1.getDomain().getIndex();
                             setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);*/
-                        } else {
-                            if (lastQuestionModuleIndex == 1) {
-                                Log.d(LOG_TAG, "State: different module, last module : basic questionnaire");
-                                calculateCurrentIndices(lastQuestionModuleIndex);
-                                currentModuleIndex = nextQuestionModuleIndex;
-
-                            } else {
-                                currentModuleIndex = nextQuestionModuleIndex;
-                                currentSectionIndex = question1.getSubModule().getIndex();
-                                if (question1.getDomain() == null) {
-                                    Log.d(LOG_TAG, "State: different module, last module not basic, domain not present");
-                                    currentDomainIndex = -1;
                                 } else {
-                                    Log.d(LOG_TAG, "State: different module, last module not basic, domain not present");
-                                    currentDomainIndex = question1.getSubModule().getModule().getSections().get(currentSectionIndex).getDomains().get(0).getIndex();
-                                }
-                            }
+                                    if (lastQuestionModuleIndex == 1) {
+                                        Log.d(LOG_TAG, "State: different module, last module : basic questionnaire");
+                                        calculateCurrentIndices(lastQuestionModuleIndex);
+                                        currentModuleIndex = nextQuestionModuleIndex;
 
-                        }
-                        Log.d(LOG_TAG, "current state being set for assessmnent; currentModuleIndex = " + currentModuleIndex + " currentSectionIndex = " + currentSectionIndex + " currentDomainIndex = " + currentDomainIndex);
-                        setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
+                                    } else {
+                                        currentModuleIndex = nextQuestionModuleIndex;
+                                        currentSectionIndex = question1.getSubModule().getIndex();
+                                        if (question1.getDomain() == null) {
+                                            Log.d(LOG_TAG, "State: different module, last module not basic, domain not present");
+                                            currentDomainIndex = -1;
+                                        } else {
+                                            Log.d(LOG_TAG, "State: different module, last module not basic, domain not present");
+                                            currentDomainIndex = question1.getSubModule().getModule().getSections().get(currentSectionIndex).getDomains().get(0).getIndex();
+                                        }
+                                    }
+
+                                }
+                                Log.d(LOG_TAG, "current state being set for assessmnent; currentModuleIndex = " + currentModuleIndex + " currentSectionIndex = " + currentSectionIndex + " currentDomainIndex = " + currentDomainIndex);
+                                setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);
 
 
                         /*currentModuleIndex = question1.getSubModule().getModule().getIndex();
@@ -675,12 +699,17 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                             currentDomainIndex = question1.getDomain().getIndex();
                         Log.d(LOG_TAG, "In loginActivity when user exists: mCurrentSectionIndex = " + mCurrentSectionIndex);
                         setCurrentState(currentModuleIndex, currentSectionIndex, currentDomainIndex);*/
-                        break;
-                    } else if (i == lastSerialNumber - 1) {
-                        setCurrentState(3, -1, -1);
+                                break;
+                            } else {
+                                setCurrentState(3, -1, -1); // redundant check
+                            }
+                        }
+                    } else {
+                        throw new IllegalStateException("Unknown Question ID in database");
                     }
-                    if (!cursor.isAfterLast()) cursor.moveToNext();
-                }
+                    //  if (!cursor.isAfterLast()) cursor.moveToNext();
+                    // }
+                } while (cursor.moveToNext());
             } else {
 
                 //    deleteUser(userId);

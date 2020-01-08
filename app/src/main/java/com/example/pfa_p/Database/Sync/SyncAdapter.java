@@ -84,7 +84,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             JSONObject root = new JSONObject();
             //
-//TODO: get json from results
+            // TODO: get json from results
             String str = root.toString();
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(

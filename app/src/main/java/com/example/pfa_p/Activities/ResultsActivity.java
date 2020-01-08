@@ -32,6 +32,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
     RecyclerView parent;
     Button buttonHome;
     Button buttonExit;
+  //  ResetSurveyListener mListener;
 
 
     @Override
@@ -123,6 +124,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         switch(v.getId() ){
 
         case R.id.button_home:{
+    //        SurveyDataSingleton.getInstance(this).createSurveyDataAndAddToCurrentSession(this);
             Intent intent = new Intent(ResultsActivity.this, DashboardActivity.class);
             startActivity(intent);
         }
@@ -140,5 +142,9 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
 
             }
         }
+    }
+
+    public interface ResetSurveyListener{
+        void onSurveyFinished();
     }
 }
