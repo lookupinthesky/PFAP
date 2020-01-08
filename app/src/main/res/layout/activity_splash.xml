@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/color_white"
+
+    android:orientation="vertical">
+
+    <LinearLayout
+
+        android:id="@+id/mhf_logo"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <ImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginBottom="32dp"
+            android:layout_weight="4"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/mhf_logo_new" />
+
+
+       <!-- <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="Psychological First Aid Kit"
+            android:textColor="@android:color/black"
+            android:textSize="72sp" />-->
+
+    </LinearLayout>
+
+    <!--<LinearLayout
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:layout_below="@id/mhf_logo"></LinearLayout>
+-->
+
+</RelativeLayout>

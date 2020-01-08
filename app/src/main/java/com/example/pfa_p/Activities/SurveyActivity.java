@@ -315,7 +315,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     private void updateHistoryFlagInResultsTable(String userId) { //TODO
 
         ContentValues cv = new ContentValues();
-        cv.put(SurveyEntry.USERS_COLUMN_HISTORY_FLAG, "COMPLETED");
+        cv.put(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG, "COMPLETED");
         getContentResolver().update(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, SurveyEntry.RESULTS_PRISONER_ID + " =?", new String[]{userId});
     }
 
@@ -403,6 +403,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         cv.put(SurveyEntry.RESULTS_COLUMN_FLAG, "dirty");
         //   getContentResolver().insert(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv);
         long _id = getContentResolver().update(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, selection, selectionArgs);
+
+        Log.d(LOG_TAG, "method: saveResultsToDb, content values = " + cv.toString());
 
         if (_id == -1) {
             throw new IllegalStateException();

@@ -15,5 +15,6 @@
     <color name="color_white">#ffffff</color>
     <color name="colorPrimaryLightLogin">#713B79</color>
     <color name="color_white_shaded">#7F000000</color>
+    <color name = "color_mhf_logo_red">#D7110E</color>
 
 </resources>

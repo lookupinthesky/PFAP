@@ -42,7 +42,7 @@ public class LoginScreenFragment extends DialogFragment {
         // getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = getResources().getConfiguration().screenHeightDp;                       // displayMetrics.heightPixels;
         int width = getResources().getConfiguration().screenWidthDp;
-        //  getDialog().getWindow().setLayout(width, height);
+      //    getDialog().getWindow().setLayout(width, height);
     }
 
     @Override
@@ -128,6 +128,10 @@ public class LoginScreenFragment extends DialogFragment {
 
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.DialogStyle);
+    }
 
     private boolean validatefields(String prisonerId, String volunteerId) {
 

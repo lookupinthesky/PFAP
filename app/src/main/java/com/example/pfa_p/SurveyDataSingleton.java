@@ -44,6 +44,9 @@ public class SurveyDataSingleton {
     private static volatile SurveyDataSingleton sInstance;
     private List<Module> modules;
     private List<CurrentSessionData> currentSessionUsers;
+    public static final String ANSWERS_FLAG_COMPLETE = "COMPLETE" ;
+    public static final String ANSWERS_FLAG_INCOMPLETE = "INCOMPLETE" ;
+
 
     private List<Question> questions;
     private List<User> users;
@@ -387,8 +390,8 @@ public class SurveyDataSingleton {
             try {
                 if (cursor1.moveToFirst()) {
                     user.setTimeStamp(cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_TIME_STAMP)));
-                    boolean historyFlag = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG)).equalsIgnoreCase("COMPLETE");
-                    boolean assessmentFlag = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG)).equalsIgnoreCase("COMPLETE");
+                    boolean historyFlag = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG)).equalsIgnoreCase("COMPLETED");
+                    boolean assessmentFlag = cursor1.getString(cursor1.getColumnIndex(SurveyEntry.RESULTS_COLUMN_ASSESSMENT_FLAG)).equalsIgnoreCase("COMPLETED");
                     String status = historyFlag & assessmentFlag ? "COMPLETE" : "INCOMPLETE";
                     user.setStatus(status);
                     String action = status.equalsIgnoreCase("COMPLETE") ? "VIEW RESULTS" : "RESUME";

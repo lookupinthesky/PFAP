@@ -630,6 +630,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         selection,
                         selectionArgs);
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case SECTIONS_WITH_ID: {
@@ -637,6 +640,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case DOMAINS: {
@@ -644,6 +650,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         selection,
                         selectionArgs);
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case DOMAINS_WITH_ID: {
@@ -651,6 +660,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case QUESTIONS: {
@@ -658,6 +670,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         selection,
                         selectionArgs);
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case QUESTIONS_WITH_ID: {
@@ -665,6 +680,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case ANSWERS_ASSESSMENT: {
@@ -672,6 +690,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         selection,
                         selectionArgs);
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case ANSWERS_ASSESSMENT_WITH_ID: {
@@ -679,6 +700,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case ANSWERS_HISTORY: {
@@ -686,6 +710,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         selection,
                         selectionArgs);
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case ANSWERS_HISTORY_WITH_ID: {
@@ -693,6 +720,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case SURVEYS: {
@@ -700,6 +730,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         selection,
                         selectionArgs);
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case SURVEYS_WITH_ID: {
@@ -707,6 +740,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case USERS: {
@@ -714,6 +750,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         selection,
                         selectionArgs);
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
             case USERS_WITH_ID: {
@@ -721,6 +760,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
 
@@ -729,6 +771,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         selection,
                         selectionArgs);
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
 
@@ -737,6 +782,9 @@ public class SurveyProvider extends ContentProvider {
                         contentValues,
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
+                if (!(numUpdated > 0)) {
+                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                }
                 break;
             }
 
