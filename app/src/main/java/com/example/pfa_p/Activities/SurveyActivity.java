@@ -280,6 +280,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         if (item instanceof Domain) {
             Log.d(SurveyActivity.class.getName(), "Method:saveToDb Called" + " item = " + ((Domain) item).getName());
             questions = ((Domain) item).getQuestions();
+            userId = String.valueOf(((Domain) item).getSubModule().getModule().getUser().getIdInDb());
             insertAnswers(questions, true, isUpdate);
 
             return true;
@@ -292,7 +293,6 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                 } else {
                     insertAnswers(questions, false, isUpdate);
                     if (((SubModule) item).getIndex() == ((SubModule) item).getModule().getSections().size() - 1)
-
                         updateHistoryFlagInResultsTable(userId);
                 }
                 return true;
@@ -316,7 +316,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
         ContentValues cv = new ContentValues();
         cv.put(SurveyEntry.RESULTS_COLUMN_HISTORY_FLAG, "COMPLETED");
-        getContentResolver().update(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, SurveyEntry.RESULTS_PRISONER_ID + " =?", new String[]{userId});
+      int i =  getContentResolver().update(SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, SurveyEntry.RESULTS_PRISONER_ID + " =?", new String[]{userId});
+    Log.d(LOG_TAG, "method:updateHistoryFlagInResultsTable; rows updated = " + i);
     }
 
     /**
@@ -406,7 +407,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
         Log.d(LOG_TAG, "method: saveResultsToDb, content values = " + cv.toString());
 
-        if (_id == -1) {
+        if (_id == 0) {
             throw new IllegalStateException();
         }
         return true;

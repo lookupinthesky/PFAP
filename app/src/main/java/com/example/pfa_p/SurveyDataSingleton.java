@@ -44,6 +44,7 @@ public class SurveyDataSingleton {
     private static volatile SurveyDataSingleton sInstance;
     private List<Module> modules;
     private List<CurrentSessionData> currentSessionUsers;
+    private List<CurrentSessionData> currentSessionData = new ArrayList<>();
     public static final String ANSWERS_FLAG_COMPLETE = "COMPLETE" ;
     public static final String ANSWERS_FLAG_INCOMPLETE = "INCOMPLETE" ;
 
@@ -129,11 +130,11 @@ public class SurveyDataSingleton {
         domains = helper.getDomains();
         questions = helper.getQuestions();
         writeToDb(context);
-        try {
+       /* try {
             printDatabase(context);
         } catch (JSONException e) {
             throw new IllegalStateException("Failed to print test database");
-        }
+        }*/
 
     }
 
@@ -249,12 +250,27 @@ public class SurveyDataSingleton {
         currentSessionData.add(data);
     }
 
+    public int getUserCount() {
+        return userCount;
+    }
+
+    public void setUserCount(int userCount) {
+        this.userCount = userCount;
+    }
+
+    public List<CurrentSessionData> getCurrentSessionData() {
+        return currentSessionData;
+    }
+
+    public void setCurrentSessionData(List<CurrentSessionData> currentSessionData) {
+        this.currentSessionData = currentSessionData;
+    }
 
     CurrentSessionData surveyData;
-    List<CurrentSessionData> currentSessionData = new ArrayList<>();
+  //  List<CurrentSessionData> currentSessionData = new ArrayList<>();
 
     int userCount;
-    public  void addToCurrentSessionDataAndCreateNew(CurrentSessionData data, Context context){
+    /*public  void addToCurrentSessionDataAndCreateNew(CurrentSessionData data, Context context){
 
 
 
@@ -270,10 +286,12 @@ public class SurveyDataSingleton {
 
         surveyData.setSurveyData(modules);
         surveyData.setSerialNumber(userCount);
+
+
     }
+*/
 
-
-     class CurrentSessionData{
+     public class CurrentSessionData{
 
 
         CurrentSessionData(){}
@@ -281,7 +299,26 @@ public class SurveyDataSingleton {
         int serialNumber;
         List<Module> surveyData;
 
-        public int getSerialNumber() {
+        String result;
+        List<Uri> tablesUpdated;
+
+         public String getResult() {
+             return result;
+         }
+
+         public void setResult(String result) {
+             this.result = result;
+         }
+
+         public List<Uri> getTablesUpdated() {
+             return tablesUpdated;
+         }
+
+         public void setTablesUpdated(List<Uri> tablesUpdated) {
+             this.tablesUpdated = tablesUpdated;
+         }
+
+         public int getSerialNumber() {
             return serialNumber;
         }
 
@@ -376,6 +413,13 @@ public class SurveyDataSingleton {
         } finally {
             cursor.close();
         }
+    }
+
+    String resultsCurrent;
+
+    public void setResultsForCurrentSession(String results){
+
+        this.resultsCurrent = results;
     }
 
 
@@ -487,17 +531,40 @@ public class SurveyDataSingleton {
 
     public JSONObject getCursorFromTable(Uri tableuri, Context context) throws JSONException {
 
+    String selection = "flag = ?";
+
+    String[] selectionArgsBefore = new String[]{ "dirty"};
+
+    String[] selectionArgsAfter = new String[] {"syncing"};
+
+    ContentValues cv = new ContentValues();
+    cv.put("flag", "syncing");
+
         String tableName = getTableName(SurveyProvider.sUriMatcher.match(tableuri));
+
+//         List<Uri> tablesBeingUpdated = currentSessionData.get(userCount).getTablesUpdated();
+
+ //       tablesBeingUpdated.add(tableuri);
         JSONObject obj;
-        Cursor cursor = context.getContentResolver().query(tableuri, null, null, null, null);
+        context.getContentResolver().update(tableuri, cv,  selection, selectionArgsBefore);
+        Cursor cursor = context.getContentResolver().query(tableuri, null, selection, selectionArgsAfter, null);
+
+    //    context.getContentResolver().update(tableuri, cv,  selection, selectionArgs);
+
         if (cursor.moveToFirst()) {
             obj = cursorToJSON(cursor, tableName);
         } else {
             obj = new JSONObject();
+   //         tablesBeingUpdated.remove(tableuri);
         }
         cursor.close();
         return obj;
     }
+
+    List<Uri> tablesBeingUpdated = new ArrayList<>();
+
+
+
 
     public JSONObject cursorToJSON(Cursor cursor, String tableName) throws JSONException {
 
@@ -533,7 +600,7 @@ public class SurveyDataSingleton {
                 Log.d(MainActivity.class.getName(), "row = " + jsonObject.toString());
             } while (cursor.moveToNext());
 
-            finalJ.put(tableName, rows);
+            finalJ.put(tableName, rows); // TODO: don't return object, return array and create array of arrays.
         }
         return finalJ;
     }

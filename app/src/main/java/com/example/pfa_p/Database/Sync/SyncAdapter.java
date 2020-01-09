@@ -4,14 +4,18 @@ import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SyncResult;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.example.pfa_p.Database.SurveyContract;
-import com.example.pfa_p.Database.SurveyProvider;
+import com.example.pfa_p.SurveyDataSingleton;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
@@ -34,6 +38,12 @@ import java.nio.charset.StandardCharsets;
  */
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SYNC_ADAPTER";
+
+    private static final int RESPONSE_CODE_ERROR = 404;
+
+    private static final int RESPONSE_CODE_SUCCESSFUL = 100;
+
+
 
     /**
      * This gives us access to our local data source.
@@ -82,10 +92,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
              * JSON
              */
 
-            JSONObject root = new JSONObject();
+            JSONArray array = SurveyDataSingleton.getInstance(getContext()).getExportableDatabaseInJSON(getContext());
             //
             // TODO: get json from results
-            String str = root.toString();
+            String str = array.toString();
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, StandardCharsets.UTF_8));
@@ -116,6 +126,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 response = "";
             }*/
 
+            if (conn.getResponseCode() == RESPONSE_CODE_SUCCESSFUL) {
+
+                markDirtyAsSynced(getContext());
+            } else {
+                // do nothing;
+            }
+
 
             Log.i("STATUS", String.valueOf(conn.getResponseCode()));
             Log.i("MSG", conn.getResponseMessage());
@@ -132,6 +149,99 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         ContentResolver.requestSync(null, SurveyContract.CONTENT_AUTHORITY, bundle);
+    }
+
+
+    private void markDirtyAsSynced(Context context) {
+        String selection = "flag";
+
+
+        String[] selectionArgsBefore = new String[]{"dirty"};
+
+        String[] selectionArgsAfter = new String[]{"syncing"};
+
+        //   String[] selectionArgsFinal = new String[] {"uptodate"};
+
+        ContentValues cv = new ContentValues();
+        cv.put("flag", "uptodate");
+
+        //       String tableName = getTableName(SurveyProvider.sUriMatcher.match(tableuri));
+        //  JSONObject obj;
+
+        SurveyDataSingleton singleton = SurveyDataSingleton.getInstance(context);
+
+        // int currentUser = singleton.getUserCount();
+
+        //   List<Uri> updatedTables = singleton.getCurrentSessionData().get(currentUser).getTablesUpdated();
+
+        // for (Uri table : updatedTables) {
+        ContentResolver resolver = context.getContentResolver();
+
+        resolver.update(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, cv, selection, selectionArgsAfter);
+        resolver.update(SurveyContract.SurveyEntry.TABLE_SURVEYS_CONTENT_URI, cv, selection, selectionArgsAfter);
+        resolver.update(SurveyContract.SurveyEntry.TABLE_SECTIONS_CONTENT_URI, cv, selection, selectionArgsAfter);
+        resolver.update(SurveyContract.SurveyEntry.TABLE_DOMAINS_CONTENT_URI, cv, selection, selectionArgsAfter);
+        resolver.update(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, cv, selection, selectionArgsAfter);
+        resolver.update(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, cv, selection, selectionArgsAfter);
+        resolver.update(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, cv, selection, selectionArgsAfter);
+        resolver.update(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, cv, selection, selectionArgsAfter);
+        //   Cursor cursor = context.getContentResolver().query(tableuri, null, selection, selectionArgsAfter, null);
+
+        //    context.getContentResolver().update(tableuri, cv,  selection, selectionArgs);
+
+
+        // } //TODO: Note: if this doesn't work, update all tables individually
+
+    }
+
+    public JSONArray getExportableDatabaseInJSON() {
+        JSONArray arr = new JSONArray();
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, getContext()));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SURVEYS_CONTENT_URI, getContext()));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SECTIONS_CONTENT_URI, getContext()));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_DOMAINS_CONTENT_URI, getContext()));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, getContext()));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, getContext()));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, getContext()));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, getContext()));
+        Log.d(TAG, arr.toString());
+        return arr;
+    }
+
+
+    public JSONObject getCursorFromTable(Uri tableuri, Context context) {
+
+        JSONObject obj;
+        Cursor cursor = context.getContentResolver().query(tableuri, null, null, null, null);
+        obj = cursorToJSON(cursor);
+        cursor.close();
+        return obj;
+    }
+
+    public JSONObject cursorToJSON(Cursor cursor) {
+
+        JSONObject jsonObject = new JSONObject();
+        for (int i = 0; i < cursor.getColumnCount(); i++) {
+            String columnName = cursor.getColumnName(i);
+            try {
+                switch (cursor.getType(i)) {
+                    case Cursor.FIELD_TYPE_INTEGER:
+                        jsonObject.put(columnName, cursor.getInt(i));
+                        break;
+                    case Cursor.FIELD_TYPE_FLOAT:
+                        jsonObject.put(columnName, cursor.getFloat(i));
+                        break;
+                    case Cursor.FIELD_TYPE_STRING:
+                        jsonObject.put(columnName, cursor.getString(i));
+                        break;
+
+                }
+            } catch (Exception ex) {
+                Log.e(TAG, "Exception converting cursor column to json field: " + columnName);
+            }
+        }
+        return jsonObject;
+
     }
 
 

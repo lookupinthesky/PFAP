@@ -1,6 +1,7 @@
 package com.example.pfa_p.Activities;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -48,6 +49,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         List<SubModule> subModules = SurveyDataSingleton.getInstance(this).getModules().get(2).getSections();
         setDataAndInvalidate(subModules);
 
+
     }
 
 
@@ -70,23 +72,23 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
 
     public JSONArray getExportableDatabaseInJSON() {
         JSONArray arr = new JSONArray();
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SURVEYS_CONTENT_URI));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SECTIONS_CONTENT_URI));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_DOMAINS_CONTENT_URI));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, this));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SURVEYS_CONTENT_URI, this));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SECTIONS_CONTENT_URI, this));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_DOMAINS_CONTENT_URI, this));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, this));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, this));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, this));
+        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, this ));
         Log.d(TAG, arr.toString());
         return arr;
     }
 
 
-    public JSONObject getCursorFromTable(Uri tableuri) {
+    public JSONObject getCursorFromTable(Uri tableuri, Context context) {
 
         JSONObject obj;
-        Cursor cursor = getContentResolver().query(tableuri, null, null, null, null);
+        Cursor cursor = context.getContentResolver().query(tableuri, null, null, null, null);
         obj = cursorToJSON(cursor);
         cursor.close();
         return obj;
