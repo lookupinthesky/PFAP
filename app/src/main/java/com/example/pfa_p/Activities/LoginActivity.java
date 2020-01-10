@@ -300,7 +300,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         String selection =  SurveyEntry.USERS_COLUMN_INMATE_ID + " = ?" ;
         String[] selectionArgs  = new String[]{prisonerId};
 
-        int totalVisits = helper.totalVisits++;
+        int totalVisits = helper.totalVisits++; //TODO: check logic; value not getting updated from cursor
         ContentValues cv = new ContentValues();
         cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, totalVisits);
         cv.put(SurveyEntry.USERS_COLUMN_FLAG, "dirty");
@@ -341,9 +341,12 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             setUserToModules(prisonerId, idInDb, volunteerId);
             if (helper.isHistoryCompleted) {
                 if (helper.isAssessmentCompleted) {
-                    if (!isResults)
+                    setCurrentState(3, 0, 0);
+                    if (!isResults) {
                         incrementVisitCounter(prisonerId);
-                    setCurrentState(0, 0, 0);
+                        setCurrentState(1, 0, 0);
+                    }
+                    //TODO: get Results from DB, parse here and use in Results Activity
                     searchResultsFragment.setAssessmentStatus("To be Started");
                     searchResultsFragment.setDemographicStatus("To be started");
                     searchResultsFragment.setVisitNumber(helper.totalVisits);

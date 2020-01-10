@@ -172,7 +172,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void showResults(User user) {
         String prisonerId = user.getPrisonerId();
         String volunteerId = user.getVolunteerId();
-        boolean isResults = user.getStatus().equalsIgnoreCase("COMPLETED");
+        boolean isResults = user.getStatus().equalsIgnoreCase("COMPLETE");
         Log.d(LOG_TAG, "method: showResults: prisonerId = " + prisonerId + " volunteerId = " + volunteerId + " isResults = " + isResults);
 
         Bundle args = new Bundle();

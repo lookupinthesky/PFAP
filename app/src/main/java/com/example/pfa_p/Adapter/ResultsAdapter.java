@@ -1,6 +1,7 @@
 package com.example.pfa_p.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pfa_p.Activities.ResultsActivity;
 import com.example.pfa_p.Model.Bar;
 import com.example.pfa_p.Model.Domain;
 import com.example.pfa_p.Model.Result;
@@ -95,6 +97,8 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
                     if (domain.getDespondency()) {
                         Bar bar1 = new Bar(itemView.getContext(), 20, result.getDespondencyValue(), result.getDespondencyText(), result.getDespondencyResultText());
                         details.addView(bar1.getView());
+                        Log.d(ResultsActivity.class.getName(), "Domain Result is: " + result.getNameForResults() + " = " + result.getResultValueActual() + " = " + result.getResultText());
+
                     }
                 }
 
@@ -102,7 +106,8 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
 
                 heading.setText(subModule.getName());
                 resultView.setText(result.getResultText());
-            }
+                Log.d(ResultsActivity.class.getName(), "Section Result is: " + subModule.getName() + ": " + result.getResultText());
+                }
         }
     }
 

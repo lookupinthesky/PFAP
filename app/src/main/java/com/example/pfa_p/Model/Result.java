@@ -3,6 +3,7 @@ package com.example.pfa_p.Model;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.pfa_p.Activities.ResultsActivity;
 import com.example.pfa_p.SurveyDataSingleton;
 import com.example.pfa_p.Utils.RatingSystem;
 
@@ -84,10 +85,13 @@ public class Result implements RatingSystem {
         if (name.contains(assessing)) {
             finalString = name.replaceAll(assessing, "");
         }
-        if (finalString.contains(checking)) {
-            finalString = finalString.replaceAll(checking, "");
+        if (name.contains(checking)) {
+            finalString = name.replaceAll(checking, "");
         }
+        Log.d(ResultsActivity.class.getName(), "method:createNameForResults: " + finalString);
         return finalString;
+
+
 
     }
 

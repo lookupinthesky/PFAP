@@ -457,7 +457,7 @@ public class SurveyDataSingleton {
 
 
     // must only be called after survey completion
-    public String getSurveyResultForInmateInJSON(String prisonerId) {
+    public String getSurveyResultForInmateInJSON() {
 
         List<FinalResult> finalResults = new ArrayList<>();
         List<SubModule> subModules = modules.get(2).getSections();

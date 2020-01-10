@@ -101,6 +101,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             ft.commit();
         } else {
             Intent intent1 = new Intent(SurveyActivity.this, ResultsActivity.class);
+            intent1.putExtra("is_section_present", isSectionIPresent);
             startActivity(intent1);
         }
         mCallbacks = this;
@@ -391,7 +392,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
         Log.d(LOG_TAG, "method: saveResultsToDb called");
 
-        String results = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON(userId);
+        String results = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON();
         String selection = SurveyEntry.RESULTS_PRISONER_ID + " = ?";
         String[] selectionArgs = new String[]{userId};
 
@@ -432,12 +433,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                         boolean isUpdate = args.getBoolean("isUpdate");
                         Log.d(LOG_TAG, "method: loadInBackground called : isResults = " + isResults + " isUpdate = " + isUpdate);
 
-
                         if (saveToDb(item, isUpdate))
                             return new String("Saved to Database");
                         return "Could Not Save values to Database";
                     }
-
 
                     @Override
                     protected void onStartLoading() {

@@ -40,6 +40,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
+        boolean[] isSectionIpresent = getIntent().getExtras().getBooleanArray("is_section_present");
         buttonHome = findViewById(R.id.button_home);
         buttonExit = findViewById(R.id.button_exit);
         buttonExit.setOnClickListener(this);
