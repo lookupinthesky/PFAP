@@ -23,6 +23,7 @@ import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.Utils.JSONHelper;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,8 +46,8 @@ public class SurveyDataSingleton {
     private List<Module> modules;
     private List<CurrentSessionData> currentSessionUsers;
     private List<CurrentSessionData> currentSessionData = new ArrayList<>();
-    public static final String ANSWERS_FLAG_COMPLETE = "COMPLETE" ;
-    public static final String ANSWERS_FLAG_INCOMPLETE = "INCOMPLETE" ;
+    public static final String ANSWERS_FLAG_COMPLETE = "COMPLETE";
+    public static final String ANSWERS_FLAG_INCOMPLETE = "INCOMPLETE";
 
 
     private List<Question> questions;
@@ -90,7 +91,7 @@ public class SurveyDataSingleton {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         } else {
             createSurveyDataAndAddToCurrentSession(context);
-       //     getUsersDataFromDb(context);
+            //     getUsersDataFromDb(context);
         }
     }
    /* public void setContext(Context mContext) {
@@ -236,13 +237,13 @@ public class SurveyDataSingleton {
     }
 
 
-    public void createSurveyDataAndAddToCurrentSession(Context context){
+    public void createSurveyDataAndAddToCurrentSession(Context context) {
 
         createSurveyData(context);
         addCurrentSurveyToSessionDataList();
     }
 
-    private void addCurrentSurveyToSessionDataList(){
+    private void addCurrentSurveyToSessionDataList() {
 
         CurrentSessionData data = new CurrentSessionData();
         data.setSerialNumber(userCount);
@@ -267,7 +268,7 @@ public class SurveyDataSingleton {
     }
 
     CurrentSessionData surveyData;
-  //  List<CurrentSessionData> currentSessionData = new ArrayList<>();
+    //  List<CurrentSessionData> currentSessionData = new ArrayList<>();
 
     int userCount;
     /*public  void addToCurrentSessionDataAndCreateNew(CurrentSessionData data, Context context){
@@ -291,10 +292,11 @@ public class SurveyDataSingleton {
     }
 */
 
-     public class CurrentSessionData{
+    public class CurrentSessionData {
 
 
-        CurrentSessionData(){}
+        CurrentSessionData() {
+        }
 
         int serialNumber;
         List<Module> surveyData;
@@ -302,23 +304,23 @@ public class SurveyDataSingleton {
         String result;
         List<Uri> tablesUpdated;
 
-         public String getResult() {
-             return result;
-         }
+        public String getResult() {
+            return result;
+        }
 
-         public void setResult(String result) {
-             this.result = result;
-         }
+        public void setResult(String result) {
+            this.result = result;
+        }
 
-         public List<Uri> getTablesUpdated() {
-             return tablesUpdated;
-         }
+        public List<Uri> getTablesUpdated() {
+            return tablesUpdated;
+        }
 
-         public void setTablesUpdated(List<Uri> tablesUpdated) {
-             this.tablesUpdated = tablesUpdated;
-         }
+        public void setTablesUpdated(List<Uri> tablesUpdated) {
+            this.tablesUpdated = tablesUpdated;
+        }
 
-         public int getSerialNumber() {
+        public int getSerialNumber() {
             return serialNumber;
         }
 
@@ -417,7 +419,7 @@ public class SurveyDataSingleton {
 
     String resultsCurrent;
 
-    public void setResultsForCurrentSession(String results){
+    public void setResultsForCurrentSession(String results) {
 
         this.resultsCurrent = results;
     }
@@ -485,20 +487,42 @@ public class SurveyDataSingleton {
         return gson.toJson(finalResults);
     }
 
+    public ArrayList<FinalResult> parseResultsJSON(String json) {
+
+        Gson gson = new Gson();
+        TypeToken<List<FinalResult>> token = new TypeToken<List<FinalResult>>() {};
+        return gson.fromJson(json, token.getType());
+
+
+    }
+
+    ArrayList<FinalResult> finalResults;
+
+    public ArrayList<FinalResult> getFinalResults(){
+        return finalResults;
+    }
+
+    public void setFinalResults(String results){
+
+      finalResults  = parseResultsJSON(results);
+    }
+
+
     private void printDatabase(Context context) throws JSONException {
         JSONArray array = getExportableDatabaseInJSON(context);
         String database = array.toString();
         int maxLogSize = 1000;
-        for(int i = 0; i <= database.length() / maxLogSize; i++) {
+        for (int i = 0; i <= database.length() / maxLogSize; i++) {
             int start = i * maxLogSize;
-            int end = (i+1) * maxLogSize;
+            int end = (i + 1) * maxLogSize;
             end = end > database.length() ? database.length() : end;
             Timber.tag("database logs").v(database.substring(start, end));
         }
 
-    //    writeToFile(database);
+        //    writeToFile(database);
 
     }
+
     private void writeToFile(String content) {
         try {
             File file = new File(Environment.getExternalStorageDirectory() + "/sample_data.txt");
@@ -531,39 +555,37 @@ public class SurveyDataSingleton {
 
     public JSONObject getCursorFromTable(Uri tableuri, Context context) throws JSONException {
 
-    String selection = "flag = ?";
+        String selection = "flag = ?";
 
-    String[] selectionArgsBefore = new String[]{ "dirty"};
+        String[] selectionArgsBefore = new String[]{"dirty"};
 
-    String[] selectionArgsAfter = new String[] {"syncing"};
+        String[] selectionArgsAfter = new String[]{"syncing"};
 
-    ContentValues cv = new ContentValues();
-    cv.put("flag", "syncing");
+        ContentValues cv = new ContentValues();
+        cv.put("flag", "syncing");
 
         String tableName = getTableName(SurveyProvider.sUriMatcher.match(tableuri));
 
 //         List<Uri> tablesBeingUpdated = currentSessionData.get(userCount).getTablesUpdated();
 
- //       tablesBeingUpdated.add(tableuri);
+        //       tablesBeingUpdated.add(tableuri);
         JSONObject obj;
-        context.getContentResolver().update(tableuri, cv,  selection, selectionArgsBefore);
+        context.getContentResolver().update(tableuri, cv, selection, selectionArgsBefore);
         Cursor cursor = context.getContentResolver().query(tableuri, null, selection, selectionArgsAfter, null);
 
-    //    context.getContentResolver().update(tableuri, cv,  selection, selectionArgs);
+        //    context.getContentResolver().update(tableuri, cv,  selection, selectionArgs);
 
         if (cursor.moveToFirst()) {
             obj = cursorToJSON(cursor, tableName);
         } else {
             obj = new JSONObject();
-   //         tablesBeingUpdated.remove(tableuri);
+            //         tablesBeingUpdated.remove(tableuri);
         }
         cursor.close();
         return obj;
     }
 
     List<Uri> tablesBeingUpdated = new ArrayList<>();
-
-
 
 
     public JSONObject cursorToJSON(Cursor cursor, String tableName) throws JSONException {
@@ -819,8 +841,8 @@ public class SurveyDataSingleton {
     }*/
 
 
-    private String getTableName(int match){
-        switch (match){
+    private String getTableName(int match) {
+        switch (match) {
             case SurveyProvider.SECTIONS:
                 return SurveyEntry.TABLE_SECTIONS;
             case SurveyProvider.DOMAINS:
@@ -837,10 +859,10 @@ public class SurveyDataSingleton {
                 return SurveyEntry.TABLE_QUESTIONS;
             case SurveyProvider.USERS:
                 return SurveyEntry.TABLE_USERS;
-                default:throw new IllegalStateException("Unknown Request for table name");
+            default:
+                throw new IllegalStateException("Unknown Request for table name");
         }
     }
-
 
 
     public List<Module> getSurveyData() {

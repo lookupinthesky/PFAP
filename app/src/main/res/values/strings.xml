@@ -13,4 +13,6 @@
     <string name="field_visit_number">Visit Number</string>
     <string name="field_colon">:</string>
     <string name="button_start">START</string>
+    <string name="results_section_score">Mean Score = %1$s</string>
+    <string name="results_section_score_max">Max Score = %1$s</string>
 </resources>

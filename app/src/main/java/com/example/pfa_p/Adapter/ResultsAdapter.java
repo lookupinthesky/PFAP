@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pfa_p.Activities.ResultsActivity;
 import com.example.pfa_p.Model.Bar;
 import com.example.pfa_p.Model.Domain;
+import com.example.pfa_p.Model.FinalResult;
 import com.example.pfa_p.Model.Result;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
@@ -27,12 +28,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsViewHolder> {
+
+
     public ResultsAdapter(List<SubModule> list) {
         super();
         this.data = list;
     }
 
     List<SubModule> data;
+    List<FinalResult> data1;
 
     @NonNull
     @Override
@@ -72,15 +76,24 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
 
         TextView heading;
         TextView resultView;
+        TextView sectionScore;
+        TextView maxSectionScore;
         LinearLayout details;
         View view;
+        String sectionScoreString;
+        String maxScoreString;
 
         public ResultsViewHolder(@NonNull View itemView) {
             super(itemView);
             this.view = itemView;
             heading = itemView.findViewById(R.id.item_heading);
             resultView = itemView.findViewById(R.id.item_result);
+            sectionScore = itemView.findViewById(R.id.item_score);
+            maxSectionScore = itemView.findViewById(R.id.item_max_score);
             details = itemView.findViewById(R.id.bars_container);
+            sectionScoreString = itemView.getContext().getString(R.string.results_section_score);
+            maxScoreString = itemView.getContext().getString(R.string.results_section_score_max);
+
 
         }
 
@@ -106,9 +119,31 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
 
                 heading.setText(subModule.getName());
                 resultView.setText(result.getResultText());
+                sectionScore.setText(itemView.getContext().getString(R.string.results_section_score, String.valueOf(result.getMeanSectionScore())));
+            //    maxSectionScore.setText(itemView.getContext().getString(R.string.results_section_score_max, String.valueOf(result.getMaxSectionScore())));
+
                 Log.d(ResultsActivity.class.getName(), "Section Result is: " + subModule.getName() + ": " + result.getResultText());
                 }
+
+
+
+
+
+
+
         }
+
+        void onBinding(FinalResult result){
+
+
+            result.getDomainResult();
+
+
+
+
+        }
+
+
     }
 
 

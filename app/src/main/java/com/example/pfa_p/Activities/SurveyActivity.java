@@ -385,14 +385,15 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
 
     }
-
+    String results;
     private static final String LOG_TAG = SurveyActivity.class.getName();
 
     private boolean saveResultsToDb() {
 
         Log.d(LOG_TAG, "method: saveResultsToDb called");
 
-        String results = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON();
+        results   = SurveyDataSingleton.getInstance(this).getSurveyResultForInmateInJSON();
+        SurveyDataSingleton.getInstance(this).setFinalResults(results);
         String selection = SurveyEntry.RESULTS_PRISONER_ID + " = ?";
         String[] selectionArgs = new String[]{userId};
 

@@ -190,17 +190,29 @@ public class Result implements RatingSystem {
         return "";
     }
 
+    public float getMeanSectionScore() {
+        return meanSectionScore;
+    }
+    int maxSectionScore;
+    public int getMaxSectionScore(){
+        return maxSectionScore;
+    }
 
+    float meanSectionScore ;
     private String generateResultText(SubModule subModule) {
 
-        float mean = calculateMean(subModule);
+         meanSectionScore = calculateMean(subModule);
+         maxSectionScore = calculateMaxSectionScore(subModule);
         if (subModule.hasDomains()) {
-            return generateResultText(mean, subModule);
+            return generateResultText(meanSectionScore, subModule);
         } else {
             return "";
         }
     }
+ private int   calculateMaxSectionScore(SubModule subModule){
 
+        return - 1;
+ }
 
     private float calculateMean(SubModule subModule) {
 

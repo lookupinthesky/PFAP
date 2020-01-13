@@ -1,10 +1,12 @@
 package com.example.pfa_p.Activities;
 
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +35,7 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
     RecyclerView parent;
     Button buttonHome;
     Button buttonExit;
+    LoadingTask loadingTask;
   //  ResetSurveyListener mListener;
 
 
@@ -40,19 +43,28 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
-        boolean[] isSectionIpresent = getIntent().getExtras().getBooleanArray("is_section_present");
+   //     boolean[] isSectionIpresent = getIntent().getExtras().getBooleanArray("is_section_present");
         buttonHome = findViewById(R.id.button_home);
         buttonExit = findViewById(R.id.button_exit);
         buttonExit.setOnClickListener(this);
         buttonHome.setOnClickListener(this);
         parent = findViewById(R.id.results_list);
         parent.setLayoutManager(new LinearLayoutManager(this));
+        loadingTask = new LoadingTask(this);
+     //   loadingTask.execute();
+
         List<SubModule> subModules = SurveyDataSingleton.getInstance(this).getModules().get(2).getSections();
         setDataAndInvalidate(subModules);
 
 
     }
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Cancel running task(s) to avoid memory leaks
+        if (loadingTask != null)
+            loadingTask.cancel(true);
+    }
 
     List<SubModule> list = new ArrayList<>();
 
@@ -123,6 +135,11 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
 
 
     @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
     public void onClick(View v) {
         switch(v.getId() ){
 
@@ -144,6 +161,40 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                 ContentResolver.requestSync(null, SurveyContract.CONTENT_AUTHORITY, bundle);
 
             }
+        }
+    }
+
+
+    private  class LoadingTask extends AsyncTask<Void, Void, Void>{
+
+        private ProgressDialog dialog;
+
+
+        protected LoadingTask(Context context){
+            dialog = new ProgressDialog(context);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog.setMessage("Doing something, please wait.");
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            while(true){
+                if(SurveyDataSingleton.getInstance(ResultsActivity.this).getFinalResults() != null ){
+                    break;
+                }
+            }
+            return null;
         }
     }
 

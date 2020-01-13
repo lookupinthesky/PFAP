@@ -295,12 +295,12 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         getContentResolver().delete(SurveyEntry.TABLE_USERS_CONTENT_URI, SurveyEntry.USERS_ID, new String[]{String.valueOf(userId)});
     }
 
-    private void incrementVisitCounter(String prisonerId) { //TODO: retrieve visit number
+    private void incrementVisitCounter(String prisonerId, int currentVisitNumber) { //TODO: retrieve visit number
 
         String selection =  SurveyEntry.USERS_COLUMN_INMATE_ID + " = ?" ;
         String[] selectionArgs  = new String[]{prisonerId};
 
-        int totalVisits = helper.totalVisits++; //TODO: check logic; value not getting updated from cursor
+        int totalVisits = currentVisitNumber + 1; //TODO: check logic; value not getting updated from cursor
         ContentValues cv = new ContentValues();
         cv.put(SurveyEntry.USERS_COLUMN_TOTAL_VISITS, totalVisits);
         cv.put(SurveyEntry.USERS_COLUMN_FLAG, "dirty");
@@ -320,6 +320,8 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
     public void prepareSurvey(String prisonerId, String volunteerId, boolean isResults) {
         helper = new LoginActivity.SurveyHelperForUser();
         long idInDb = helper.fetchUserData(prisonerId, this);
+        int currentVisitNumber = helper.totalVisits;
+        int lastVisitNumber = helper.totalVisits;
 
         if (idInDb == -1) {
 
@@ -336,28 +338,42 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
         } else {
             //TODO: initializeresultstable????
-            helper.fetchResultsDataForUser(idInDb, this);
+            helper.fetchResultsDataForUser(idInDb, this, currentVisitNumber);
             prepareSearchResultsFragment(idInDb, prisonerId, volunteerId, false);
             setUserToModules(prisonerId, idInDb, volunteerId);
             if (helper.isHistoryCompleted) {
                 if (helper.isAssessmentCompleted) {
-                    setCurrentState(3, 0, 0);
+                 //   setCurrentState(3, 0, 0);
                     if (!isResults) {
-                        incrementVisitCounter(prisonerId);
-                        setCurrentState(1, 0, 0);
+                        incrementVisitCounter(prisonerId, currentVisitNumber);
+                        setCurrentState(1, 0, 0); //history is already completed
+                        searchResultsFragment.setAssessmentStatus("To be Started");
+                        searchResultsFragment.setDemographicStatus("Completed");
+                        searchResultsFragment.setVisitNumber(currentVisitNumber + 1    /* total visits + 1*/    );
                     }
+                    else{
+
+                        helper.fetchAssessmentTableDataForUser(idInDb, currentVisitNumber /*total visits*/, this);
+                        searchResultsFragment.setAssessmentStatus("Completed");
+                        searchResultsFragment.setDemographicStatus("Completed");
+                        searchResultsFragment.setVisitNumber(currentVisitNumber /*total visits*/); //TODO: records can't be viewed for visits earlier than last visit, make accommodations
+                    }
+
+               //     ArrayList<FinalResult> finalResults = SurveyDataSingleton.getInstance(this).parseResultsJSON(helper.result);
+
                     //TODO: get Results from DB, parse here and use in Results Activity
-                    searchResultsFragment.setAssessmentStatus("To be Started");
-                    searchResultsFragment.setDemographicStatus("To be started");
-                    searchResultsFragment.setVisitNumber(helper.totalVisits);
+
                 } else {
-                    helper.fetchAssessmentTableDataForUser(idInDb, 1/*helper.totalVisits*/, this); //TODO: verify visit numbers
+                    helper.fetchAssessmentTableDataForUser(idInDb, currentVisitNumber /*total visits*/, this); //TODO: verify visit numbers
                     searchResultsFragment.setDemographicStatus("Completed");
                     searchResultsFragment.setAssessmentStatus("To be resumed");
-                    searchResultsFragment.setVisitNumber(helper.totalVisits);
+                    searchResultsFragment.setVisitNumber(currentVisitNumber /*total visits*/);
                 }
             } else {
                 helper.fetchHistoryTableDataForUser(idInDb, this);
+                searchResultsFragment.setAssessmentStatus("To be resumed");
+                searchResultsFragment.setDemographicStatus("To be started");
+                searchResultsFragment.setVisitNumber(currentVisitNumber  /*total visits*/);
             }
         }
     }
@@ -466,6 +482,8 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                */
                 totalVisits = cursor.getInt(cursor.getColumnIndex(SurveyEntry.USERS_COLUMN_TOTAL_VISITS));
 
+                Log.d(LOG_TAG, "idInDb = " + _id + " totalVisits = " + totalVisits);
+
                 cursor.close();
                 return _id;
             }
@@ -473,12 +491,12 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         }
 
 
-        void fetchResultsDataForUser(long idInDb, Context context) {
+        void fetchResultsDataForUser(long idInDb, Context context, int visitNumber) {
 
 
-            String selection = SurveyEntry.RESULTS_PRISONER_ID + " = ?";
+            String selection = SurveyEntry.RESULTS_PRISONER_ID + " = ?" + " AND " + SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER + " = ?";
             String[] projection = null;
-            String[] selectionArgs = new String[]{String.valueOf(idInDb)};
+            String[] selectionArgs = new String[]{String.valueOf(idInDb), String.valueOf(visitNumber)};
 
             Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_RESULTS_CONTENT_URI, projection, selection, selectionArgs, null);
 
@@ -583,7 +601,8 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
          */
         void fetchAssessmentTableDataForUser(long userId, int visitNumber, Context context) {
 
-            String selection_assessment = SurveyEntry.ANSWERS_COLUMN_USER_ID + " = ? AND " + SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + " = ?";
+            Log.d(LOG_TAG, "method:fetchAssessmentTableData, visitNumber as provided = " + visitNumber + ", userIdInDb = " + userId);
+            String selection_assessment = SurveyEntry.ANSWERS_COLUMN_USER_ID + " =?" + " AND " + SurveyEntry.ANSWERS_COLUMN_VISIT_NUMBER + " =?";
             String[] selectionArgs_assessment = new String[]{String.valueOf(userId), String.valueOf(visitNumber)};
             Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, projection_assessment, selection_assessment, selectionArgs_assessment, null);
             List<Question> questions = SurveyDataSingleton.getInstance(context).getQuestions();
