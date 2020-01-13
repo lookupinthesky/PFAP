@@ -37,7 +37,7 @@ public class Question extends RightPane {
     /**
      * The index of the answer within the OPTIONS of a question in an order specified by the surveydata.json or csv
      */
-    private int answerIndex;
+    private int answerIndex = -1; //TODO: check if -1 doesn't disturb code
     /**
      * If Question belongs to Socio-Demographics then false, else true
      */
@@ -171,6 +171,7 @@ public class Question extends RightPane {
         /*if(answerIndex == -1){
             throw new IllegalArgumentException("set answer doesn't match stored answer");
         }*/
+        Log.d("Questions", " getAnswerIndex Called: " + answerIndex);
         return answerIndex;
     }
 

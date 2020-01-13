@@ -13,11 +13,13 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Adapter.ResultsAdapter;
 import com.example.pfa_p.Database.SurveyContract;
+import com.example.pfa_p.Database.Sync.AccountGeneral;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
@@ -52,9 +54,11 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         parent.setLayoutManager(new LinearLayoutManager(this));
         loadingTask = new LoadingTask(this);
      //   loadingTask.execute();
-
+        parent.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         List<SubModule> subModules = SurveyDataSingleton.getInstance(this).getModules().get(2).getSections();
         setDataAndInvalidate(subModules);
+        AccountGeneral.createSyncAccount(this);
+
 
 
     }
@@ -158,7 +162,8 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_FORCE, true);
                 bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-                ContentResolver.requestSync(null, SurveyContract.CONTENT_AUTHORITY, bundle);
+                ContentResolver.requestSync(AccountGeneral.getAccount(), SurveyContract.CONTENT_AUTHORITY, bundle);
+
 
             }
         }

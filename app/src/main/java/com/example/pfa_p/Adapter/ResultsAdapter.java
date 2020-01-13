@@ -107,10 +107,11 @@ public class ResultsAdapter extends RecyclerView.Adapter<ResultsAdapter.ResultsV
                     Result result = domain.getResult();
                     Bar bar = new Bar(itemView.getContext(), result.getMaxResultValue(), result.getResultValueActual(), result.getNameForResults(), result.getResultText());
                     details.addView(bar.getView());
+                    Log.d(ResultsActivity.class.getName(), "Domain Result is: " + result.getNameForResults() + " = " + result.getResultValueActual() + " = " + result.getResultText());
+
                     if (domain.getDespondency()) {
                         Bar bar1 = new Bar(itemView.getContext(), 20, result.getDespondencyValue(), result.getDespondencyText(), result.getDespondencyResultText());
                         details.addView(bar1.getView());
-                        Log.d(ResultsActivity.class.getName(), "Domain Result is: " + result.getNameForResults() + " = " + result.getResultValueActual() + " = " + result.getResultText());
 
                     }
                 }

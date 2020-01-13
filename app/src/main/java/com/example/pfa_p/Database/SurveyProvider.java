@@ -631,7 +631,7 @@ public class SurveyProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -641,7 +641,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -651,7 +651,7 @@ public class SurveyProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -661,7 +661,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -671,7 +671,7 @@ public class SurveyProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -681,7 +681,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -691,7 +691,7 @@ public class SurveyProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -701,7 +701,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -711,7 +711,7 @@ public class SurveyProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -721,7 +721,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -731,7 +731,7 @@ public class SurveyProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -741,7 +741,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -751,7 +751,7 @@ public class SurveyProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -761,7 +761,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -772,7 +772,7 @@ public class SurveyProvider extends ContentProvider {
                         selection,
                         selectionArgs);
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }
@@ -783,7 +783,7 @@ public class SurveyProvider extends ContentProvider {
                         SurveyContract.SurveyEntry._ID + " = ?",
                         new String[]{String.valueOf(ContentUris.parseId(uri))});
                 if (!(numUpdated > 0)) {
-                    throw new android.database.SQLException("Failed to update row into: " + uri);
+                    throw new android.database.SQLException("Failed to update row into: " + uri + " Content Values = " + contentValues.toString());
                 }
                 break;
             }

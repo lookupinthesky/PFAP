@@ -40,6 +40,10 @@ import java.util.Scanner;
 
 import timber.log.Timber;
 
+import static com.example.pfa_p.Database.SurveyContract.SurveyEntry.TABLE_DOMAINS_CONTENT_URI;
+import static com.example.pfa_p.Database.SurveyContract.SurveyEntry.TABLE_SECTIONS_CONTENT_URI;
+import static com.example.pfa_p.Database.SurveyContract.SurveyEntry.TABLE_SURVEYS_CONTENT_URI;
+
 public class SurveyDataSingleton {
 
     private static volatile SurveyDataSingleton sInstance;
@@ -160,7 +164,7 @@ public class SurveyDataSingleton {
 
         String surveyId = JSONHelper.getSurveyId();
 
-        Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_SURVEYS_CONTENT_URI, survey_projections, SurveyEntry.SURVEY_COLUMN_SURVEY_ID + " = ?", new String[]{surveyId}, null);
+        Cursor cursor = context.getContentResolver().query(TABLE_SURVEYS_CONTENT_URI, survey_projections, SurveyEntry.SURVEY_COLUMN_SURVEY_ID + " = ?", new String[]{surveyId}, null);
 
         if (cursor.moveToFirst()) {
             isSurveyPresent = true;
@@ -168,7 +172,7 @@ public class SurveyDataSingleton {
         } else {
             ContentValues cv = new ContentValues();
             cv.put(SurveyEntry.SURVEY_COLUMN_SURVEY_ID, surveyId);
-            Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_SURVEYS_CONTENT_URI, cv);
+            Uri uri = context.getContentResolver().insert(TABLE_SURVEYS_CONTENT_URI, cv);
             long _id = ContentUris.parseId(uri);
             JSONHelper.setSurveyId(_id);
         }
@@ -182,12 +186,12 @@ public class SurveyDataSingleton {
         if (!isSurveyPresent) {
             for (SubModule subModule : sections) {
                 sectionContentValues = subModule.getContentValues();
-                Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_SECTIONS_CONTENT_URI, sectionContentValues); //TODO: assign section ids to corresponding sections
+                Uri uri = context.getContentResolver().insert(TABLE_SECTIONS_CONTENT_URI, sectionContentValues); //TODO: assign section ids to corresponding sections
                 long _id = ContentUris.parseId(uri);
                 subModule.setId(_id);
             }
         } else {
-            Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_SECTIONS_CONTENT_URI, section_projection, null, null, SurveyEntry.SECTIONS_ID + " ASC");
+            Cursor cursor = context.getContentResolver().query(TABLE_SECTIONS_CONTENT_URI, section_projection, null, null, SurveyEntry.SECTIONS_ID + " ASC");
             String name;
             long _id;
             if (cursor.moveToFirst()) {
@@ -212,13 +216,13 @@ public class SurveyDataSingleton {
         if (!isSurveyPresent) {
             for (Domain domain : domains) {
                 ContentValues domainContentValues = domain.getContentValues();
-                Uri uri = context.getContentResolver().insert(SurveyEntry.TABLE_DOMAINS_CONTENT_URI, domainContentValues);
+                Uri uri = context.getContentResolver().insert(TABLE_DOMAINS_CONTENT_URI, domainContentValues);
                 long _id = ContentUris.parseId(uri);
                 domain.setId(_id);
 
             }
         } else {
-            Cursor cursor = context.getContentResolver().query(SurveyEntry.TABLE_DOMAINS_CONTENT_URI, domain_projection, null, null, SurveyEntry.DOMAINS_COLUMN_ID + " ASC");
+            Cursor cursor = context.getContentResolver().query(TABLE_DOMAINS_CONTENT_URI, domain_projection, null, null, SurveyEntry.DOMAINS_COLUMN_ID + " ASC");
             String name;
             long _id;
             if (cursor.moveToFirst()) {
@@ -540,29 +544,31 @@ public class SurveyDataSingleton {
     }
 
     public JSONArray getExportableDatabaseInJSON(Context context) throws JSONException {
+        Log.d(MainActivity.class.getName(), "method: getExportableDatabaseInJson = " );
         JSONArray arr = new JSONArray();
         arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SURVEYS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_SECTIONS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_DOMAINS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(TABLE_SURVEYS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(TABLE_SECTIONS_CONTENT_URI, context));
+        arr.put(getCursorFromTable(TABLE_DOMAINS_CONTENT_URI, context));
         arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, context));
         arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, context));
         arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, context));
         arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, context));
-        Log.d(MainActivity.class.getName(), arr.toString());
+        Log.d(MainActivity.class.getName(), "method: getExportableDatabaseInJson = " + arr.toString());
         return arr;
     }
 
     public JSONObject getCursorFromTable(Uri tableuri, Context context) throws JSONException {
 
-        String selection = "flag = ?";
+        String selection = getSelectionForTableUri(tableuri);
 
-        String[] selectionArgsBefore = new String[]{"dirty"};
+        String[] selectionArgsBefore = getSelectionArgsForTableUri(tableuri);
 
-        String[] selectionArgsAfter = new String[]{"syncing"};
+        String[] selectionArgsAfter = getSelectionArgsAfterForTableUri(tableuri);
 
         ContentValues cv = new ContentValues();
         cv.put("flag", "syncing");
+
 
         String tableName = getTableName(SurveyProvider.sUriMatcher.match(tableuri));
 
@@ -570,7 +576,8 @@ public class SurveyDataSingleton {
 
         //       tablesBeingUpdated.add(tableuri);
         JSONObject obj;
-        context.getContentResolver().update(tableuri, cv, selection, selectionArgsBefore);
+        if(!(tableuri == TABLE_SURVEYS_CONTENT_URI || tableuri == TABLE_DOMAINS_CONTENT_URI || tableuri == TABLE_SECTIONS_CONTENT_URI)){
+        context.getContentResolver().update(tableuri, cv, selection, selectionArgsBefore);}
         Cursor cursor = context.getContentResolver().query(tableuri, null, selection, selectionArgsAfter, null);
 
         //    context.getContentResolver().update(tableuri, cv,  selection, selectionArgs);
@@ -585,6 +592,44 @@ public class SurveyDataSingleton {
         return obj;
     }
 
+    String getSelectionForTableUri(Uri uri){
+
+        if(uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI){
+
+            return null;
+        }
+        else{
+            return "flag = ?";
+        }
+    }
+
+    String[] getSelectionArgsForTableUri(Uri uri){
+
+        if(uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI){
+
+            return null;
+        }
+        else{
+            return new String[] {"dirty"};
+        }
+
+    }
+
+    String[] getSelectionArgsAfterForTableUri(Uri uri){
+        if(uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI){
+
+            return null;
+        }
+        else{
+            return new String[] {"syncing"};
+        }
+    }
+
+   /* ContentValues getCVForTableUri(Uri tableUri){
+
+
+    }
+*/
     List<Uri> tablesBeingUpdated = new ArrayList<>();
 
 

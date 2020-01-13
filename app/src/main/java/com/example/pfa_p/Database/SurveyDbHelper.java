@@ -11,7 +11,7 @@ public class SurveyDbHelper extends SQLiteOpenHelper {
 
     //name & version
     private static final String DATABASE_NAME = "Survey.db";
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 14;
 
     private static final String SQL_CREATE_TABLE_SECTIONS = "CREATE TABLE " +
             SurveyContract.SurveyEntry.TABLE_SECTIONS + "(" +

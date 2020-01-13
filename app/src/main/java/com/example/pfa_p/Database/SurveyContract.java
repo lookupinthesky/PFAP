@@ -28,6 +28,8 @@ public class SurveyContract {
 
         public static final String SECTIONS_COLUMN_SURVEY_ID = "survey_id";
 
+        public static final String SECTIONS_COLUMN_FLAG = "flag";
+
 
         /*
          * TABLE_DOMAINS
@@ -44,6 +46,8 @@ public class SurveyContract {
 
         public static final String DOMAINS_COLUMN_SECTION_ID = "section_id";
 
+        public static final String DOMAINS_COLUMN_FLAG = "flag";
+
 
         /*
          * TABLE_SURVEYS
@@ -59,6 +63,8 @@ public class SurveyContract {
         public static final String SURVEYS_COLUMN_PK = "_ID";
 
         public static final String SURVEY_COLUMN_SURVEY_ID = "survey_id";
+
+        public static final String SURVEY_COLUMN_FLAG = "flag";
 
 
         /**

@@ -86,15 +86,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
             conn.setRequestProperty("Content-Type", "application/json");
 
-            Log.e(TAG, "11 - url : " + requestURL);
+            Log.d(TAG, "11 - url : " + requestURL);
 
             /*
              * JSON
              */
 
             JSONArray array = SurveyDataSingleton.getInstance(getContext()).getExportableDatabaseInJSON(getContext());
+
+            Log.d(TAG, "onPerformSync Called: " + array.toString());
             //
             // TODO: get json from results
+
             String str = array.toString();
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
@@ -126,17 +129,18 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 response = "";
             }*/
 
-            if (conn.getResponseCode() == RESPONSE_CODE_SUCCESSFUL) {
+            /*if (conn.getResponseCode() == RESPONSE_CODE_SUCCESSFUL) {
 
                 markDirtyAsSynced(getContext());
             } else {
                 // do nothing;
-            }
+            }*/
 
 
-            Log.i("STATUS", String.valueOf(conn.getResponseCode()));
-            Log.i("MSG", conn.getResponseMessage());
+            Log.d(TAG, String.valueOf(conn.getResponseCode()));
+            Log.d(TAG, conn.getResponseMessage());
         } catch (Exception e) {
+            Log.e(TAG, "Connection Failed" );
             e.printStackTrace();
         }
 
