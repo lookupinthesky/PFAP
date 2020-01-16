@@ -79,12 +79,14 @@ public class SearchResultsFragment extends Fragment {
     Button resumeButton;
     Button startNewPrisoner;
     TextView noResultDisplayMessage;
+   // int visitNumber;
 
     Button nextButton;
     Button discardButton;
 
     View confirmationScreen;
     View searchResultsNotFound;
+    TextView visitNumberView;
 
     public boolean isNewPrisoner() {
         return isNewPrisoner;
@@ -129,6 +131,7 @@ public class SearchResultsFragment extends Fragment {
      //   startNewPrisoner = confirmationScreen.findViewById(R.id.start_new);
         //      Button startAssessment = view.findViewById(R.id.start_assessment);
         noResultDisplayMessage = searchResultsNotFound.findViewById(R.id.not_found_message);
+        visitNumberView = confirmationScreen.findViewById(R.id.status_visit_number);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,6 +198,8 @@ public class SearchResultsFragment extends Fragment {
         demographicStatusView.setText(demographicStatus);
         questionnaireStatus.setText(demographicStatus);
         assessmentStatusView.setText(assessmentStatus);
+        visitNumberView.setText(String.valueOf(visitNumber));
+
         /*resumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

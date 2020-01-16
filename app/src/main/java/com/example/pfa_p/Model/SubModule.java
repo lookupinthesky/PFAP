@@ -118,6 +118,7 @@ public class SubModule extends LeftPane {
         ContentValues values = new ContentValues();
         values.put(SurveyContract.SurveyEntry.SECTIONS_COLUMN_NAME, name);
         values.put(SurveyContract.SurveyEntry.SECTIONS_COLUMN_SURVEY_ID, getSurveyId());
+        values.put(SurveyContract.SurveyEntry.SECTIONS_COLUMN_FLAG, "dirty");
         return values;
 
     }

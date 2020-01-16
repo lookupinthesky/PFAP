@@ -72,7 +72,7 @@ public class LoadingScreenFragment extends Fragment {
             endTime = SystemClock.elapsedRealtime();
             elapsedMilliSeconds  = endTime - startTime;
        //     elapsedSeconds = elapsedMilliSeconds / 1000.0;
-            if(elapsedMilliSeconds>5000) {
+            if(elapsedMilliSeconds>2000) {
                 progressView.stop();
                 mListener.onLoaderFinished();
             } else{
@@ -83,7 +83,7 @@ public class LoadingScreenFragment extends Fragment {
                         progressView.stop();
                         mListener.onLoaderFinished();
                     }
-                }, 5000-elapsedMilliSeconds);
+                }, 2000-elapsedMilliSeconds);
             }
         }
 

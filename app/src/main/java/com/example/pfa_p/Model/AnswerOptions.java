@@ -40,6 +40,10 @@ public class AnswerOptions {
         return options;
     }
 
+    /**
+     * NOTE: use getNumberOfOptions instead getOptions().size() because number of options are manually entered while size is automatically generated and can have null fields
+     * @return
+     */
     public int getNumberOfOptions() {
         if (numberOfOptions > 8)
             return options.size(); //TODO: fix this

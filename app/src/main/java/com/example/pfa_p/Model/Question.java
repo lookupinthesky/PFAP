@@ -65,7 +65,7 @@ public class Question extends RightPane {
         this.questionView = questionView;
     }*/
 
-  //  private View questionView;
+    //  private View questionView;
 
 
     private int despondency = -1;
@@ -89,16 +89,23 @@ public class Question extends RightPane {
             this.despondency = 1;
         } else if (despondency.equalsIgnoreCase("Negative"))
             this.despondency = 2;
-        else{
+        else {
             throw new IllegalArgumentException("wrong text for despondency");
         }
     }
 
+    public void setDespondency(int despondency) {
+        if (despondency == 0 || despondency == 1 || despondency == 2 || despondency == -1)
+            this.despondency = despondency;
+        else throw new IllegalArgumentException("illegal value for despondency");
+    }
+
     public int getDespondency() {
 
-       return despondency;
+        return despondency;
 
     }
+
     public long getId() {
         return questionIdInDb;
     }
@@ -262,7 +269,7 @@ public class Question extends RightPane {
     }
 
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return isEnabled;
     }
 
@@ -289,7 +296,7 @@ public class Question extends RightPane {
     public ContentValues getAnswerContentValues(/*boolean isAssessment*/) {
         ContentValues answerValues = new ContentValues();
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_VOLUNTEER_ID, getSubModule().getModule().getUser().getVolunteerId());
-        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_TIME_STAMP, JavaUtils.getCurrentDateTime());
+        answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_TIME_STAMP, JavaUtils.getCurrentTimeStamp());
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_QUESTION_ID, questionIdInDb);
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_USER_ID, /*user.getIdInDb()*/getSubModule().getModule().getUser().getIdInDb());
         answerValues.put(SurveyContract.SurveyEntry.ANSWERS_COLUMN_RESPONSE, getAnswer());
@@ -340,7 +347,7 @@ public class Question extends RightPane {
             depQues.add(Integer.valueOf(matcher.group()));
         }
         dependentQuestions = (new int[depQues.size()]);
-        for(int i = 0; i< depQues.size(); i++){
+        for (int i = 0; i < depQues.size(); i++) {
             dependentQuestions[i] = depQues.get(i);
         }
         /*temp = (rules.replaceAll("[^0-9]", " "));

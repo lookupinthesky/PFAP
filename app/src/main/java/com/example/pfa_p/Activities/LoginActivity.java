@@ -391,7 +391,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
         cv.put(SurveyEntry.RESULTS_VOLUNTEER_ID, volunteerId);
         cv.put(SurveyEntry.RESULTS_PRISONER_ID, idInDb);
         cv.put(SurveyEntry.RESULTS_COLUMN_VISIT_NUMBER, 1);
-        cv.put(SurveyEntry.RESULTS_TIME_STAMP, JavaUtils.getCurrentDateTime());
+        cv.put(SurveyEntry.RESULTS_TIME_STAMP, JavaUtils.getCurrentTimeStamp());
         cv.put(SurveyEntry.RESULTS_JSON, "N/A");
         cv.put(SurveyEntry.RESULTS_COLUMN_FLAG, "dirty"); //TODO: data type
 
@@ -456,7 +456,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                 /*SurveyEntry.ANSWERS_COLUMN_SURVEY_ID,*/
                 SurveyEntry.ANSWERS_COLUMN_USER_ID,
                 SurveyEntry.ANSWERS_COLUMN_RESPONSE};
-        String[] projection_assessment = new String[]{SurveyEntry.ANSWERS_COLUMN_QUESTION_ID, SurveyEntry.ANSWERS_COLUMN_RESPONSE,
+        String[] projection_assessment = new String[]{SurveyEntry.ANSWERS_COLUMN_QUESTION_ID, SurveyEntry.ANSWERS_COLUMN_RESPONSE, SurveyEntry.ANSWERS_COLUMN_DESPONDENCY,
                 /*SurveyEntry.ANSWERS_COLUMN_SURVEY_ID,*/
                 SurveyEntry.ANSWERS_COLUMN_USER_ID};
 
@@ -611,6 +611,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
             int lastSerialNumber = questions.size();
             long questionId;
             String response;
+            int despondency;
             int count = 0;
             int tempVisitNumber = -1;
             int loopcounter = 0;
@@ -632,12 +633,14 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
                     count++;
                     questionId = cursor.getLong(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_QUESTION_ID));
                     response = cursor.getString(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_RESPONSE));
+                    despondency = cursor.getInt(cursor.getColumnIndex(SurveyEntry.ANSWERS_COLUMN_DESPONDENCY));
                     Log.d(LOG_TAG, " questionId = " + questionId);
 
                     //  Question question = questions.get(i);
                     Question question0 = findQuestionByQuestionId(questionId, questions);
                     if (question0 != null) {
                         question0.setAnswer(response, true);
+                        question0.setDespondency(despondency);
                         if (count == loopcounter && !cursor.isAfterLast()/*&& i < lastSerialNumber - 1*/) { // last iteration of loop
                             Log.d(LOG_TAG, " count = " + count + "loopcounter = " + loopcounter + " questionSerialNumber = " + questionSerialNumber + " lastSerialNumber = " + lastSerialNumber);
 

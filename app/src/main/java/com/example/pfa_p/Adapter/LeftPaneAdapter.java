@@ -1,7 +1,9 @@
 package com.example.pfa_p.Adapter;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -27,7 +29,7 @@ import static com.example.pfa_p.Fragments.SectionsListFragment.LOG_TAG;
 
 public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPaneViewHolder> {
 
-
+    View oldTv;
     public class LeftPaneViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @Nullable
@@ -40,36 +42,52 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
 
         LeftPane item;
 
+
         //same viewholder is used for both header and item in the leftpane list
+
         public LeftPaneViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         void bind(LeftPane item) {
             this.item = item;
 
             if (tv != null && item instanceof Domain) {
                 tv.setText(((Domain) item).getName());
-                tv.setOnClickListener(this);
-            } else if(item instanceof SubModule && ((SubModule) item).hasDomains() && headerName != null) {
-                    headerName.setText(((SubModule) item).getName());
-                    Log.d(LOG_TAG, "SubModule has domains  " + ((SubModule) item).hasDomains());
-                    headerName.setOnClickListener(null);
-            } else if(tv!=null && item instanceof SubModule && !((SubModule) item).hasDomains()){
+                itemView.setOnClickListener(this);
+
+            } else if (item instanceof SubModule && ((SubModule) item).hasDomains() && headerName != null) {
+                headerName.setText(((SubModule) item).getName());
+                Log.d(LOG_TAG, "SubModule has domains  " + ((SubModule) item).hasDomains());
+                headerName.setOnClickListener(null);
+            } else if (tv != null && item instanceof SubModule && !((SubModule) item).hasDomains()) {
                 tv.setText(((SubModule) item).getName());
-                tv.setOnClickListener(this);
+                itemView.setOnClickListener(this);
                 //TODO: verify this case
             }
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    return true;
+                }
 
-            }
+            });
+        }
 
         @Override
         public void onClick(View view) {
-            ((TextView) view).setSelected(true);
+            ( view).setSelected(true);
+            if(oldTv!=null){
+                oldTv.setSelected(false);
+            }
             mListener.onItemClick(item);
+            oldTv = view;
         }
     }
+
     private List<LeftPane> leftPaneList;
     private LeftPaneClickListener mListener;
 
@@ -130,13 +148,13 @@ public class LeftPaneAdapter extends RecyclerView.Adapter<LeftPaneAdapter.LeftPa
 
         LeftPane item = leftPaneList.get(position);
 
-       if(item instanceof SubModule && ((SubModule) item).hasDomains()){
-           return R.layout.header_view_left_pane ;
-       }else {//if(item instanceof SubModule && !((SubModule) item).hasDomains() || item instanceof Domain){
-           return R.layout.item_view_left_pane;
-       }
+        if (item instanceof SubModule && ((SubModule) item).hasDomains()) {
+            return R.layout.header_view_left_pane;
+        } else {//if(item instanceof SubModule && !((SubModule) item).hasDomains() || item instanceof Domain){
+            return R.layout.item_view_left_pane;
+        }
 
-       // return leftPaneList.get(position) instanceof SubModule ? (R.layout.header_view_left_pane) : R.layout.item_view_left_pane;
+        // return leftPaneList.get(position) instanceof SubModule ? (R.layout.header_view_left_pane) : R.layout.item_view_left_pane;
     }
 
     public interface LeftPaneClickListener {

@@ -10,6 +10,7 @@ import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 
 import com.example.pfa_p.Database.SurveyContract;
@@ -19,6 +20,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -64,6 +68,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
 
         String url = "http://mhfindia.org/apps/jsonpostdata.php";
+   //     String url = "http://mhfindia.org/apps/demoget.php";
         performPostCall(url);
 
         //TODO: manage synacadapter timing.
@@ -95,6 +100,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             JSONArray array = SurveyDataSingleton.getInstance(getContext()).getExportableDatabaseInJSON(getContext());
 
             Log.d(TAG, "onPerformSync Called: " + array.toString());
+       //     printJSON(array.toString());
             //
             // TODO: get json from results
 
@@ -110,6 +116,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             conn.connect();
             //     OutputStream os = conn.getOutputStream();
 
+            if(conn.getResponseCode()==200){
+                markDirtyAsSynced(getContext());
+            }
 /*
             int responseCode = conn.getResponseCode();
 
@@ -157,7 +166,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 
     private void markDirtyAsSynced(Context context) {
-        String selection = "flag";
+        String selection = "flag = ?";
 
 
         String[] selectionArgsBefore = new String[]{"dirty"};
@@ -247,7 +256,50 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         return jsonObject;
 
     }
+    public void appendLog(String text)
+    {
+        File logFile = new File("sdcard/log.file");
+        if (!logFile.exists())
+        {
+            try
+            {
+                logFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        try
+        {
+            //BufferedWriter for performance, true to set append to file flag
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(text);
+            buf.newLine();
+            buf.close();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
+    public void printJSON(String data){
+        File root = new File(Environment.getExternalStorageDirectory().toString());
+        File gpxfile = new File(root, "samples.txt");
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(gpxfile);
+            writer.append(data);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
 

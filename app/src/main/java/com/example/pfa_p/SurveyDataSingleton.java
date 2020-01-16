@@ -126,7 +126,7 @@ public class SurveyDataSingleton {
     List<SubModule> sections;
 
     private void createSurveyData(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.surveydata3);
+        InputStream inputStream = context.getResources().openRawResource(R.raw.surveydata4);
         String jsonString = new Scanner(inputStream).useDelimiter("\\A").next();
         JSONHelper helper = new JSONHelper(jsonString);
         //       CSVHelper helper = new CSVHelper(inputStream);
@@ -172,6 +172,7 @@ public class SurveyDataSingleton {
         } else {
             ContentValues cv = new ContentValues();
             cv.put(SurveyEntry.SURVEY_COLUMN_SURVEY_ID, surveyId);
+            cv.put(SurveyEntry.SURVEY_COLUMN_FLAG, "dirty");
             Uri uri = context.getContentResolver().insert(TABLE_SURVEYS_CONTENT_URI, cv);
             long _id = ContentUris.parseId(uri);
             JSONHelper.setSurveyId(_id);
@@ -494,7 +495,8 @@ public class SurveyDataSingleton {
     public ArrayList<FinalResult> parseResultsJSON(String json) {
 
         Gson gson = new Gson();
-        TypeToken<List<FinalResult>> token = new TypeToken<List<FinalResult>>() {};
+        TypeToken<List<FinalResult>> token = new TypeToken<List<FinalResult>>() {
+        };
         return gson.fromJson(json, token.getType());
 
 
@@ -502,13 +504,13 @@ public class SurveyDataSingleton {
 
     ArrayList<FinalResult> finalResults;
 
-    public ArrayList<FinalResult> getFinalResults(){
+    public ArrayList<FinalResult> getFinalResults() {
         return finalResults;
     }
 
-    public void setFinalResults(String results){
+    public void setFinalResults(String results) {
 
-      finalResults  = parseResultsJSON(results);
+        finalResults = parseResultsJSON(results);
     }
 
 
@@ -544,27 +546,57 @@ public class SurveyDataSingleton {
     }
 
     public JSONArray getExportableDatabaseInJSON(Context context) throws JSONException {
-        Log.d(MainActivity.class.getName(), "method: getExportableDatabaseInJson = " );
+        Log.d(MainActivity.class.getName(), "method: getExportableDatabaseInJson = ");
         JSONArray arr = new JSONArray();
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(TABLE_SURVEYS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(TABLE_SECTIONS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(TABLE_DOMAINS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, context));
-        arr.put(getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, context));
+        JSONObject userData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, context);
+        if (userData != null) {
+            arr.put(userData);
+        }
+        JSONObject surveyData = getCursorFromTable(TABLE_SURVEYS_CONTENT_URI, context);
+        if (surveyData != null) {
+            arr.put(surveyData);
+        }
+        JSONObject sectionsData = getCursorFromTable(TABLE_SECTIONS_CONTENT_URI, context);
+        if (sectionsData != null) {
+            arr.put(sectionsData);
+        }
+        JSONObject domainsData = getCursorFromTable(TABLE_DOMAINS_CONTENT_URI, context);
+        if (domainsData != null) {
+            arr.put(domainsData);
+        }
+        JSONObject questionsData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, context);
+        if (questionsData != null) {
+            arr.put(questionsData);
+        }
+        JSONObject historyData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, context);
+        if (historyData != null) {
+            arr.put(historyData);
+        }
+        JSONObject assessmentData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, context);
+        if (assessmentData != null) {
+            arr.put(assessmentData);
+        }
+        JSONObject resultsData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, context);
+        if (resultsData != null) {
+            arr.put(resultsData);
+        }
         Log.d(MainActivity.class.getName(), "method: getExportableDatabaseInJson = " + arr.toString());
         return arr;
     }
 
     public JSONObject getCursorFromTable(Uri tableuri, Context context) throws JSONException {
 
-        String selection = getSelectionForTableUri(tableuri);
+        Log.d("Singleton", "method: getCursorFromTable" + "Uri = " + tableuri.toString());
+      //  String selection = getSelectionForTableUri(tableuri);
+        String selection = "flag = ?";
 
-        String[] selectionArgsBefore = getSelectionArgsForTableUri(tableuri);
+        //  String[] selectionArgsBefore = getSelectionArgsForTableUri(tableuri);
 
-        String[] selectionArgsAfter = getSelectionArgsAfterForTableUri(tableuri);
+        String[] selectionArgsBefore = new String[]{"dirty"};
+
+        //    String[] selectionArgsAfter = getSelectionArgsAfterForTableUri(tableuri);
+
+        String[] selectionArgsAfter = new String[]{"syncing"};
 
         ContentValues cv = new ContentValues();
         cv.put("flag", "syncing");
@@ -576,8 +608,8 @@ public class SurveyDataSingleton {
 
         //       tablesBeingUpdated.add(tableuri);
         JSONObject obj;
-        if(!(tableuri == TABLE_SURVEYS_CONTENT_URI || tableuri == TABLE_DOMAINS_CONTENT_URI || tableuri == TABLE_SECTIONS_CONTENT_URI)){
-        context.getContentResolver().update(tableuri, cv, selection, selectionArgsBefore);}
+        //    if(!(tableuri == TABLE_SURVEYS_CONTENT_URI || tableuri == TABLE_DOMAINS_CONTENT_URI || tableuri == TABLE_SECTIONS_CONTENT_URI)){
+        context.getContentResolver().update(tableuri, cv, selection, selectionArgsBefore);
         Cursor cursor = context.getContentResolver().query(tableuri, null, selection, selectionArgsAfter, null);
 
         //    context.getContentResolver().update(tableuri, cv,  selection, selectionArgs);
@@ -585,51 +617,50 @@ public class SurveyDataSingleton {
         if (cursor.moveToFirst()) {
             obj = cursorToJSON(cursor, tableName);
         } else {
-            obj = new JSONObject();
+            obj = null;
             //         tablesBeingUpdated.remove(tableuri);
         }
+        if(obj!=null)
+        Log.d("Singleton", "method: getCursorFromTable" + "json = " + obj.toString());
         cursor.close();
         return obj;
     }
 
-    String getSelectionForTableUri(Uri uri){
+    String getSelectionForTableUri(Uri uri) {
 
-        if(uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI){
+        if (uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI) {
 
             return null;
-        }
-        else{
+        } else {
             return "flag = ?";
         }
     }
 
-    String[] getSelectionArgsForTableUri(Uri uri){
+    String[] getSelectionArgsForTableUri(Uri uri) {
 
-        if(uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI){
-
-            return null;
-        }
-        else{
-            return new String[] {"dirty"};
-        }
-
-    }
-
-    String[] getSelectionArgsAfterForTableUri(Uri uri){
-        if(uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI){
+        if (uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI) {
 
             return null;
+        } else {
+            return new String[]{"dirty"};
         }
-        else{
-            return new String[] {"syncing"};
+
+    }
+
+    String[] getSelectionArgsAfterForTableUri(Uri uri) {
+        if (uri == TABLE_SURVEYS_CONTENT_URI || uri == TABLE_DOMAINS_CONTENT_URI || uri == TABLE_SECTIONS_CONTENT_URI) {
+
+            return null;
+        } else {
+            return new String[]{"syncing"};
         }
     }
 
-   /* ContentValues getCVForTableUri(Uri tableUri){
+    /* ContentValues getCVForTableUri(Uri tableUri){
 
 
-    }
-*/
+     }
+ */
     List<Uri> tablesBeingUpdated = new ArrayList<>();
 
 

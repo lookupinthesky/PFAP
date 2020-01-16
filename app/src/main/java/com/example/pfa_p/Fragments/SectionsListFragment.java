@@ -24,8 +24,6 @@ import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.tonicartos.superslim.LayoutManager;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +88,8 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
 
     public void onStateChanged(boolean isModuleChanged) {
         if (!isModuleChanged) {
-            moveToNext();
+          LeftPane item =  moveToNext();
+          setClicked(item);
         } else {
             createLeftPaneListData();
             setDataToAdapter();
@@ -130,7 +129,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
             public void run() {
                 parent.findViewHolderForAdapterPosition(i).itemView.performClick();
             }
-        }, 100);
+        }, 10);
     }
 
     List<SubModule> sections;
@@ -152,7 +151,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
     }
 
 
-    private void moveToNext() {
+    private LeftPane moveToNext() {
         LeftPane item;
         if (mCurrentDomainIndex != -1 && mCurrentDomainIndex < sections.get(mCurrentSectionIndex).getDomains().size() - 1) {
             mCurrentDomainIndex++;
@@ -167,8 +166,10 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
                 item = sections.get(mCurrentSectionIndex);
             }
         }
+
+        return item;
        //     setClicked(item)/*next clickable item in List*/;
-            loadSectionDetails(item);
+          //  loadSectionDetails(item);
         }
 
     private int getNextSectionIndex(int currentIndex) {
@@ -229,7 +230,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
                 loadSectionDetails(leftPaneList.get(getLeftPaneIndexForSectionIndex(finalPositionInList)));
             }*/
             Log.d(SectionDetailsFragment.class.getName(), "onViewCreated: mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex + " mSectionIndexinList = " + subModuleIndexInList  );
-            loadSectionDetails(mCurrentDomainIndex == -1 ? leftPaneList.get(subModuleIndexInList) :
+            setClicked(mCurrentDomainIndex == -1 ? leftPaneList.get(subModuleIndexInList) :
                     leftPaneList.get(subModuleIndexInList + mCurrentDomainIndex + 1));
             moduleName.setText(module.getName());
         }

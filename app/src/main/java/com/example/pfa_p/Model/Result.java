@@ -303,7 +303,7 @@ public class Result implements RatingSystem {
         List<Question> questions = domain.getQuestions();
         int maxValue = 0;
         for (Question question : questions) {
-            maxValue += question.getOptions().getOptions().size() - 1;
+            maxValue += question.getOptions().getNumberOfOptions() - 1;
 
         }
         return maxValue;

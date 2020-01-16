@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,6 +59,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
     Bundle loaderArgs;
     private static final int LOADER_ANSWERS = 100;
     private static final int LOADER_RESULTS = 101;
+    TextView surveyHeading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,8 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
         android.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
         Button button = findViewById(R.id.next_button);
+        surveyHeading = findViewById(R.id.survey_heading);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,6 +109,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             startActivity(intent1);
         }
         mCallbacks = this;
+        displaySurveyHeading(mCurrentModuleIndex);
     }
 
     @Override
@@ -225,6 +230,7 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
                 sectionsListFragment.setCurrentState(/*sectionIndex*/ mCurrentSectionIndex, /*domainIndex*/mCurrentDomainIndex, null);
                 sectionsListFragment.setData(/*modules.get(mCurrentModuleIndex).getSections()*/modules.get(mCurrentModuleIndex));
                 sectionsListFragment.onStateChanged(true);
+                displaySurveyHeading(mCurrentModuleIndex);
             } else {
                 loaderArgs.putBoolean("isResults", true);
                 LoaderManager.getInstance(SurveyActivity.this).restartLoader(LOADER_RESULTS, loaderArgs, mCallbacks);
@@ -236,6 +242,13 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
             }
 
         }
+    }
+
+    private void displaySurveyHeading(int currentModuleIndex){
+
+        String heading = modules.get(currentModuleIndex).getName();
+        surveyHeading.setText(heading);
+
     }
 
     private int getFirstSectionIndexFromArray(boolean[] isSectionIPresent) {

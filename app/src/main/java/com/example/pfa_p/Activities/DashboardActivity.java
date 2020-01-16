@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +19,6 @@ import com.example.pfa_p.Model.Module;
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -168,6 +165,12 @@ public class DashboardActivity extends AppCompatActivity {
     public static final int REQUEST_CODE = 1;
 
     public static final String ARG_BUNDLE = "BundleForDashboard";
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(DashboardActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 
     private void showResults(User user) {
         String prisonerId = user.getPrisonerId();

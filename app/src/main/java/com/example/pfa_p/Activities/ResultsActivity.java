@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.pfa_p.Adapter.ResultsAdapter;
 import com.example.pfa_p.Database.SurveyContract;
 import com.example.pfa_p.Database.Sync.AccountGeneral;
+import com.example.pfa_p.Model.Module;
+import com.example.pfa_p.Model.Result;
 import com.example.pfa_p.Model.SubModule;
 import com.example.pfa_p.R;
 import com.example.pfa_p.SurveyDataSingleton;
@@ -55,6 +57,8 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
         loadingTask = new LoadingTask(this);
      //   loadingTask.execute();
         parent.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        Module basicQuestionnaire = SurveyDataSingleton.getInstance(this).getModules().get(1) ;
+        Result.evaluateQuestionnaires(basicQuestionnaire,this);
         List<SubModule> subModules = SurveyDataSingleton.getInstance(this).getModules().get(2).getSections();
         setDataAndInvalidate(subModules);
         AccountGeneral.createSyncAccount(this);

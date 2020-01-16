@@ -114,6 +114,7 @@ public class Domain extends LeftPane {
         ContentValues values = new ContentValues();
         values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_NAME, name);
         values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SECTION_ID, getSubModule().getId());
+        values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_FLAG, "dirty");
 
         //  values.put(SurveyContract.SurveyEntry.DOMAINS_COLUMN_SURVEY_ID, getSurveyId());
         return values;

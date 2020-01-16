@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pfa_p.Model.User;
 import com.example.pfa_p.R;
+import com.example.pfa_p.Utils.JavaUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +157,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
             prisonerId.setText(user.getPrisonerId());
             volunteerId.setText(user.getVolunteerId());
-            timeStamp.setText(user.getTimeStamp());
+            timeStamp.setText(JavaUtils.timeStampToDateFormatter(user.getTimeStamp()));
             status.setText(user.getStatus());
             action.setText(user.getAction());
 

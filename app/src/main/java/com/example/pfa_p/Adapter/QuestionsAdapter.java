@@ -1,12 +1,16 @@
 package com.example.pfa_p.Adapter;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -22,9 +26,12 @@ import com.example.pfa_p.Model.RightPane;
 import com.example.pfa_p.R;
 import com.example.pfa_p.Utils.RadioGridGroup;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.SurveyViewHolder> {
 
@@ -112,6 +119,32 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
     public class EditableItemViewHolder extends SurveyViewHolder {
 
+
+
+        void showDatePickerDialog(Context context, EditText view){
+            final Calendar myCalendar = Calendar.getInstance();
+            DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+                EditText et = view;
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                      int dayOfMonth) {
+                    // TODO Auto-generated method stub
+                    myCalendar.set(Calendar.YEAR, year);
+                    myCalendar.set(Calendar.MONTH, monthOfYear);
+                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    String myFormat = "MM/dd/yy"; //In which you need put here
+                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+                    et.setText(sdf.format(myCalendar.getTime()));
+                }
+
+            };
+            new DatePickerDialog(context, date, myCalendar
+                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        }
+
         public EditText editText;
         List<View> views;
         View parent;
@@ -158,6 +191,17 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
             editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             editText.setInputType(question.getOptions().getInputType());
+
+            if(question.getOptions().getInputType() == InputType.TYPE_CLASS_DATETIME ){
+                editText.setFocusable(false);
+                editText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showDatePickerDialog(itemView.getContext(), (EditText)view);
+                    }
+                });
+            }
+
             editText.setEnabled(question.isEnabled());
 
             if (!question.isEnabled()) {
@@ -334,6 +378,14 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             for(int i = 0; i < options.getChildCount(); i++){
                 options.getChildAt(i).setEnabled(question.isEnabled());
             }
+           /* if(question.isEnabled()){
+                parent.setVisibility(View.VISIBLE);
+//                notifyDataSetChanged();
+            }
+            else{
+                parent.setVisibility(View.GONE);
+    //            notifyDataSetChanged();
+            }*/
 
 
         }
