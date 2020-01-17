@@ -303,7 +303,10 @@ public class Result implements RatingSystem {
         List<Question> questions = domain.getQuestions();
         int maxValue = 0;
         for (Question question : questions) {
-            maxValue += question.getOptions().getNumberOfOptions() - 1;
+            if (domain.getName().equals("Assessing Anti-Social Personality Traits")) {
+                maxValue += question.getOptions().getNumberOfOptions();
+            } else
+                maxValue += question.getOptions().getNumberOfOptions() - 1;
 
         }
         return maxValue;

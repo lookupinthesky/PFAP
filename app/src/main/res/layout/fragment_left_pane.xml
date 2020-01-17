@@ -3,8 +3,10 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:elevation="12dp">
     <LinearLayout
+        android:background="#8b6b61"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -19,7 +21,7 @@
             android:layout_height="wrap_content"
             android:scrollHorizontally="false"
             android:textColor="@color/color_white"
-            android:text="Assessing Need For PFAP"
+
             android:textSize="24sp" />
 
     </LinearLayout>

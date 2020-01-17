@@ -232,7 +232,7 @@ public class SectionsListFragment extends Fragment implements LeftPaneAdapter.Le
             Log.d(SectionDetailsFragment.class.getName(), "onViewCreated: mCurrentDomainIndex = " + mCurrentDomainIndex + " mCurrentSectionIndex = " + mCurrentSectionIndex + " mSectionIndexinList = " + subModuleIndexInList  );
             setClicked(mCurrentDomainIndex == -1 ? leftPaneList.get(subModuleIndexInList) :
                     leftPaneList.get(subModuleIndexInList + mCurrentDomainIndex + 1));
-            moduleName.setText(module.getName());
+          //  moduleName.setText(module.getName());
         }
 
 

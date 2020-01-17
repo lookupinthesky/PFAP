@@ -47,11 +47,11 @@
         <activity
             android:name=".Activities.SurveyActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/LoginActivityTheme" />
+            android:theme="@style/SurveyThemeOne" />
         <activity
             android:name=".Activities.DashboardActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
+            android:theme="@style/DashboardActivityTheme" />
 
         <provider
             android:name=".Database.SurveyProvider"

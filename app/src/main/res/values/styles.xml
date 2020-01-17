@@ -21,7 +21,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <style name="AppTheme.Splash" parent="AppTheme.NoActionBar">
-        <item name="android:windowBackground">@mipmap/mhf_logo_new</item>
+        <item name="android:windowBackground">@mipmap/icon_prisoner</item>
     </style>
 
     <style name="DialogStyle" parent="android:style/Theme.Translucent">
@@ -48,4 +48,33 @@
 
     </style>
 
+    <style name="DashboardActivityTheme" parent="AppTheme.NoActionBar">
+
+        <item name="colorPrimary">#f44336</item>
+        <item name="colorPrimaryDark">#ba000d</item>
+        <item name = "colorAccent">#20B374</item>
+
+
+
+
+
+    </style>
+
+
+    <style name="SurveyThemeOne" parent="AppTheme.NoActionBar">
+
+        <item name="colorPrimary">#5D4037</item>
+        <item name="colorPrimaryDark">#321911</item>
+        <item name="colorAccent">#FF8661</item>
+
+    </style>
+    <style name="SurveyThemeTwo" parent="AppTheme.NoActionBar">
+
+
+    </style>
+
+    <style name="SurveyThemeThree" parent="AppTheme.NoActionBar">
+
+
+    </style>
 </resources>

@@ -179,7 +179,7 @@
 
             </LinearLayout>
                 <TextView
-                    android:background="@color/colorbackground"
+                    android:background="@color/color_white"
                     android:padding="4dp"
                     android:layout_margin="8dp"
                     android:layout_gravity="center_horizontal"
@@ -273,7 +273,7 @@
         android:innerRadius="0dp"
         android:shape="ring"
         android:thicknessRatio="1.9"
-        app:cardBackgroundColor="@color/book_loading_book"
+        app:cardBackgroundColor="#20B374"
         app:cardCornerRadius="40dp"
         app:cardElevation="12dp"
         app:layout_constraintBottom_toBottomOf="parent"

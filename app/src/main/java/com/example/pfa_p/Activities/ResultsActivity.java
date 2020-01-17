@@ -145,6 +145,8 @@ public class ResultsActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onBackPressed() {
 
+        Intent intent = new Intent(ResultsActivity.this, DashboardActivity.class);
+        startActivity(intent);
     }
 
     @Override

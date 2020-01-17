@@ -246,9 +246,10 @@ public class SurveyActivity extends FragmentActivity implements SectionsListFrag
 
     private void displaySurveyHeading(int currentModuleIndex){
 
-        String heading = modules.get(currentModuleIndex).getName();
-        surveyHeading.setText(heading);
-
+        if(currentModuleIndex<3) {
+            String heading = modules.get(currentModuleIndex).getName();
+            surveyHeading.setText(heading);
+        }
     }
 
     private int getFirstSectionIndexFromArray(boolean[] isSectionIPresent) {

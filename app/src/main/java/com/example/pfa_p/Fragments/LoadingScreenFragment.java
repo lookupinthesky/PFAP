@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.pfa_p.R;
+import com.roger.catloadinglibrary.CatLoadingView;
 import com.victor.loading.book.BookLoading;
 
 public class LoadingScreenFragment extends Fragment {
@@ -26,6 +27,7 @@ public class LoadingScreenFragment extends Fragment {
     long elapsedMilliSeconds;
     long endTime;
     long startTime;
+    CatLoadingView mView;
   //  int mCurrentProgress = 1000;
 
 
