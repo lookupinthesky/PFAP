@@ -548,35 +548,36 @@ public class SurveyDataSingleton {
     public JSONArray getExportableDatabaseInJSON(Context context) throws JSONException {
         Log.d(MainActivity.class.getName(), "method: getExportableDatabaseInJson = ");
         JSONArray arr = new JSONArray();
-        JSONObject userData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, context);
+        JSONObject data = new JSONObject();
+        JSONObject userData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_USERS_CONTENT_URI, context, data);
         if (userData != null) {
             arr.put(userData);
         }
-        JSONObject surveyData = getCursorFromTable(TABLE_SURVEYS_CONTENT_URI, context);
+        JSONObject surveyData = getCursorFromTable(TABLE_SURVEYS_CONTENT_URI, context, data);
         if (surveyData != null) {
             arr.put(surveyData);
         }
-        JSONObject sectionsData = getCursorFromTable(TABLE_SECTIONS_CONTENT_URI, context);
+        JSONObject sectionsData = getCursorFromTable(TABLE_SECTIONS_CONTENT_URI, context, data);
         if (sectionsData != null) {
             arr.put(sectionsData);
         }
-        JSONObject domainsData = getCursorFromTable(TABLE_DOMAINS_CONTENT_URI, context);
+        JSONObject domainsData = getCursorFromTable(TABLE_DOMAINS_CONTENT_URI, context, data);
         if (domainsData != null) {
             arr.put(domainsData);
         }
-        JSONObject questionsData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, context);
+        JSONObject questionsData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_QUESTIONS_CONTENT_URI, context, data);
         if (questionsData != null) {
             arr.put(questionsData);
         }
-        JSONObject historyData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, context);
+        JSONObject historyData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_HISTORY_ANSWERS_CONTENT_URI, context, data);
         if (historyData != null) {
             arr.put(historyData);
         }
-        JSONObject assessmentData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, context);
+        JSONObject assessmentData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_ASSESSMENT_ANSWERS_CONTENT_URI, context, data);
         if (assessmentData != null) {
             arr.put(assessmentData);
         }
-        JSONObject resultsData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, context);
+        JSONObject resultsData = getCursorFromTable(SurveyContract.SurveyEntry.TABLE_RESULTS_CONTENT_URI, context, data);
         if (resultsData != null) {
             arr.put(resultsData);
         }
@@ -584,7 +585,7 @@ public class SurveyDataSingleton {
         return arr;
     }
 
-    public JSONObject getCursorFromTable(Uri tableuri, Context context) throws JSONException {
+    public JSONObject getCursorFromTable(Uri tableuri, Context context, JSONObject obj) throws JSONException {
 
         Log.d("Singleton", "method: getCursorFromTable" + "Uri = " + tableuri.toString());
       //  String selection = getSelectionForTableUri(tableuri);
@@ -607,7 +608,7 @@ public class SurveyDataSingleton {
 //         List<Uri> tablesBeingUpdated = currentSessionData.get(userCount).getTablesUpdated();
 
         //       tablesBeingUpdated.add(tableuri);
-        JSONObject obj;
+       // JSONObject obj;
         //    if(!(tableuri == TABLE_SURVEYS_CONTENT_URI || tableuri == TABLE_DOMAINS_CONTENT_URI || tableuri == TABLE_SECTIONS_CONTENT_URI)){
         context.getContentResolver().update(tableuri, cv, selection, selectionArgsBefore);
         Cursor cursor = context.getContentResolver().query(tableuri, null, selection, selectionArgsAfter, null);
@@ -616,6 +617,7 @@ public class SurveyDataSingleton {
 
         if (cursor.moveToFirst()) {
             obj = cursorToJSON(cursor, tableName);
+      //      obj.put(tableName, cursorToJSON(cursor, tableName));
         } else {
             obj = null;
             //         tablesBeingUpdated.remove(tableuri);

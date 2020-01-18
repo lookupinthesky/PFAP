@@ -22,7 +22,8 @@
 
         <LinearLayout
             android:layout_marginLeft="24dp"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -33,16 +34,18 @@
 
                 <TextView
                     android:id="@+id/prisonerId"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="11/ABCED/456"
                     android:textSize="20sp" />
 
                 <ImageView
-                    android:layout_width="32dp"
+                    android:layout_width="0dp"
                     android:layout_height="32dp"
-                    android:layout_marginLeft="120dp"
+                    android:layout_weight="1"
+
                     android:layout_marginTop="8dp"
                     app:srcCompat="@drawable/ic_done_24dp" />
 
@@ -71,7 +74,8 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -81,6 +85,7 @@
                 android:text="25 Jun 2019"
                 android:textSize="12sp"
                 android:layout_width="wrap_content"
+                android:drawablePadding="16dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 app:drawableTopCompat="@drawable/ic_timer_black_24dp" />
@@ -118,7 +123,9 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:drawableTop="@drawable/ic_play_arrow_black_24dp"/>
+            app:drawableTopCompat="@drawable/ic_volunteer"
+
+            />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/details"
@@ -127,7 +134,7 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:drawableTop="@drawable/ic_play_arrow_black_24dp"/>
+            app:drawableTopCompat="@drawable/ic_info_outline_black_24dp"/>
 
 
     </LinearLayout>
