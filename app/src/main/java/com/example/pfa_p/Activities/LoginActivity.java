@@ -335,6 +335,7 @@ public class LoginActivity extends FragmentActivity implements SearchResultsFrag
 
             searchResultsFragment.setDemographicStatus("To be Started");
             searchResultsFragment.setAssessmentStatus("To be Started");
+            searchResultsFragment.setVisitNumber(1);
 
         } else {
             //TODO: initializeresultstable????
