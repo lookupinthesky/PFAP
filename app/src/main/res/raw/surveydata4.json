@@ -737,7 +737,7 @@
     "number_of_options": "2",
     "serial_number": "34",
     "question_name": "Nature of offender ",
-    "rules": "",
+    "rules": "Disable 35,36,37 if HABITUAL",
     "option1": "Casual",
     "option2": "Habitual",
     "option3": "null",

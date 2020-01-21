@@ -1,7 +1,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:grid="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:grid="http://schemas.android.com/tools"
     android:layout_marginStart="16dp"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
@@ -17,20 +17,25 @@
             android:id="@+id/question_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginBottom="8dp"
+            android:textSize="16sp"
             android:text="NAME" />
 
         <com.example.pfa_p.Utils.RadioGridGroup
-            android:id = "@+id/options_radioGroup"
+            android:id="@+id/options_radioGroup"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:paddingTop="8dp"
+            android:layout_marginStart="-4dp"
+
             android:layout_marginLeft="-4dp"
 
+            android:layout_marginBottom="8dp"
             android:layout_weight="3"
-            android:orientation="horizontal"
-            android:layout_marginStart="-4dp">
+            android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +43,7 @@
                 android:layout_marginRight="24dp"
                 android:text="0" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,21 +51,22 @@
                 android:layout_marginRight="24dp"
                 android:text="1" />
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+            <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_three"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
                 android:layout_marginRight="24dp"
                 android:text="2" />
+
             <androidx.appcompat.widget.AppCompatRadioButton
                 android:id="@+id/option_four"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                grid:layout_columnWeight="1"
                 android:layout_marginEnd="24dp"
                 android:layout_marginRight="24dp"
-                android:text="5" />
+                android:text="5"
+                grid:layout_columnWeight="1" />
 
         </com.example.pfa_p.Utils.RadioGridGroup>
 

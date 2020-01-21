@@ -90,6 +90,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     DashboardListViewHolder previous = null;
+
     class DashboardListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         //  @BindView(R.id.prisonerId)
@@ -111,8 +112,6 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         LinearLayout listItemBottom;
 
         LinearLayout lastClickedView = null;
-
-
 
 
         public DashboardListViewHolder(@NonNull View itemView) {
@@ -147,6 +146,7 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
                             previous.listItemBottom.setVisibility(View.GONE);
                         }
                     previous = this;
+                    scrollListener.autoScroll();
                     break;
                 }
 
@@ -177,14 +177,23 @@ public class DashboardListAdapter extends RecyclerView.Adapter<RecyclerView.View
         void onActionClick(User user);
     }
 
-   /* public class RecentActivityListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public RecentActivityListViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
+    /* public class RecentActivityListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+         public RecentActivityListViewHolder(@NonNull View itemView) {
+             super(itemView);
+         }
 
-        @Override
-        public void onClick(View v) {
+         @Override
+         public void onClick(View v) {
 
-        }
-    }*/
+         }
+     }*/
+    RecyclerViewScrollListener scrollListener;
+
+    public void setScrollListener(RecyclerViewScrollListener listener) {
+        this.scrollListener = listener;
+    }
+
+    public interface RecyclerViewScrollListener {
+        void autoScroll();
+    }
 }

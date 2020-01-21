@@ -120,12 +120,12 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
     public class EditableItemViewHolder extends SurveyViewHolder {
 
 
-
-        void showDatePickerDialog(Context context, EditText view){
+        void showDatePickerDialog(Context context, EditText view) {
             final Calendar myCalendar = Calendar.getInstance();
             DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
                 EditText et = view;
+
                 @Override
                 public void onDateSet(DatePicker view, int year, int monthOfYear,
                                       int dayOfMonth) {
@@ -192,23 +192,28 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
             editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             editText.setInputType(question.getOptions().getInputType());
 
-            if(question.getOptions().getInputType() == InputType.TYPE_CLASS_DATETIME ){
-                editText.setFocusable(false);
-                editText.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showDatePickerDialog(itemView.getContext(), (EditText)view);
-                    }
-                });
-            }
 
             editText.setEnabled(question.isEnabled());
+            editText.setFocusable(true);
+            editText.setFocusableInTouchMode(true);
+            if (editText.hasOnClickListeners()) {
+                editText.setOnClickListener(null);
+            }
 
             if (!question.isEnabled()) {
 
                 // answersArray[rightPaneList.indexOf(question)] = "N/A" ;
             }
             editText.setText(answersArray[rightPaneList.indexOf(question)]);
+            if (question.getOptions().getInputType() == InputType.TYPE_CLASS_DATETIME) {
+                editText.setFocusable(false);
+                editText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showDatePickerDialog(itemView.getContext(), (EditText) view);
+                    }
+                });
+            }
             //    views = bindViewsToId(parent, question.getOptions().getNumberOfOptions());
             //    editText = (EditText) views.get(0);
            /* TextWatcher mTextWatcher = new TextWatcher() {
@@ -336,7 +341,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
             options.clearCheck(); // clear the check of the button in case it lingered.
 
-            if(hasDespondency) {
+            if (hasDespondency) {
                 despondency.setOnCheckedChangeListener(null);
                 despondency.clearCheck();
                 despondencyParent.setVisibility(View.GONE);
@@ -350,7 +355,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 }
             }
 
-            if(question.hasDespondency() && question.getDespondency()!=-1){
+            if (question.hasDespondency() && question.getDespondency() != -1) {
                 despondency.setOnCheckedChangeListener(null);
                 despondencyParent.setVisibility(View.VISIBLE);
                 despondency.check(despondency.getChildAt(getIndexOfDespondency(question.getDespondency())).getId());
@@ -371,11 +376,11 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
                 }
             };*/
             options.setOnCheckedChangeListener(this); // assign a fresh listener
-            if(hasDespondency) {
+            if (hasDespondency) {
                 despondency.setOnCheckedChangeListener(mListener);
             }
 
-            for(int i = 0; i < options.getChildCount(); i++){
+            for (int i = 0; i < options.getChildCount(); i++) {
                 options.getChildAt(i).setEnabled(question.isEnabled());
             }
            /* if(question.isEnabled()){
@@ -390,13 +395,17 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         }
 
-        int getIndexOfDespondency(int despondency){
+        int getIndexOfDespondency(int despondency) {
 
-            switch (despondency){
-                case 0: return 2;
-                case 1: return 1;
-                case 2: return 0;
-                default:throw new  IllegalArgumentException("Invalid Despondency");
+            switch (despondency) {
+                case 0:
+                    return 2;
+                case 1:
+                    return 1;
+                case 2:
+                    return 0;
+                default:
+                    throw new IllegalArgumentException("Invalid Despondency");
             }
 
 
@@ -405,7 +414,6 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
         @Override
         public void onCheckedChanged(RadioGridGroup group, int checkedId) {
-
 
 
             RadioButton button = (RadioButton) group.findViewById(checkedId);
@@ -424,7 +432,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.Surv
 
             if (question.hasDespondency()) {
                 despondencyParent.setVisibility(View.VISIBLE);
-            //    despondency.setOnCheckedChangeListener(mListener);
+                //    despondency.setOnCheckedChangeListener(mListener);
                 /*despondency.setOnCheckedChangeListener(new RadioGridGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGridGroup group, int checkedId) {

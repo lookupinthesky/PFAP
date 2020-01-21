@@ -40,7 +40,7 @@ import static com.example.pfa_p.Activities.LoginActivity.ARG_VOLUNTEER_ID;
 public class DashboardActivity extends AppCompatActivity {
 
 
-    private static final String LOG_TAG =DashboardActivity.class.getName() ;
+    private static final String LOG_TAG = DashboardActivity.class.getName();
     @BindView(R.id.recent_activity)
     RecyclerView recentActivityList;
 
@@ -87,6 +87,7 @@ public class DashboardActivity extends AppCompatActivity {
         SurveyDataSingleton surveyData = SurveyDataSingleton.getInstance(this);
         ButterKnife.bind(this);
         List<Module> modules = surveyData.getModules();
+
         List<User> users = surveyData.getUsersDataFromDb(this);
         Log.d(DashboardActivity.class.getName(), modules.toString());
         //      totalSurveys.setText(surveyData.getTotalSurveysTaken());
@@ -140,11 +141,20 @@ public class DashboardActivity extends AppCompatActivity {
         //  ArrayAdapter<User> mAdapter = new RecentActivityAdapter(this,users,mListener);
         if (users.size() != 0) {
             recentActivityList.setVisibility(View.VISIBLE);
-            RecyclerView.Adapter mAdapter = new DashboardListAdapter(users, actionListener);
-            recentActivityList.setLayoutManager(new LinearLayoutManager(this));
+            DashboardListAdapter mAdapter = new DashboardListAdapter(users, actionListener);
+            LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+            recentActivityList.setLayoutManager(mLayoutManager);
+
             recentActivityList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
             recentActivityList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
             recentActivityList.setAdapter(mAdapter);
+            DashboardListAdapter.RecyclerViewScrollListener mScrollListener = new DashboardListAdapter.RecyclerViewScrollListener() {
+                @Override
+                public void autoScroll() {
+                    autoScrollRecyclerView(mLayoutManager, mAdapter);
+                }
+            };
+            mAdapter.setScrollListener(mScrollListener);
             emptyViewParent.setVisibility(View.GONE);
         } else {
             emptyViewParent.setVisibility(View.VISIBLE);
@@ -161,6 +171,23 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });*/
     }
+
+
+    private void autoScrollRecyclerView(LinearLayoutManager layoutMgr, RecyclerView.Adapter mAdapter) {
+
+        int distanceInPixels;
+        int position = mAdapter.getItemCount() - 1;
+        View firstVisibleChild = recentActivityList.getChildAt(0);
+        int itemHeight = firstVisibleChild.getHeight();
+        int currentPosition = recentActivityList.getChildAdapterPosition(firstVisibleChild);
+        int p = Math.abs(position - currentPosition);
+        if (p > 5) distanceInPixels = (p - (p - 5)) * itemHeight;
+        else distanceInPixels = p * itemHeight;
+        layoutMgr.scrollToPositionWithOffset(position, distanceInPixels);
+
+
+    }
+
 
     public static final int REQUEST_CODE = 1;
 
